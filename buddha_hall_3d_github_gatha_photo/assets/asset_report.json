@@ -1,0 +1,342 @@
+{
+  "groups": {
+    "deities": [
+      {
+        "path": "assets/images/deities/shakyamuni.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1536,
+        "long_edge_ok": true,
+        "file_size": 2110514,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/deities/amitabha.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1536,
+        "long_edge_ok": true,
+        "file_size": 2268859,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/deities/yaoshi-buddha.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1535,
+        "long_edge_ok": true,
+        "file_size": 2368586,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/deities/vajrasattva.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1536,
+        "long_edge_ok": true,
+        "file_size": 2215892,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/deities/padmasambhava.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1536,
+        "long_edge_ok": true,
+        "file_size": 2449651,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/deities/manjushri.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1536,
+        "long_edge_ok": true,
+        "file_size": 2460335,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/deities/chenrezig-four-arm.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1536,
+        "long_edge_ok": true,
+        "file_size": 2384610,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/deities/green-tara.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1535,
+        "long_edge_ok": true,
+        "file_size": 2563904,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/deities/ksitigarbha.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1536,
+        "long_edge_ok": true,
+        "file_size": 2242693,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/deities/yellow-jambhala.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1536,
+        "long_edge_ok": true,
+        "file_size": 2851108,
+        "file_size_ok": true,
+        "warning": ""
+      }
+    ],
+    "offerings": [
+      {
+        "path": "assets/images/offerings/lamp.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1535,
+        "long_edge_ok": true,
+        "file_size": 1159900,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/offerings/incense.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1535,
+        "long_edge_ok": true,
+        "file_size": 1142176,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/offerings/water.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1536,
+        "height": 1024,
+        "long_edge_ok": true,
+        "file_size": 1971150,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/offerings/flower.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1023,
+        "height": 1537,
+        "long_edge_ok": true,
+        "file_size": 1745369,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/offerings/fruit.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1535,
+        "height": 1024,
+        "long_edge_ok": true,
+        "file_size": 1592038,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/offerings/torma.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1536,
+        "long_edge_ok": true,
+        "file_size": 1184187,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/offerings/mandala.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1254,
+        "height": 1254,
+        "long_edge_ok": true,
+        "file_size": 1557408,
+        "file_size_ok": true,
+        "warning": ""
+      }
+    ],
+    "symbols": [
+      {
+        "path": "assets/images/symbols/parasol.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1536,
+        "long_edge_ok": true,
+        "file_size": 1254126,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/symbols/golden-fish.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1254,
+        "height": 1254,
+        "long_edge_ok": true,
+        "file_size": 1712896,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/symbols/treasure-vase.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1536,
+        "long_edge_ok": true,
+        "file_size": 1727107,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/symbols/lotus.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1254,
+        "height": 1254,
+        "long_edge_ok": true,
+        "file_size": 1750332,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/symbols/conch.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1536,
+        "long_edge_ok": true,
+        "file_size": 1212020,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/symbols/endless-knot.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1254,
+        "height": 1254,
+        "long_edge_ok": true,
+        "file_size": 1568798,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/symbols/victory-banner.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1024,
+        "height": 1536,
+        "long_edge_ok": true,
+        "file_size": 1288468,
+        "file_size_ok": true,
+        "warning": ""
+      },
+      {
+        "path": "assets/images/symbols/dharma-wheel.png",
+        "exists": true,
+        "is_png": true,
+        "has_alpha": true,
+        "width": 1254,
+        "height": 1254,
+        "long_edge_ok": true,
+        "file_size": 1235823,
+        "file_size_ok": true,
+        "warning": ""
+      }
+    ]
+  },
+  "summary": {
+    "deities": {
+      "total": 10,
+      "existing": 10,
+      "png": 10,
+      "alpha": 10,
+      "long_edge_ok": 10,
+      "healthy": 10
+    },
+    "offerings": {
+      "total": 7,
+      "existing": 7,
+      "png": 7,
+      "alpha": 7,
+      "long_edge_ok": 7,
+      "healthy": 7
+    },
+    "symbols": {
+      "total": 8,
+      "existing": 8,
+      "png": 8,
+      "alpha": 8,
+      "long_edge_ok": 8,
+      "healthy": 8
+    }
+  },
+  "requirements": {
+    "format": "PNG",
+    "alpha_channel": true,
+    "long_edge_min": 1024
+  },
+  "passed": true
+}

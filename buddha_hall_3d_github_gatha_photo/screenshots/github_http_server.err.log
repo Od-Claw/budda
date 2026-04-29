@@ -1,0 +1,809 @@
+::1 - - [29/Apr/2026 01:11:22] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:22] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /assets/images/deities/amitabha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /assets/images/deities/shakyamuni.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /assets/images/deities/vajrasattva.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /assets/images/deities/manjushri.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /assets/images/deities/padmasambhava.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /admin.html HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /assets/images/deities/chenrezig-four-arm.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /assets/images/deities/yaoshi-buddha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /assets/images/deities/green-tara.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /assets/images/deities/ksitigarbha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /assets/images/deities/yellow-jambhala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /assets/images/offerings/lamp.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /assets/images/offerings/incense.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:23] "GET /assets/images/offerings/water.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:24] "GET /assets/images/offerings/flower.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:24] "GET /assets/images/offerings/fruit.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:24] "GET /assets/images/offerings/torma.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:24] "GET /assets/images/offerings/mandala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:24] "GET /assets/images/symbols/golden-fish.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:24] "GET /assets/images/symbols/parasol.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:24] "GET /assets/images/symbols/treasure-vase.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:24] "GET /assets/images/symbols/lotus.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:24] "GET /assets/images/symbols/conch.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:24] "GET /assets/images/symbols/endless-knot.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:24] "GET /assets/images/symbols/victory-banner.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:24] "GET /assets/images/symbols/dharma-wheel.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:24] "GET /assets/audio/buddha-music/music-01.mp3 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:11:24] code 404, message File not found
+::1 - - [29/Apr/2026 01:11:24] "GET /favicon.ico HTTP/1.1" 404 -
+::1 - - [29/Apr/2026 01:11:33] code 404, message File not found
+::1 - - [29/Apr/2026 01:11:33] "GET /favicon.ico HTTP/1.1" 404 -
+::1 - - [29/Apr/2026 01:12:13] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:18] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:18] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/deities/shakyamuni.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/deities/amitabha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/deities/vajrasattva.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/deities/yaoshi-buddha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/deities/padmasambhava.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/deities/manjushri.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/deities/chenrezig-four-arm.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/deities/green-tara.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/deities/ksitigarbha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/deities/yellow-jambhala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/offerings/lamp.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/offerings/incense.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/offerings/water.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/offerings/flower.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/offerings/fruit.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/offerings/torma.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/offerings/mandala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/symbols/parasol.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/symbols/golden-fish.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/symbols/treasure-vase.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/symbols/lotus.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/symbols/conch.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/symbols/endless-knot.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/symbols/victory-banner.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:19] "GET /assets/images/symbols/dharma-wheel.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:12:30] "GET /assets/audio/buddha-music/music-01.mp3 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('::1', 58514, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+::1 - - [29/Apr/2026 01:13:17] "GET /assets/audio/buddha-music/music-01.mp3 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('::1', 65093, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+::1 - - [29/Apr/2026 01:13:31] "GET /assets/audio/buddha-music/music-02.mp3 HTTP/1.1" 200 -
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('::1', 56033, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+::1 - - [29/Apr/2026 01:13:45] "GET /assets/audio/buddha-music/music-01.mp3 HTTP/1.1" 200 -
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+::1 - - [29/Apr/2026 01:13:57] "GET /assets/audio/buddha-music/music-02.mp3 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:13:58] "GET /admin.html HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:13:58] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('::1', 60205, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+::1 - - [29/Apr/2026 01:14:02] "GET /assets/audio/buddha-music/music-04.mp3 HTTP/1.1" 200 -
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+::1 - - [29/Apr/2026 01:14:02] "GET / HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('::1', 63588, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+::1 - - [29/Apr/2026 01:14:04] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:14:04] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:14:16] "GET /assets/audio/buddha-music/music-01.mp3 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('::1', 55543, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+----------------------------------------
+Exception occurred during processing of request from ('::1', 60524, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+::1 - - [29/Apr/2026 01:15:37] "GET /assets/audio/buddha-music/music-05.m4a HTTP/1.1" 200 -
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+::1 - - [29/Apr/2026 01:16:53] "GET / HTTP/1.1" 304 -
+----------------------------------------
+Exception occurred during processing of request from ('::1', 63014, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+::1 - - [29/Apr/2026 01:16:53] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:16:54] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:16:55] "GET /assets/audio/buddha-music/music-05.m4a HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('::1', 53632, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+::1 - - [29/Apr/2026 01:25:32] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:20] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:21] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:21] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:22] "GET /assets/images/deities/shakyamuni.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:22] "GET /assets/images/deities/amitabha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:22] "GET /assets/images/deities/yaoshi-buddha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:22] "GET /assets/images/deities/vajrasattva.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:22] "GET /assets/images/deities/manjushri.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:22] "GET /assets/images/deities/padmasambhava.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:22] "GET /assets/images/deities/chenrezig-four-arm.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:22] "GET /assets/images/deities/green-tara.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:22] "GET /assets/images/deities/ksitigarbha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:22] "GET /assets/images/deities/yellow-jambhala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:26] "GET /assets/images/offerings/lamp.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:26] "GET /assets/images/offerings/incense.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:26] "GET /assets/images/offerings/water.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:26] "GET /assets/images/offerings/flower.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:26] "GET /assets/images/offerings/fruit.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:26] "GET /assets/images/offerings/torma.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:26] "GET /assets/images/offerings/mandala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:26] "GET /assets/images/symbols/parasol.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:26] "GET /assets/images/symbols/golden-fish.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:26] "GET /assets/images/symbols/treasure-vase.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:26] "GET /assets/images/symbols/lotus.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:26] "GET /assets/images/symbols/conch.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:26] "GET /assets/images/symbols/endless-knot.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:26] "GET /assets/images/symbols/victory-banner.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:26] "GET /assets/images/symbols/dharma-wheel.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:31] "GET /assets/audio/buddha-music/music-01.mp3 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('::1', 56028, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+::1 - - [29/Apr/2026 01:26:39] "GET /admin.html HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 01:26:39] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:25:59] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:05] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:06] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:06] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:07] "GET /assets/images/deities/shakyamuni.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:07] "GET /assets/images/deities/amitabha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:07] "GET /assets/images/deities/vajrasattva.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:07] "GET /assets/images/deities/manjushri.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:07] "GET /assets/images/deities/yaoshi-buddha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:07] "GET /assets/images/deities/padmasambhava.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:07] "GET /assets/images/deities/chenrezig-four-arm.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:07] "GET /assets/images/deities/green-tara.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:07] "GET /assets/images/deities/ksitigarbha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/deities/yellow-jambhala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/offerings/lamp.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/offerings/incense.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/offerings/water.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/offerings/flower.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/offerings/fruit.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/offerings/torma.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/offerings/mandala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/symbols/parasol.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/symbols/golden-fish.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/symbols/treasure-vase.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/symbols/lotus.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/symbols/conch.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/symbols/endless-knot.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/symbols/victory-banner.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:11] "GET /assets/images/symbols/dharma-wheel.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:30:17] "GET /assets/audio/buddha-music/music-01.mp3 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('::1', 57317, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+::1 - - [29/Apr/2026 09:31:11] "HEAD /assets/audio/buddha-music/music-01.mp3 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:31:11] "GET /admin.html HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:37:33] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/deities/shakyamuni.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/deities/amitabha.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/deities/vajrasattva.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/deities/yaoshi-buddha.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/deities/padmasambhava.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/deities/manjushri.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/deities/chenrezig-four-arm.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/deities/green-tara.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/deities/ksitigarbha.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/deities/yellow-jambhala.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/offerings/lamp.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/offerings/incense.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/offerings/water.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/offerings/flower.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/offerings/torma.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/offerings/mandala.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/offerings/fruit.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/symbols/parasol.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/symbols/golden-fish.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/symbols/treasure-vase.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/symbols/conch.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/symbols/lotus.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/symbols/endless-knot.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/symbols/victory-banner.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/images/symbols/dharma-wheel.png?v=20260428_layout_v4 HTTP/1.1" 304 -
+::1 - - [29/Apr/2026 09:37:33] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 09:37:34] "GET /assets/audio/buddha-music/music-05.m4a HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('::1', 57486, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+::1 - - [29/Apr/2026 10:20:12] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:15] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/deities/shakyamuni.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/deities/amitabha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/deities/yaoshi-buddha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/deities/vajrasattva.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/deities/padmasambhava.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/deities/manjushri.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/deities/chenrezig-four-arm.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/deities/green-tara.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/deities/ksitigarbha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/deities/yellow-jambhala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/offerings/lamp.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/offerings/incense.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/offerings/water.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/offerings/flower.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/offerings/fruit.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/offerings/torma.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/offerings/mandala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/symbols/parasol.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/symbols/golden-fish.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/symbols/treasure-vase.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/symbols/lotus.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/symbols/conch.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/symbols/endless-knot.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/symbols/victory-banner.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:16] "GET /assets/images/symbols/dharma-wheel.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:26] "GET /assets/audio/buddha-music/music-01.mp3 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('::1', 51293, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+::1 - - [29/Apr/2026 10:21:39] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/deities/shakyamuni.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/deities/amitabha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/deities/yaoshi-buddha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/deities/vajrasattva.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/deities/padmasambhava.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/deities/manjushri.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/deities/chenrezig-four-arm.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/deities/green-tara.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/deities/ksitigarbha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/deities/yellow-jambhala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/offerings/lamp.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/offerings/incense.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/offerings/water.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/offerings/flower.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/offerings/fruit.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/offerings/torma.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/offerings/mandala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/symbols/parasol.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/symbols/golden-fish.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/symbols/treasure-vase.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/symbols/lotus.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/symbols/conch.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/symbols/endless-knot.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/symbols/victory-banner.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:21:40] "GET /assets/images/symbols/dharma-wheel.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:22:36] "GET /admin.html HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:23:47] "GET /admin.html HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:12] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:12] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/deities/shakyamuni.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/deities/amitabha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/deities/vajrasattva.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/deities/padmasambhava.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/deities/yaoshi-buddha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/deities/manjushri.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/deities/chenrezig-four-arm.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/deities/green-tara.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/deities/ksitigarbha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/deities/yellow-jambhala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/offerings/lamp.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/offerings/incense.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/offerings/water.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/offerings/flower.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/offerings/fruit.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/offerings/torma.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/offerings/mandala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/symbols/parasol.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/symbols/golden-fish.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/symbols/treasure-vase.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/symbols/lotus.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/symbols/conch.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/symbols/endless-knot.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/symbols/victory-banner.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:13] "GET /assets/images/symbols/dharma-wheel.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:23] "GET /assets/audio/buddha-music/music-01.mp3 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('::1', 62720, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+::1 - - [29/Apr/2026 10:24:26] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/deities/shakyamuni.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/deities/amitabha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/deities/yaoshi-buddha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/deities/padmasambhava.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/deities/vajrasattva.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/deities/manjushri.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/deities/chenrezig-four-arm.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/deities/ksitigarbha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/deities/green-tara.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/deities/yellow-jambhala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/offerings/lamp.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/offerings/incense.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/offerings/water.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/offerings/flower.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/offerings/fruit.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/offerings/torma.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/offerings/mandala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/symbols/parasol.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/symbols/golden-fish.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/symbols/treasure-vase.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/symbols/lotus.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/symbols/conch.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/symbols/endless-knot.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/symbols/victory-banner.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:27] "GET /assets/images/symbols/dharma-wheel.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:33] "GET /admin.html HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:33] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:56] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/deities/shakyamuni.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/deities/amitabha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/deities/yaoshi-buddha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/deities/vajrasattva.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/deities/padmasambhava.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/deities/manjushri.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/deities/chenrezig-four-arm.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/deities/green-tara.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/deities/ksitigarbha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/deities/yellow-jambhala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/offerings/lamp.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/offerings/incense.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/offerings/water.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/offerings/flower.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/offerings/fruit.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/offerings/torma.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/offerings/mandala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/symbols/parasol.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/symbols/golden-fish.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/symbols/treasure-vase.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/symbols/lotus.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/symbols/conch.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/symbols/endless-knot.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/symbols/victory-banner.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/images/symbols/dharma-wheel.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:24:57] "GET /assets/audio/buddha-music/music-01.mp3 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('::1', 62905, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+::1 - - [29/Apr/2026 10:31:20] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:31:20] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:31:20] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:31:21] "GET /assets/audio/buddha-music/music-05.m4a HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('::1', 58217, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+::1 - - [29/Apr/2026 10:32:18] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:45] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/deities/shakyamuni.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/deities/yaoshi-buddha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/deities/amitabha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/deities/padmasambhava.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/deities/vajrasattva.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/deities/manjushri.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/deities/chenrezig-four-arm.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/deities/green-tara.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/deities/ksitigarbha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/deities/yellow-jambhala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/offerings/lamp.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/offerings/incense.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/offerings/water.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/offerings/flower.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/offerings/fruit.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/offerings/torma.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/offerings/mandala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/symbols/parasol.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/symbols/golden-fish.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/symbols/treasure-vase.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/symbols/lotus.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/symbols/conch.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/symbols/endless-knot.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/symbols/victory-banner.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:46] "GET /assets/images/symbols/dharma-wheel.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:32:57] "GET /assets/audio/buddha-music/music-01.mp3 HTTP/1.1" 200 -
+----------------------------------------
+Exception occurred during processing of request from ('::1', 52148, 0, 0)
+Traceback (most recent call last):
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 1311, in finish_request
+    self.RequestHandlerClass(request, client_address, self,
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 672, in __init__
+    super().__init__(*args, **kwargs)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 766, in __init__
+    self.handle()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 436, in handle
+    self.handle_one_request()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 424, in handle_one_request
+    method()
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 679, in do_GET
+    self.copyfile(f, self.wfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\http\server.py", line 878, in copyfile
+    shutil.copyfileobj(source, outputfile)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\shutil.py", line 204, in copyfileobj
+    fdst_write(buf)
+  File "C:\Users\biung\AppData\Local\Programs\Python\Python312\Lib\socketserver.py", line 845, in write
+    self._sock.sendall(b)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+----------------------------------------
+::1 - - [29/Apr/2026 10:33:11] "GET / HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/audio/buddha-music/music_manifest.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/data/shrine_offerings.json HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/deities/shakyamuni.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/deities/amitabha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/deities/yaoshi-buddha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/deities/vajrasattva.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/deities/padmasambhava.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/deities/manjushri.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/deities/chenrezig-four-arm.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/deities/green-tara.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/deities/ksitigarbha.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/deities/yellow-jambhala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/offerings/lamp.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/offerings/incense.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/offerings/water.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/offerings/flower.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/offerings/fruit.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/offerings/torma.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/offerings/mandala.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/symbols/parasol.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/symbols/golden-fish.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/symbols/treasure-vase.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/symbols/lotus.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/symbols/conch.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/symbols/endless-knot.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/symbols/victory-banner.png?v=20260428_layout_v4 HTTP/1.1" 200 -
+::1 - - [29/Apr/2026 10:33:12] "GET /assets/images/symbols/dharma-wheel.png?v=20260428_layout_v4 HTTP/1.1" 200 -

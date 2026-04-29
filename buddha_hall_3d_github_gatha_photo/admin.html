@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>供佛名牌後台 - GitHub Pages 靜態版</title>
+  <style>
+    :root {
+      --bg: #f7f1e5;
+      --panel: #fffaf0;
+      --ink: #301607;
+      --muted: #7b5a37;
+      --line: #d9bd86;
+      --gold: #b57a18;
+      --brown: #7d5a2e;
+      --red: #8d2c17;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 24px;
+      background: linear-gradient(90deg, #6f210f, #b57a18);
+      color: #fff6d6;
+    }
+    h1 { margin: 0; font-size: 24px; letter-spacing: 0; }
+    main { padding: 20px 24px 36px; }
+    .toolbar, .notice {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .notice { color: var(--muted); line-height: 1.5; }
+    input, select, textarea, button {
+      font: inherit;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+    }
+    input, select, textarea {
+      padding: 8px 10px;
+      background: #fffdf8;
+      color: var(--ink);
+    }
+    textarea { width: 180px; min-height: 38px; resize: vertical; }
+    button, .link-button {
+      padding: 8px 12px;
+      color: #fff7db;
+      background: var(--gold);
+      border-color: #9b6412;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    button.secondary { background: var(--brown); }
+    button.danger { background: var(--red); }
+    .status { margin-left: auto; color: var(--muted); font-size: 14px; }
+    .table-wrap {
+      overflow: auto;
+      max-height: calc(100vh - 210px);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+    table { width: 100%; border-collapse: collapse; min-width: 1280px; }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid rgba(181, 122, 24, 0.22);
+      vertical-align: top;
+      white-space: nowrap;
+    }
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #ead4a2;
+      text-align: left;
+      font-weight: 800;
+    }
+    td input[type="text"] { width: 150px; }
+    td input[type="date"] { width: 136px; }
+    .small { color: var(--muted); font-size: 13px; }
+    .hidden-file { display: none; }
+    .gatha-admin {
+      margin-top: 18px;
+      padding: 16px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .gatha-admin h2 { margin: 0 0 10px; color: var(--red); }
+    .gatha-admin .notice { margin: 0 0 14px; }
+    .gatha-grid {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.9fr) minmax(280px, 1.35fr);
+      gap: 14px;
+    }
+    .gatha-list {
+      display: grid;
+      gap: 8px;
+      max-height: 420px;
+      overflow: auto;
+    }
+    .gatha-item {
+      width: 100%;
+      text-align: left;
+      color: var(--ink);
+      background: #fff4cf;
+      border-color: var(--line);
+    }
+    .gatha-item.active {
+      color: #fff7db;
+      background: var(--gold);
+    }
+    .gatha-editor {
+      display: grid;
+      gap: 10px;
+    }
+    .gatha-editor label {
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .gatha-editor textarea {
+      width: 100%;
+      min-height: 170px;
+      white-space: pre-wrap;
+    }
+    .gatha-editor input[type="text"] { width: 100%; }
+    .gatha-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    @media (max-width: 760px) {
+      .gatha-grid { grid-template-columns: 1fr; }
+    }
+    #fileProtocolNotice {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      z-index: 80;
+      display: none;
+      width: min(720px, calc(100vw - 32px));
+      transform: translateX(-50%);
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 235, 178, 0.72);
+      border-radius: 12px;
+      background: rgba(52, 18, 7, 0.94);
+      color: #fff4cf;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.38);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+    #fileProtocolNotice strong { color: #fff8df; }
+    #fileProtocolNotice button {
+      float: right;
+      margin-left: 12px;
+      padding: 5px 10px;
+      border: 1px solid rgba(255, 235, 178, 0.68);
+      border-radius: 999px;
+      background: linear-gradient(180deg, #fff1b8, #d39a31);
+      color: #2d1604;
+      font-weight: 800;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="fileProtocolNotice" role="status" aria-live="polite">
+    <button type="button" aria-label="關閉提示" onclick="this.parentElement.style.display='none'">關閉</button>
+    <strong>請使用本機伺服器開啟此頁，不要直接雙擊 HTML。</strong><br/>
+    請在資料夾中執行 <code>python -m http.server 8090</code>，然後打開終端機顯示的本機網址。
+  </div>
+  <script>
+    if (location.protocol === "file:") {
+      document.getElementById("fileProtocolNotice").style.display = "block";
+    }
+  </script>
+  <header>
+    <h1>供佛名牌後台</h1>
+    <a class="link-button" href="./index.html">回到佛堂</a>
+  </header>
+
+  <main>
+    <section class="toolbar">
+      <input id="searchInput" type="search" placeholder="搜尋姓名、佛像、區域、左右側" />
+      <select id="sideFilter">
+        <option value="">全部側邊</option>
+        <option value="left">左側</option>
+        <option value="right">右側</option>
+      </select>
+      <button id="reloadBtn" type="button" class="secondary">重新載入</button>
+      <button id="saveBtn" type="button">儲存全部</button>
+      <button id="exportBtn" type="button" class="secondary">匯出 JSON</button>
+      <button id="importBtn" type="button" class="secondary">匯入 JSON</button>
+      <input id="importFile" class="hidden-file" type="file" accept="application/json,.json" />
+      <button id="resetBtn" type="button" class="danger">重設為「善信供養」</button>
+      <span id="status" class="status">準備中</span>
+    </section>
+
+    <section id="modeNotice" class="notice">
+      目前為 GitHub Pages 靜態模式，資料只會儲存在本瀏覽器 localStorage；若要多人共享，請使用後端版本或另接資料庫。
+    </section>
+
+    <section class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>側邊</th>
+            <th>區域</th>
+            <th>佛像</th>
+            <th>位置</th>
+            <th>供養人姓名</th>
+            <th>祈願文字</th>
+            <th>起始日</th>
+            <th>到期日</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="offeringsBody"></tbody>
+      </table>
+    </section>
+
+    <section class="gatha-admin" id="gathaAdmin">
+      <h2>偈語管理</h2>
+      <div class="notice">
+        GitHub Pages 靜態版無法把資料直接寫回伺服器。若要所有設備看到最新偈語，請匯出 gathas.json，並上傳覆蓋 assets/data/gathas.json。
+      </div>
+      <div class="gatha-actions">
+        <button id="gathaAddBtn" type="button">新增偈語</button>
+        <button id="gathaSaveBtn" type="button">儲存偈語</button>
+        <button id="gathaExportBtn" type="button" class="secondary">匯出 gathas.json</button>
+        <button id="gathaImportBtn" type="button" class="secondary">匯入 gathas.json</button>
+        <input id="gathaImportFile" class="hidden-file" type="file" accept="application/json,.json" />
+        <button id="gathaResetBtn" type="button" class="danger">重設預設偈語</button>
+        <span id="gathaStatus" class="status">偈語準備中</span>
+      </div>
+      <div class="gatha-grid">
+        <div id="gathaList" class="gatha-list"></div>
+        <div class="gatha-editor">
+          <label>標題
+            <input id="gathaTitleInput" type="text" />
+          </label>
+          <label>正文
+            <textarea id="gathaContentInput"></textarea>
+          </label>
+          <label>來源
+            <input id="gathaSourceInput" type="text" />
+          </label>
+          <label>
+            <span><input id="gathaEnabledInput" type="checkbox" /> 啟用</span>
+          </label>
+          <div class="gatha-actions">
+            <button id="gathaApplyBtn" type="button">套用編輯</button>
+            <button id="gathaDeleteBtn" type="button" class="danger">刪除偈語</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="gatha-admin" id="photoAdmin">
+      <h2>照片管理</h2>
+      <div class="notice">
+        GitHub Pages 靜態版無法直接把照片寫回伺服器。請先將照片放入 assets/images/photos/，再於這裡填入檔名或相對路徑，最後匯出 photos.json 並上傳到 assets/data/photos.json。
+      </div>
+      <div class="gatha-actions">
+        <button id="photoAddBtn" type="button">新增照片</button>
+        <button id="photoSaveBtn" type="button">儲存照片資料</button>
+        <button id="photoExportBtn" type="button" class="secondary">匯出 photos.json</button>
+        <button id="photoImportBtn" type="button" class="secondary">匯入 photos.json</button>
+        <input id="photoImportFile" class="hidden-file" type="file" accept="application/json,.json" />
+        <button id="photoResetBtn" type="button" class="danger">重設預設照片資料</button>
+        <span id="photoStatus" class="status">照片準備中</span>
+      </div>
+      <div class="gatha-grid">
+        <div id="photoList" class="gatha-list"></div>
+        <div class="gatha-editor">
+          <label>標題
+            <input id="photoTitleInput" type="text" />
+          </label>
+          <label>照片檔案 / 相對路徑
+            <input id="photoFileInput" type="text" placeholder="photo-001.jpg 或 assets/images/photos/photo-001.jpg" />
+          </label>
+          <label>說明文字
+            <input id="photoCaptionInput" type="text" />
+          </label>
+          <label>
+            <span><input id="photoEnabledInput" type="checkbox" /> 啟用</span>
+          </label>
+          <div class="gatha-actions">
+            <button id="photoApplyBtn" type="button">套用編輯</button>
+            <button id="photoDeleteBtn" type="button" class="danger">刪除照片</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "shrineOfferings";
+    const CHANNEL_NAME = "shrine-offerings-updates";
+    const DEFAULT_SPONSOR = "善信供養";
+    const STATIC_DATA_PATH = "assets/data/shrine_offerings.json";
+    const STATIC_MODE_NOTICE = "目前為 GitHub Pages 靜態模式，資料只會儲存在本瀏覽器 localStorage；若要多人共享，請使用後端版本或另接資料庫。";
+    const GATHA_STORAGE_KEY = "buddhaHallGathas";
+    const GATHA_DATA_PATH = "assets/data/gathas.json";
+    const PHOTO_STORAGE_KEY = "buddhaHallPhotos";
+    const PHOTO_DATA_PATH = "assets/data/photos.json";
+    const DEFAULT_GATHAS = [
+      {
+        id: "gatha-001",
+        title: "無常，是生命最好的提醒",
+        content: "即便未能徹悟實相，只是稍解「諸行無常」，利益也已巨大。\n不是透過實修證得，僅僅思維「不知自己何時會死」，也有助於趨向佛果。\n\n這念想，讓生命更有意義——\n購物時，不再像能活幾十萬年般囤積；\n購房時，會想「有一天我不再住在這裡」；\n交友時，懂得「即便明天分離，今天依然真誠」。\n\n無常觀，不是消極，而是讓每一個當下都清醒、珍貴。",
+        enabled: true,
+        source: "",
+        createdAt: "2026-04-29",
+        updatedAt: "2026-04-29"
+      }
+    ];
+    const DEFAULT_PHOTOS = [
+      {
+        id: "photo-001",
+        title: "供養照片",
+        file: "",
+        enabled: true,
+        caption: "",
+        createdAt: "2026-04-29",
+        updatedAt: "2026-04-29"
+      }
+    ];
+    const SHRINE_ZONES = {
+      left: [
+        { deity: "藥師佛", cols: 6, title: "藥師佛區" },
+        { deity: "阿彌陀佛", cols: 6, title: "阿彌陀佛區" },
+        { deity: "蓮花生大士", cols: 6, title: "蓮師區" },
+        { deity: "文殊菩薩", cols: 6, title: "文殊區" },
+        { deity: "綠度母", cols: 6, title: "綠度母區" }
+      ],
+      right: [
+        { deity: "釋迦牟尼佛", cols: 6, title: "佛陀區" },
+        { deity: "金剛薩埵", cols: 6, title: "金剛薩埵區" },
+        { deity: "四臂觀音", cols: 6, title: "觀音區" },
+        { deity: "地藏王菩薩", cols: 6, title: "地藏區" },
+        { deity: "黃財神", cols: 6, title: "黃財神區" }
+      ]
+    };
+
+    let offerings = [];
+    const body = document.getElementById("offeringsBody");
+    const statusEl = document.getElementById("status");
+    const modeNotice = document.getElementById("modeNotice");
+    const searchInput = document.getElementById("searchInput");
+    const sideFilter = document.getElementById("sideFilter");
+    const gathaListEl = document.getElementById("gathaList");
+    const gathaStatusEl = document.getElementById("gathaStatus");
+    const gathaTitleInput = document.getElementById("gathaTitleInput");
+    const gathaContentInput = document.getElementById("gathaContentInput");
+    const gathaSourceInput = document.getElementById("gathaSourceInput");
+    const gathaEnabledInput = document.getElementById("gathaEnabledInput");
+    const photoListEl = document.getElementById("photoList");
+    const photoStatusEl = document.getElementById("photoStatus");
+    const photoTitleInput = document.getElementById("photoTitleInput");
+    const photoFileInput = document.getElementById("photoFileInput");
+    const photoCaptionInput = document.getElementById("photoCaptionInput");
+    const photoEnabledInput = document.getElementById("photoEnabledInput");
+    let gathas = [];
+    let selectedGathaId = "";
+    let photos = [];
+    let selectedPhotoId = "";
+
+    function makeOfferingId(sideName, zoneIndex, row, col) {
+      return `${sideName}-zone-${String(zoneIndex + 1).padStart(2, "0")}-row-${String(row + 1).padStart(2, "0")}-col-${String(col + 1).padStart(2, "0")}`;
+    }
+
+    function buildDefaultOfferings() {
+      const result = [];
+      ["left", "right"].forEach((sideName) => {
+        let colStart = 0;
+        SHRINE_ZONES[sideName].forEach((zone, zoneIndex) => {
+          for (let localCol = 0; localCol < zone.cols; localCol++) {
+            const col = colStart + localCol;
+            for (let row = 0; row < 3; row++) {
+              result.push({
+                id: makeOfferingId(sideName, zoneIndex, row, col),
+                side: sideName,
+                row,
+                col,
+                zone: zone.title,
+                deity: zone.deity,
+                sponsorName: DEFAULT_SPONSOR,
+                wishText: "",
+                startDate: null,
+                endDate: null
+              });
+            }
+          }
+          colStart += zone.cols;
+        });
+      });
+      return result;
+    }
+
+    function normalize(item) {
+      return {
+        ...item,
+        sponsorName: String(item.sponsorName || DEFAULT_SPONSOR).trim() || DEFAULT_SPONSOR,
+        wishText: String(item.wishText || ""),
+        startDate: item.startDate || null,
+        endDate: item.endDate || null
+      };
+    }
+
+    function mergeData(base, incoming) {
+      const byId = new Map((Array.isArray(incoming) ? incoming : []).map((item) => [item.id, normalize(item)]));
+      return base.map((item) => normalize({ ...item, ...(byId.get(item.id) || {}) }));
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    function normalizeGatha(item) {
+      const now = new Date().toISOString().slice(0, 10);
+      return {
+        id: String(item?.id || `gatha-${Date.now()}`).trim(),
+        title: String(item?.title || "法語").trim() || "法語",
+        content: String(item?.content || "").trim(),
+        enabled: item?.enabled !== false,
+        source: String(item?.source || ""),
+        createdAt: item?.createdAt || now,
+        updatedAt: item?.updatedAt || now
+      };
+    }
+
+    function validateGathas(data) {
+      if (!Array.isArray(data)) throw new Error("gathas.json 必須是 array");
+      return data.map((item) => {
+        if (!item || typeof item !== "object") throw new Error("每筆偈語必須是 object");
+        if (!item.title || !item.content) throw new Error("每筆偈語至少需要 title / content");
+        return normalizeGatha(item);
+      });
+    }
+
+    function normalizePhoto(item) {
+      const now = new Date().toISOString().slice(0, 10);
+      return {
+        id: String(item?.id || `photo-${Date.now()}`).trim(),
+        title: String(item?.title || "供養照片").trim() || "供養照片",
+        file: String(item?.file || "").trim(),
+        enabled: item?.enabled !== false,
+        caption: String(item?.caption || "").trim(),
+        createdAt: item?.createdAt || now,
+        updatedAt: item?.updatedAt || now
+      };
+    }
+
+    function validatePhotos(data) {
+      if (!Array.isArray(data)) throw new Error("photos.json 必須是 array");
+      return data.map((item) => {
+        if (!item || typeof item !== "object") throw new Error("每筆照片資料必須是 object");
+        return normalizePhoto(item);
+      });
+    }
+
+    function renderGathas() {
+      gathaListEl.innerHTML = "";
+      if (!gathas.length) {
+        gathaListEl.innerHTML = '<div class="small">尚無偈語</div>';
+      }
+      gathas.forEach((item) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `gatha-item${item.id === selectedGathaId ? " active" : ""}`;
+        button.dataset.id = item.id;
+        button.innerHTML = `${escapeHtml(item.title)}<br><span class="small">${item.enabled ? "啟用" : "停用"} · ${escapeHtml(item.id)}</span>`;
+        gathaListEl.appendChild(button);
+      });
+      const selected = gathas.find((item) => item.id === selectedGathaId) || gathas[0];
+      if (selected) {
+        selectedGathaId = selected.id;
+        gathaTitleInput.value = selected.title;
+        gathaContentInput.value = selected.content;
+        gathaSourceInput.value = selected.source || "";
+        gathaEnabledInput.checked = selected.enabled !== false;
+      }
+      gathaStatusEl.textContent = `偈語 ${gathas.length} 則`;
+    }
+
+    function applyGathaEditor() {
+      const index = gathas.findIndex((item) => item.id === selectedGathaId);
+      if (index < 0) return;
+      gathas[index] = normalizeGatha({
+        ...gathas[index],
+        title: gathaTitleInput.value,
+        content: gathaContentInput.value,
+        source: gathaSourceInput.value,
+        enabled: gathaEnabledInput.checked,
+        updatedAt: new Date().toISOString().slice(0, 10)
+      });
+      renderGathas();
+    }
+
+    function saveGathas() {
+      applyGathaEditor();
+      localStorage.setItem(GATHA_STORAGE_KEY, JSON.stringify(gathas));
+      try {
+        new BroadcastChannel("buddha-hall-gathas-updates").postMessage({ type: "gathas-updated", gathas });
+      } catch (error) {
+      }
+      gathaStatusEl.textContent = "偈語已儲存到 localStorage";
+    }
+
+    async function loadGathaAdminData() {
+      try {
+        const local = localStorage.getItem(GATHA_STORAGE_KEY);
+        if (local) {
+          gathas = validateGathas(JSON.parse(local));
+          selectedGathaId = gathas[0]?.id || "";
+          renderGathas();
+          return;
+        }
+      } catch (error) {
+      }
+      try {
+        const response = await fetch(GATHA_DATA_PATH, { cache: "no-store" });
+        if (response.ok) {
+          gathas = validateGathas(await response.json());
+          selectedGathaId = gathas[0]?.id || "";
+          renderGathas();
+          return;
+        }
+      } catch (error) {
+      }
+      gathas = DEFAULT_GATHAS.map(normalizeGatha);
+      selectedGathaId = gathas[0]?.id || "";
+      renderGathas();
+    }
+
+    function exportGathas() {
+      applyGathaEditor();
+      const blob = new Blob([JSON.stringify(gathas, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "gathas.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function renderPhotos() {
+      photoListEl.innerHTML = "";
+      if (!photos.length) {
+        photoListEl.innerHTML = '<div class="small">尚無照片資料</div>';
+      }
+      photos.forEach((item) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `gatha-item${item.id === selectedPhotoId ? " active" : ""}`;
+        button.dataset.id = item.id;
+        const fileText = item.file ? escapeHtml(item.file) : "未設定檔案";
+        button.innerHTML = `${escapeHtml(item.title)}<br><span class="small">${item.enabled ? "啟用" : "停用"} · ${fileText}</span>`;
+        photoListEl.appendChild(button);
+      });
+      const selected = photos.find((item) => item.id === selectedPhotoId) || photos[0];
+      if (selected) {
+        selectedPhotoId = selected.id;
+        photoTitleInput.value = selected.title;
+        photoFileInput.value = selected.file;
+        photoCaptionInput.value = selected.caption || "";
+        photoEnabledInput.checked = selected.enabled !== false;
+      } else {
+        photoTitleInput.value = "";
+        photoFileInput.value = "";
+        photoCaptionInput.value = "";
+        photoEnabledInput.checked = true;
+      }
+      photoStatusEl.textContent = `照片資料 ${photos.length} 筆`;
+    }
+
+    function applyPhotoEditor() {
+      const index = photos.findIndex((item) => item.id === selectedPhotoId);
+      if (index < 0) return;
+      photos[index] = normalizePhoto({
+        ...photos[index],
+        title: photoTitleInput.value,
+        file: photoFileInput.value,
+        caption: photoCaptionInput.value,
+        enabled: photoEnabledInput.checked,
+        updatedAt: new Date().toISOString().slice(0, 10)
+      });
+      renderPhotos();
+    }
+
+    function savePhotos() {
+      applyPhotoEditor();
+      localStorage.setItem(PHOTO_STORAGE_KEY, JSON.stringify(photos));
+      try {
+        new BroadcastChannel("buddha-hall-photos-updates").postMessage({ type: "photos-updated", photos });
+      } catch (error) {
+      }
+      photoStatusEl.textContent = "照片資料已儲存到 localStorage";
+    }
+
+    async function loadPhotoAdminData() {
+      try {
+        const local = localStorage.getItem(PHOTO_STORAGE_KEY);
+        if (local) {
+          photos = validatePhotos(JSON.parse(local));
+          selectedPhotoId = photos[0]?.id || "";
+          renderPhotos();
+          return;
+        }
+      } catch (error) {
+      }
+      try {
+        const response = await fetch(PHOTO_DATA_PATH, { cache: "no-store" });
+        if (response.ok) {
+          photos = validatePhotos(await response.json());
+          selectedPhotoId = photos[0]?.id || "";
+          renderPhotos();
+          return;
+        }
+      } catch (error) {
+      }
+      photos = DEFAULT_PHOTOS.map(normalizePhoto);
+      selectedPhotoId = photos[0]?.id || "";
+      renderPhotos();
+    }
+
+    function exportPhotos() {
+      applyPhotoEditor();
+      const blob = new Blob([JSON.stringify(photos, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "photos.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function filteredOfferings() {
+      const q = searchInput.value.trim().toLowerCase();
+      const side = sideFilter.value;
+      return offerings.filter((item) => {
+        if (side && item.side !== side) return false;
+        if (!q) return true;
+        return [item.id, item.side, item.zone, item.deity, item.sponsorName, item.wishText]
+          .some((value) => String(value || "").toLowerCase().includes(q));
+      });
+    }
+
+    function render() {
+      const rows = filteredOfferings();
+      body.innerHTML = "";
+      rows.forEach((item) => {
+        const tr = document.createElement("tr");
+        tr.dataset.id = item.id;
+        tr.innerHTML = `
+          <td><span class="small">${item.id}</span></td>
+          <td>${item.side === "left" ? "左" : "右"}</td>
+          <td>${item.zone}</td>
+          <td>${item.deity}</td>
+          <td>第 ${item.row + 1} 排 / 第 ${item.col + 1} 欄</td>
+          <td><input data-field="sponsorName" type="text" value="${escapeHtml(item.sponsorName)}" /></td>
+          <td><textarea data-field="wishText">${escapeHtml(item.wishText)}</textarea></td>
+          <td><input data-field="startDate" type="date" value="${item.startDate || ""}" /></td>
+          <td><input data-field="endDate" type="date" value="${item.endDate || ""}" /></td>
+          <td><button type="button" class="secondary" data-reset-one>重設</button></td>
+        `;
+        body.appendChild(tr);
+      });
+      statusEl.textContent = `顯示 ${rows.length} / ${offerings.length} 格`;
+    }
+
+    function syncFromTable() {
+      body.querySelectorAll("tr[data-id]").forEach((tr) => {
+        const item = offerings.find((entry) => entry.id === tr.dataset.id);
+        if (!item) return;
+        tr.querySelectorAll("[data-field]").forEach((input) => {
+          item[input.dataset.field] = input.value || (input.dataset.field === "sponsorName" ? DEFAULT_SPONSOR : null);
+        });
+      });
+    }
+
+    async function loadData() {
+      const defaults = buildDefaultOfferings();
+      let staticData = [];
+      try {
+        const response = await fetch(STATIC_DATA_PATH, { cache: "no-store" });
+        if (response.ok) staticData = await response.json();
+      } catch (error) {
+      }
+      try {
+        const localData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        offerings = mergeData(mergeData(defaults, staticData), localData);
+      } catch (error) {
+        offerings = mergeData(defaults, staticData);
+      }
+      modeNotice.textContent = STATIC_MODE_NOTICE;
+      render();
+    }
+
+    function publishUpdate() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(offerings));
+      try {
+        new BroadcastChannel(CHANNEL_NAME).postMessage({ type: "shrine-offerings-updated", offerings });
+      } catch (error) {
+      }
+    }
+
+    async function saveAll() {
+      syncFromTable();
+      publishUpdate();
+      render();
+      modeNotice.textContent = STATIC_MODE_NOTICE;
+      statusEl.textContent = "已儲存到 localStorage";
+    }
+
+    function exportJson() {
+      syncFromTable();
+      const blob = new Blob([JSON.stringify(offerings, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "shrine_offerings.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    document.getElementById("saveBtn").addEventListener("click", saveAll);
+    document.getElementById("reloadBtn").addEventListener("click", loadData);
+    document.getElementById("exportBtn").addEventListener("click", exportJson);
+    document.getElementById("importBtn").addEventListener("click", () => document.getElementById("importFile").click());
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      offerings = offerings.map((item) => ({ ...item, sponsorName: DEFAULT_SPONSOR, wishText: "", startDate: null, endDate: null }));
+      publishUpdate();
+      render();
+    });
+    document.getElementById("importFile").addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      offerings = mergeData(buildDefaultOfferings(), JSON.parse(await file.text()));
+      publishUpdate();
+      render();
+      statusEl.textContent = "已匯入 JSON";
+      event.target.value = "";
+    });
+    body.addEventListener("click", (event) => {
+      if (!event.target.matches("[data-reset-one]")) return;
+      const item = offerings.find((entry) => entry.id === event.target.closest("tr[data-id]")?.dataset.id);
+      if (!item) return;
+      item.sponsorName = DEFAULT_SPONSOR;
+      item.wishText = "";
+      item.startDate = null;
+      item.endDate = null;
+      render();
+    });
+    searchInput.addEventListener("input", render);
+    sideFilter.addEventListener("change", render);
+
+    gathaListEl.addEventListener("click", (event) => {
+      const button = event.target.closest(".gatha-item");
+      if (!button) return;
+      applyGathaEditor();
+      selectedGathaId = button.dataset.id;
+      renderGathas();
+    });
+    document.getElementById("gathaAddBtn").addEventListener("click", () => {
+      applyGathaEditor();
+      const now = new Date().toISOString().slice(0, 10);
+      const item = normalizeGatha({
+        id: `gatha-${Date.now()}`,
+        title: "新偈語",
+        content: "請輸入偈語內容",
+        enabled: true,
+        source: "",
+        createdAt: now,
+        updatedAt: now
+      });
+      gathas.push(item);
+      selectedGathaId = item.id;
+      renderGathas();
+    });
+    document.getElementById("gathaApplyBtn").addEventListener("click", applyGathaEditor);
+    document.getElementById("gathaSaveBtn").addEventListener("click", saveGathas);
+    document.getElementById("gathaExportBtn").addEventListener("click", exportGathas);
+    document.getElementById("gathaImportBtn").addEventListener("click", () => document.getElementById("gathaImportFile").click());
+    document.getElementById("gathaResetBtn").addEventListener("click", () => {
+      gathas = DEFAULT_GATHAS.map(normalizeGatha);
+      selectedGathaId = gathas[0]?.id || "";
+      saveGathas();
+      renderGathas();
+    });
+    document.getElementById("gathaDeleteBtn").addEventListener("click", () => {
+      gathas = gathas.filter((item) => item.id !== selectedGathaId);
+      selectedGathaId = gathas[0]?.id || "";
+      renderGathas();
+    });
+    document.getElementById("gathaImportFile").addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      try {
+        gathas = validateGathas(JSON.parse(await file.text()));
+        selectedGathaId = gathas[0]?.id || "";
+        saveGathas();
+        renderGathas();
+      } catch (error) {
+        gathaStatusEl.textContent = `匯入失敗：${error.message}`;
+      }
+      event.target.value = "";
+    });
+
+    photoListEl.addEventListener("click", (event) => {
+      const button = event.target.closest(".gatha-item");
+      if (!button) return;
+      applyPhotoEditor();
+      selectedPhotoId = button.dataset.id;
+      renderPhotos();
+    });
+    document.getElementById("photoAddBtn").addEventListener("click", () => {
+      applyPhotoEditor();
+      const now = new Date().toISOString().slice(0, 10);
+      const item = normalizePhoto({
+        id: `photo-${Date.now()}`,
+        title: "新照片",
+        file: "photo-001.jpg",
+        caption: "",
+        enabled: true,
+        createdAt: now,
+        updatedAt: now
+      });
+      photos.push(item);
+      selectedPhotoId = item.id;
+      renderPhotos();
+    });
+    document.getElementById("photoApplyBtn").addEventListener("click", applyPhotoEditor);
+    document.getElementById("photoSaveBtn").addEventListener("click", savePhotos);
+    document.getElementById("photoExportBtn").addEventListener("click", exportPhotos);
+    document.getElementById("photoImportBtn").addEventListener("click", () => document.getElementById("photoImportFile").click());
+    document.getElementById("photoResetBtn").addEventListener("click", () => {
+      photos = DEFAULT_PHOTOS.map(normalizePhoto);
+      selectedPhotoId = photos[0]?.id || "";
+      savePhotos();
+      renderPhotos();
+    });
+    document.getElementById("photoDeleteBtn").addEventListener("click", () => {
+      photos = photos.filter((item) => item.id !== selectedPhotoId);
+      selectedPhotoId = photos[0]?.id || "";
+      renderPhotos();
+    });
+    document.getElementById("photoImportFile").addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      try {
+        photos = validatePhotos(JSON.parse(await file.text()));
+        selectedPhotoId = photos[0]?.id || "";
+        savePhotos();
+        renderPhotos();
+      } catch (error) {
+        photoStatusEl.textContent = `匯入失敗：${error.message}`;
+      }
+      event.target.value = "";
+    });
+
+    loadData();
+    loadGathaAdminData();
+    loadPhotoAdminData();
+  </script>
+</body>
+</html>

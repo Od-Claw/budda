@@ -1,0 +1,50 @@
+﻿[
+    {
+        "id":  "music-01",
+        "title":  "大悲咒",
+        "file":  "assets/audio/buddha-music/music-01.mp3",
+        "originalFilename":  "大悲咒.mp3",
+        "bytes":  10531245,
+        "format":  "mp3"
+    },
+    {
+        "id":  "music-02",
+        "title":  "文殊菩薩心咒",
+        "file":  "assets/audio/buddha-music/music-02.mp3",
+        "originalFilename":  "文殊菩薩心咒.mp3",
+        "bytes":  8034052,
+        "format":  "mp3"
+    },
+    {
+        "id":  "music-03",
+        "title":  "百字明",
+        "file":  "assets/audio/buddha-music/music-03.mp3",
+        "originalFilename":  "百字明.mp3",
+        "bytes":  48565621,
+        "format":  "mp3"
+    },
+    {
+        "id":  "music-04",
+        "title":  "绿度母心咒",
+        "file":  "assets/audio/buddha-music/music-04.mp3",
+        "originalFilename":  "绿度母心咒.mp3",
+        "bytes":  10504365,
+        "format":  "mp3"
+    },
+    {
+        "id":  "music-05",
+        "title":  "蓮師心咒",
+        "file":  "assets/audio/buddha-music/music-05.m4a",
+        "originalFilename":  "蓮師心咒.m4a",
+        "bytes":  12157535,
+        "format":  "m4a"
+    },
+    {
+        "id":  "music-06",
+        "title":  "藥師佛心咒",
+        "file":  "assets/audio/buddha-music/music-06.mp3",
+        "originalFilename":  "藥師佛心咒.mp3",
+        "bytes":  19110765,
+        "format":  "mp3"
+    }
+]
