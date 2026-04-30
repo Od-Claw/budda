@@ -3448,6 +3448,43 @@
     window.setMusicVolume = setMusicVolume;
     initBuddhaMusicPlayer();
 
+    const VISIT_COUNTER_HIT_API = "https://api.countapi.xyz/hit/buddha_hall_counter/gatha_photo_visits";
+    const VISIT_INTERVAL = 5 * 60 * 1000;
+    const VISIT_LAST_KEY = "buddhaHallGathaPhotoLastVisitAt";
+    const VISIT_DAILY_DATE_KEY = "buddhaHallGathaPhotoDailyVisitDate";
+    const VISIT_DAILY_COUNT_KEY = "buddhaHallGathaPhotoDailyVisitCount";
+
+    function localDateKey(date = new Date()) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function updateLocalDailyVisit(now) {
+      const today = localDateKey(now);
+      const storedDate = localStorage.getItem(VISIT_DAILY_DATE_KEY);
+      const currentCount = Number(localStorage.getItem(VISIT_DAILY_COUNT_KEY) || "0");
+      localStorage.setItem(VISIT_DAILY_DATE_KEY, today);
+      localStorage.setItem(VISIT_DAILY_COUNT_KEY, String(storedDate === today ? currentCount + 1 : 1));
+      localStorage.setItem(VISIT_LAST_KEY, String(now.getTime()));
+    }
+
+    async function recordSiteVisit() {
+      const now = new Date();
+      const lastVisitAt = Number(localStorage.getItem(VISIT_LAST_KEY) || "0");
+      if (now.getTime() - lastVisitAt < VISIT_INTERVAL) return;
+      try {
+        const response = await fetch(VISIT_COUNTER_HIT_API, { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        updateLocalDailyVisit(now);
+      } catch (error) {
+        console.warn("Unable to record site visit.", error);
+      }
+    }
+
+    recordSiteVisit();
+
 
     // ---------- Main altar ----------
     box('mainBackGoldPanel', [11.4, 9.0, 0.22], [0, 5.3, -25.45], mat.goldWall, true, true);

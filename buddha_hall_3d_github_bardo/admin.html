@@ -67,6 +67,20 @@
       color: var(--muted);
       line-height: 1.7;
     }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      width: 100%;
+    }
+    .stat-card {
+      padding: 10px 12px;
+      border: 1px solid rgba(123, 31, 16, 0.12);
+      border-radius: 10px;
+      background: #fffdf7;
+    }
+    .stat-label { color: var(--muted); font-size: 13px; }
+    .stat-value { margin-top: 4px; color: var(--text); font-size: 20px; font-weight: 900; }
     input, select, textarea {
       border: 1px solid rgba(123, 31, 16, 0.22);
       border-radius: 8px;
@@ -164,6 +178,29 @@
   </header>
 
   <main>
+    <h2>網站統計</h2>
+    <section class="toolbar" aria-label="網站統計">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">總訪問次數</div>
+          <div id="visitTotal" class="stat-value">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">今日本機訪問</div>
+          <div id="visitTodayLocal" class="stat-value">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">最後一次本機訪問</div>
+          <div id="visitLastLocal" class="stat-value">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">統計來源</div>
+          <div class="stat-value">countapi.xyz</div>
+        </div>
+      </div>
+      <button id="refreshVisitStatsBtn" type="button" class="secondary">重新整理統計</button>
+    </section>
+
     <h2>超渡名單管理</h2>
     <section class="toolbar">
       <input id="searchInput" type="search" placeholder="搜尋姓名、菩薩、左右側、備註" />
@@ -265,6 +302,10 @@
     const PHOTO_STORAGE_KEY = "buddhaHallPhotos";
     const PHOTO_DATA_PATH = "assets/data/photos.json";
     const PHOTO_CHANNEL_NAME = "buddha-hall-photos-updates";
+    const VISIT_COUNTER_GET_API = "https://api.countapi.xyz/get/buddha_hall_counter/bardo_visits";
+    const VISIT_LAST_KEY = "buddhaHallBardoLastVisitAt";
+    const VISIT_DAILY_DATE_KEY = "buddhaHallBardoDailyVisitDate";
+    const VISIT_DAILY_COUNT_KEY = "buddhaHallBardoDailyVisitCount";
     const DEFAULT_PHOTOS = [
       {
         id: "photo-001",
@@ -295,6 +336,10 @@
     const photoCaptionInput = document.getElementById("photoCaptionInput");
     const photoDurationInput = document.getElementById("photoDurationInput");
     const photoEnabledInput = document.getElementById("photoEnabledInput");
+    const visitTotalEl = document.getElementById("visitTotal");
+    const visitTodayLocalEl = document.getElementById("visitTodayLocal");
+    const visitLastLocalEl = document.getElementById("visitLastLocal");
+    const refreshVisitStatsBtn = document.getElementById("refreshVisitStatsBtn");
 
     function addDays(dateString, days) {
       if (!dateString) return "";
@@ -377,6 +422,46 @@
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;");
+    }
+
+    function localDateKey(date = new Date()) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function formatLocalDateTime(timestamp) {
+      const value = Number(timestamp || 0);
+      if (!value) return "--";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "--";
+      const ymd = localDateKey(date);
+      const time = [
+        String(date.getHours()).padStart(2, "0"),
+        String(date.getMinutes()).padStart(2, "0"),
+        String(date.getSeconds()).padStart(2, "0")
+      ].join(":");
+      return `${ymd} ${time}`;
+    }
+
+    async function loadVisitStats() {
+      try {
+        const response = await fetch(VISIT_COUNTER_GET_API, { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        visitTotalEl.textContent = Number.isFinite(data.value) ? String(data.value) : "--";
+      } catch (error) {
+        visitTotalEl.textContent = "--";
+        console.warn("Unable to load visit stats", error);
+      }
+
+      const today = localDateKey();
+      const savedDate = localStorage.getItem(VISIT_DAILY_DATE_KEY);
+      visitTodayLocalEl.textContent = savedDate === today
+        ? String(Number(localStorage.getItem(VISIT_DAILY_COUNT_KEY) || "0"))
+        : "0";
+      visitLastLocalEl.textContent = formatLocalDateTime(localStorage.getItem(VISIT_LAST_KEY));
     }
 
     function syncFromTable() {
@@ -680,9 +765,11 @@
         event.target.value = "";
       }
     });
+    refreshVisitStatsBtn.addEventListener("click", loadVisitStats);
 
     loadData();
     loadPhotoData();
+    loadVisitStats();
   </script>
 </body>
 </html>

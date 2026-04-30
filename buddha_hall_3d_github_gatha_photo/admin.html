@@ -45,6 +45,29 @@
       border-radius: 8px;
     }
     .notice { color: var(--muted); line-height: 1.5; }
+    .stats-panel {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      margin-bottom: 14px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .stats-panel h2 { margin: 0; color: var(--red); font-size: 20px; }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    .stat-card {
+      padding: 10px 12px;
+      border: 1px solid rgba(181, 122, 24, 0.22);
+      border-radius: 8px;
+      background: #fffdf8;
+    }
+    .stat-label { color: var(--muted); font-size: 13px; }
+    .stat-value { margin-top: 4px; color: var(--ink); font-size: 20px; font-weight: 800; }
     input, select, textarea, button {
       font: inherit;
       border-radius: 6px;
@@ -216,6 +239,31 @@
       目前為 GitHub Pages 靜態模式，資料只會儲存在本瀏覽器 localStorage；若要多人共享，請使用後端版本或另接資料庫。
     </section>
 
+    <section class="stats-panel" aria-label="網站統計">
+      <h2>網站統計</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">總訪問次數</div>
+          <div id="visitTotal" class="stat-value">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">今日本機訪問</div>
+          <div id="visitTodayLocal" class="stat-value">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">最後一次本機訪問</div>
+          <div id="visitLastLocal" class="stat-value">--</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">統計來源</div>
+          <div class="stat-value">countapi.xyz</div>
+        </div>
+      </div>
+      <div>
+        <button id="refreshVisitStatsBtn" type="button" class="secondary">重新整理統計</button>
+      </div>
+    </section>
+
     <section class="table-wrap">
       <table>
         <thead>
@@ -321,6 +369,10 @@
     const GATHA_DATA_PATH = "assets/data/gathas.json";
     const PHOTO_STORAGE_KEY = "buddhaHallPhotos";
     const PHOTO_DATA_PATH = "assets/data/photos.json";
+    const VISIT_COUNTER_GET_API = "https://api.countapi.xyz/get/buddha_hall_counter/gatha_photo_visits";
+    const VISIT_LAST_KEY = "buddhaHallGathaPhotoLastVisitAt";
+    const VISIT_DAILY_DATE_KEY = "buddhaHallGathaPhotoDailyVisitDate";
+    const VISIT_DAILY_COUNT_KEY = "buddhaHallGathaPhotoDailyVisitCount";
     const DEFAULT_GATHAS = [
       {
         id: "gatha-001",
@@ -378,6 +430,10 @@
     const photoFileInput = document.getElementById("photoFileInput");
     const photoCaptionInput = document.getElementById("photoCaptionInput");
     const photoEnabledInput = document.getElementById("photoEnabledInput");
+    const visitTotalEl = document.getElementById("visitTotal");
+    const visitTodayLocalEl = document.getElementById("visitTodayLocal");
+    const visitLastLocalEl = document.getElementById("visitLastLocal");
+    const refreshVisitStatsBtn = document.getElementById("refreshVisitStatsBtn");
     let gathas = [];
     let selectedGathaId = "";
     let photos = [];
@@ -436,6 +492,42 @@
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;");
+    }
+
+    function localDateKey(date = new Date()) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function formatLocalDateTime(timestamp) {
+      const value = Number(timestamp || 0);
+      if (!value) return "--";
+      const date = new Date(value);
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      const hh = String(date.getHours()).padStart(2, "0");
+      const mm = String(date.getMinutes()).padStart(2, "0");
+      const ss = String(date.getSeconds()).padStart(2, "0");
+      return `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
+    }
+
+    async function loadVisitStats() {
+      try {
+        const response = await fetch(VISIT_COUNTER_GET_API, { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        visitTotalEl.textContent = Number.isFinite(data.value) ? String(data.value) : "--";
+      } catch (error) {
+        visitTotalEl.textContent = "--";
+        console.warn("Unable to load visit stats.", error);
+      }
+      const today = localDateKey();
+      const storedDate = localStorage.getItem(VISIT_DAILY_DATE_KEY);
+      visitTodayLocalEl.textContent = storedDate === today ? localStorage.getItem(VISIT_DAILY_COUNT_KEY) || "0" : "0";
+      visitLastLocalEl.textContent = formatLocalDateTime(localStorage.getItem(VISIT_LAST_KEY));
     }
 
     function normalizeGatha(item) {
@@ -881,9 +973,12 @@
       event.target.value = "";
     });
 
+    refreshVisitStatsBtn.addEventListener("click", loadVisitStats);
+
     loadData();
     loadGathaAdminData();
     loadPhotoAdminData();
+    loadVisitStats();
   </script>
 </body>
 </html>
