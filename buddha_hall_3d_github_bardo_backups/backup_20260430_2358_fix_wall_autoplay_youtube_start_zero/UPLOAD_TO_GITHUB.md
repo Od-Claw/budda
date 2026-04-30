@@ -29,8 +29,8 @@
 
 - 左牆影片使用本機 MP4：`assets/videos/bardo/videoplayback.mp4`，需要上傳到 GitHub。
 - 左牆 MP4 以 Three.js `VideoTexture` 貼在佛堂左牆，不使用 YouTube iframe。
-- 中央「影片控制」模式才使用 YouTube：`https://www.youtube.com/watch?v=wC9kd8zd9BU`。
-- 中央 YouTube 從原始 0 秒或上次中央播放位置開始；不與左牆 MP4 做 260 秒偏移同步。
+- 中央「影片控制」模式才使用 YouTube：`https://www.youtube.com/watch?v=wC9kd8zd9BU&t=260s`。
+- YouTube 起始秒數為 `260`；同步規則為 YouTube 秒數 = `260 + 左牆 MP4 currentTime`。
 
 ## 靜態資料同步
 

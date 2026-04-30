@@ -25,10 +25,10 @@ http://localhost:8094/admin.html
 - 左右佛龕改為兩排佛像：上排地藏王菩薩、下排金剛薩埵。
 - 每側 2 排 x 20 欄，共 40 格；左右合計 80 格，預留較多超渡名位容量。
 - 佛像下方名牌顯示超渡名位，未填或到期顯示「待填名位」。
-- 左牆播放本機 MP4 超渡影片，預設靜音自動播放；第一次有聲播放需點擊「啟用超渡聲音」以符合瀏覽器 autoplay 限制。
+- 左牆播放 YouTube 超渡影片，預設靜音自動播放；第一次有聲播放需點擊「啟用超渡聲音」以符合瀏覽器 autoplay 限制。
 - 「啟用超渡聲音」控制列位於畫面最上方，靠近操作按鈕，避免遮住佛龕與影片牆。
 - 左上角「名單」按鈕可顯示有效超渡名單，方便回向時誦念。
-- 「影片控制」可暫停左牆 MP4，並立即在佛堂中央顯示 YouTube 影片；底部控制列支援播放、暫停、重新開始、進度拖曳、音量與關閉。
+- 「影片控制」可暫停左牆 YouTube，並立即在佛堂中央顯示同一支 YouTube；底部控制列支援播放、暫停、重新開始、進度拖曳、音量與關閉。
 - 右牆可顯示「法照 / 供養照片」相框，照片資料由 `assets/data/photos.json` 或本機 `localStorage` 提供。
 
 ## 超渡名單資料
@@ -105,23 +105,23 @@ assets/images/photos/
 
 ## 超渡影片
 
-本版本左牆影片使用本機 MP4，中央「影片控制」使用 YouTube：
+本版本影片使用 YouTube，不需要上傳 MP4：
 
 ```text
-https://www.youtube.com/watch?v=wC9kd8zd9BU
+https://www.youtube.com/watch?v=wC9kd8zd9BU&t=260s
 ```
 
 YouTube video id：`wC9kd8zd9BU`  
-中央 YouTube 起始秒數：`0`
+起始秒數：`260`
 
-GitHub Pages 需要載入壓縮版 `assets/videos/bardo/videoplayback.mp4` 作為左牆影片。原始大檔只作本機備份用途，請不要上傳到 GitHub。
+GitHub Pages 不需要載入 `assets/videos/bardo/videoplayback.mp4`。若資料夾內仍保留本機 MP4 或原始大檔，只作本機備份用途，請不要上傳到 GitHub。
 
 ### 影片聲音與控制
 
-- 左牆 MP4 預設靜音播放，確保畫面可先出現。
+- 左牆 YouTube 預設靜音播放，確保畫面可先出現。
 - 若需要持續有聲超渡，請先點擊「啟用超渡聲音」。啟用後本瀏覽器會記住設定，之後會嘗試恢復有聲播放；若瀏覽器阻擋，仍需再點一次。
-- 進入中央影片控制模式時，左牆 MP4 會暫停，中央 YouTube 從 YouTube 原始 0 秒或上次中央播放位置開始。
-- 關閉中央影片後，左牆 MP4 會繼續自己的播放進度，不會被中央 YouTube 重設時間。
+- 進入中央影片控制模式時，左牆 YouTube 會暫停，中央 YouTube 從同一時間點開始。
+- 關閉中央影片後，左牆 YouTube 會同步到中央影片目前時間並繼續播放。
 - 中央影片控制列在底部，避免遮住主尊與影片中央內容；進度條使用 YouTube IFrame API 拖曳定位。
 
 ## 佛樂與圖片
@@ -158,7 +158,7 @@ assets/images/symbols/
 - `assets/`
 - `README_GITHUB_PAGES.md`
 
-超渡名單資料與壓縮 MP4 影片要一起上傳：
+超渡名單資料要一起上傳；影片使用 YouTube，不需要上傳 MP4：
 
 - `assets/data/bardo_names.json`
 - `assets/data/photos.json`
@@ -167,7 +167,7 @@ assets/images/symbols/
 
 - 左牆影片使用本機 MP4：`assets/videos/bardo/videoplayback.mp4`，以 Three.js `VideoTexture` 貼在左牆上。
 - 左牆影片預設 muted autoplay loop；點擊「啟用超渡聲音」後會解除靜音並播放左牆 MP4。
-- 中央「影片控制」模式才使用 YouTube：`https://www.youtube.com/watch?v=wC9kd8zd9BU`。
-- 中央 YouTube 起始秒數為 `0`；不與左牆 MP4 做 260 秒偏移同步。
+- 中央「影片控制」模式才使用 YouTube：`https://www.youtube.com/watch?v=wC9kd8zd9BU&t=260s`。
+- 中央 YouTube 起始秒數為 `260`；與左牆 MP4 同步時，YouTube 秒數 = `260 + MP4 currentTime`。
 - 上傳 GitHub Pages 時仍需要上傳壓縮版 `assets/videos/bardo/videoplayback.mp4`。
 - 不要上傳原始大檔：`assets/videos/bardo/original_videoplayback_203mb.mp4`。
