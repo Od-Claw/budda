@@ -847,28 +847,16 @@
 
     #bardoWallYoutubeWrap {
       position: fixed;
-      left: 28%;
-      top: 33%;
-      width: clamp(170px, 13vw, 240px);
-      height: clamp(96px, 7.32vw, 135px);
-      min-width: 0;
-      min-height: 0;
-      z-index: 12;
-      border: 2px solid rgba(255, 221, 130, 0.72);
-      border-radius: 12px;
+      left: 7.5vw;
+      top: 19vh;
+      width: min(32vw, 470px);
+      aspect-ratio: 16 / 9;
+      z-index: 5;
+      border: 2px solid rgba(255, 226, 155, 0.52);
+      border-radius: 10px;
       overflow: hidden;
-      contain: paint;
-      isolation: isolate;
-      clip-path: inset(0 round 12px);
-      background: rgba(20, 8, 4, 0.72);
-      box-shadow: 0 0 18px rgba(255, 210, 90, 0.25), 0 18px 45px rgba(0, 0, 0, 0.34);
-      pointer-events: auto;
-      transition: opacity 180ms ease, visibility 180ms ease;
-    }
-
-    #bardoWallYoutubeWrap.hidden-during-control {
-      opacity: 0;
-      visibility: hidden;
+      background: rgba(35, 14, 5, 0.78);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.38), 0 0 22px rgba(255, 196, 92, 0.16);
       pointer-events: none;
     }
 
@@ -876,15 +864,6 @@
     #centralBardoYoutube {
       width: 100%;
       height: 100%;
-      border: 0;
-    }
-
-    #bardoWallYoutube iframe,
-    #centralBardoYoutube iframe {
-      width: 100%;
-      height: 100%;
-      display: block;
-      border: 0;
     }
 
     #bardoNameListPanel,
@@ -1079,10 +1058,7 @@
       #bardoWallYoutubeWrap {
         left: 10px;
         top: 154px;
-        width: min(48vw, 220px);
-        height: min(27vw, 124px);
-        min-width: 168px;
-        min-height: 95px;
+        width: min(46vw, 210px);
       }
 
       #bardoNameListPanel {
@@ -1448,7 +1424,6 @@
     const bardoCopyNames = document.getElementById('bardoCopyNames');
     const bardoVideoControlToggle = document.getElementById('bardoVideoControlToggle');
     const bardoVideoControlPanel = document.getElementById('bardoVideoControlPanel');
-    const bardoWallYoutubeWrap = document.getElementById('bardoWallYoutubeWrap');
     const bardoVideoClose = document.getElementById('bardoVideoClose');
     const centralBardoVideoWrap = document.getElementById('centralBardoVideoWrap');
     const centralBardoVideo = document.getElementById('centralBardoVideo');
@@ -2155,10 +2130,7 @@
         roughness: 0.62,
         metalness: 0.12,
         emissive: 0x320804,
-        emissiveIntensity: 0.20,
-        transparent: true,
-        opacity: 0.16,
-        depthWrite: false
+        emissiveIntensity: 0.34
       });
       const borderMaterial = new THREE.MeshStandardMaterial({
         color: 0xf0c865,
@@ -2168,7 +2140,6 @@
         emissiveIntensity: 0.45
       });
       const back = new THREE.Mesh(new THREE.BoxGeometry(config.width, config.height, 0.045), backMaterial);
-      back.visible = false;
       group.add(back);
 
       const borderT = 0.075;
@@ -2207,14 +2178,13 @@
       const videoMaterial = new THREE.MeshBasicMaterial({
         map: bardoWallVideoTexture,
         transparent: true,
-        opacity: 0.08,
+        opacity: 0.38,
         depthWrite: false,
         toneMapped: false
       });
       bardoWallVideoMesh = new THREE.Mesh(new THREE.PlaneGeometry(config.width * 0.94, config.height * 0.90), videoMaterial);
       bardoWallVideoMesh.position.z = 0.085;
       bardoWallVideoMesh.renderOrder = 39;
-      bardoWallVideoMesh.visible = false;
       group.add(bardoWallVideoMesh);
 
       scene.add(group);
@@ -3963,7 +3933,6 @@
       if (bardoVideoVolume) bardoVideoVolume.value = String(bardoWallSoundEnabled ? Number(bardoWallVolume?.value || 0.30) : Number(bardoVideoVolume?.value || 0.35));
       centralBardoVideoWrap?.classList.add("open");
       centralBardoVideoWrap?.setAttribute("aria-hidden", "false");
-      bardoWallYoutubeWrap?.classList.add("hidden-during-control");
       bardoVideoControlPanel?.classList.add("open");
       bardoVideoControlPanel?.setAttribute("aria-hidden", "false");
       startBardoProgressTimer();
@@ -3984,7 +3953,6 @@
       centralYoutubePlayer?.pauseVideo?.();
       centralBardoVideoWrap?.classList.remove("open");
       centralBardoVideoWrap?.setAttribute("aria-hidden", "true");
-      bardoWallYoutubeWrap?.classList.remove("hidden-during-control");
       bardoVideoControlPanel?.classList.remove("open");
       bardoVideoControlPanel?.setAttribute("aria-hidden", "true");
       bardoVideoControlToggle?.classList.remove("active");
