@@ -14,10 +14,10 @@
 - `assets/data/photos.json`
 - `assets/images/`
 - `assets/audio/`
-- `assets/videos/bardo/videoplayback.mp4`
 
 ## 不要上傳
 
+- `assets/videos/bardo/videoplayback.mp4`
 - `assets/videos/bardo/original_videoplayback_203mb.mp4`
 - `screenshots/`
 - `backups/`
@@ -34,4 +34,4 @@ GitHub Pages 是靜態網站，`admin.html` 的儲存只會存在目前瀏覽器
 - `assets/data/bardo_names.json`
 - `assets/data/photos.json`
 
-替換超渡影片時，請確認正式上傳的 `assets/videos/bardo/videoplayback.mp4` 小於 GitHub 單檔 100MB 限制。原始大檔請保留在本機，不要 push。
+此 YouTube 版超渡影片使用 `wC9kd8zd9BU`，起始秒數 260，不需要上傳 MP4。若本機仍保留 `assets/videos/bardo/videoplayback.mp4` 或原始大檔，只作備份用途，不要 push。

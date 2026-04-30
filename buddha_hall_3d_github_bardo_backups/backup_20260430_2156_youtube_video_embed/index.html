@@ -845,27 +845,6 @@
       accent-color: #e6b95c;
     }
 
-    #bardoWallYoutubeWrap {
-      position: fixed;
-      left: 7.5vw;
-      top: 19vh;
-      width: min(32vw, 470px);
-      aspect-ratio: 16 / 9;
-      z-index: 5;
-      border: 2px solid rgba(255, 226, 155, 0.52);
-      border-radius: 10px;
-      overflow: hidden;
-      background: rgba(35, 14, 5, 0.78);
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.38), 0 0 22px rgba(255, 196, 92, 0.16);
-      pointer-events: none;
-    }
-
-    #bardoWallYoutube,
-    #centralBardoYoutube {
-      width: 100%;
-      height: 100%;
-    }
-
     #bardoNameListPanel,
     #bardoVideoControlPanel {
       position: fixed;
@@ -972,7 +951,6 @@
 
     #centralBardoVideo {
       width: min(68vw, 980px);
-      aspect-ratio: 16 / 9;
       max-height: calc(100vh - 190px);
       opacity: 0.66;
       border: 2px solid rgba(255, 226, 155, 0.48);
@@ -1055,12 +1033,6 @@
         width: 80px;
       }
 
-      #bardoWallYoutubeWrap {
-        left: 10px;
-        top: 154px;
-        width: min(46vw, 210px);
-      }
-
       #bardoNameListPanel {
         inset: 66px 10px auto 10px;
         width: auto;
@@ -1116,7 +1088,6 @@
     }
   }
   </script>
-  <script src="https://www.youtube.com/iframe_api"></script>
 </head>
 
 <body>
@@ -1248,10 +1219,6 @@
     <button class="blank" tabindex="-1"></button><button id="mobileBackBtn" class="mobile-dir-btn" data-move="back">▼</button><button class="blank" tabindex="-1"></button>
   </div>
 
-  <div id="bardoWallYoutubeWrap" aria-label="左牆超渡影片">
-    <div id="bardoWallYoutube"></div>
-  </div>
-
   <button id="bardoNameListToggle" type="button">名單</button>
   <button id="bardoVideoControlToggle" type="button">影片控制</button>
   <div id="bardoWallSoundPanel">
@@ -1272,9 +1239,7 @@
   </section>
 
   <div id="centralBardoVideoWrap" aria-hidden="true">
-    <div id="centralBardoVideo">
-      <div id="centralBardoYoutube"></div>
-    </div>
+    <video id="centralBardoVideo" playsinline preload="metadata"></video>
   </div>
 
   <section id="bardoVideoControlPanel" aria-hidden="true">
@@ -1515,9 +1480,6 @@
         updatedAt: "2026-04-29"
       }
     ];
-    const BARDO_YOUTUBE_VIDEO_ID = "wC9kd8zd9BU";
-    const BARDO_YOUTUBE_START_SECONDS = 260;
-    const BARDO_YOUTUBE_ORIGIN = window.location.origin && window.location.origin !== "null" ? window.location.origin : undefined;
     let gathas = [];
     let photos = [];
     let currentGatha = null;
@@ -1542,9 +1504,6 @@
     let bardoWallVideo = null;
     let bardoWallVideoMesh = null;
     let bardoWallVideoTexture = null;
-    let wallYoutubePlayer = null;
-    let centralYoutubePlayer = null;
-    let youtubePlayersReady = false;
     let bardoVideoProgressTimer = null;
     let bardoWallSoundEnabled = localStorage.getItem("bardoWallSoundEnabled") === "true";
     let isSeekingBardoVideo = false;
@@ -2154,31 +2113,24 @@
       right.position.x = config.width / 2 + borderT / 2;
       group.add(top, bottom, left, right);
 
-      const canvas = document.createElement("canvas");
-      canvas.width = 1280;
-      canvas.height = 720;
-      const ctx = canvas.getContext("2d");
-      const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      grad.addColorStop(0, "#5a180c");
-      grad.addColorStop(1, "#1d0803");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = "rgba(255, 220, 135, 0.86)";
-      ctx.lineWidth = 18;
-      ctx.strokeRect(26, 26, canvas.width - 52, canvas.height - 52);
-      ctx.fillStyle = "#fff0c2";
-      ctx.font = "700 72px Microsoft JhengHei, sans-serif";
-      ctx.textAlign = "center";
-      ctx.fillText("YouTube 超渡影片", canvas.width / 2, canvas.height / 2 - 20);
-      ctx.font = "500 38px Microsoft JhengHei, sans-serif";
-      ctx.fillText("左牆播放區", canvas.width / 2, canvas.height / 2 + 48);
-      bardoWallVideoTexture = new THREE.CanvasTexture(canvas);
+      bardoWallVideo = document.createElement("video");
+      bardoWallVideo.src = "assets/videos/bardo/videoplayback.mp4";
+      bardoWallVideo.loop = true;
+      bardoWallVideo.muted = !bardoWallSoundEnabled;
+      bardoWallVideo.volume = Number(bardoWallVolume?.value || 0.30);
+      bardoWallVideo.playsInline = true;
+      bardoWallVideo.preload = "metadata";
+      bardoWallVideo.crossOrigin = "anonymous";
+
+      bardoWallVideoTexture = new THREE.VideoTexture(bardoWallVideo);
       bardoWallVideoTexture.colorSpace = THREE.SRGBColorSpace;
+      bardoWallVideoTexture.minFilter = THREE.LinearFilter;
+      bardoWallVideoTexture.magFilter = THREE.LinearFilter;
 
       const videoMaterial = new THREE.MeshBasicMaterial({
         map: bardoWallVideoTexture,
         transparent: true,
-        opacity: 0.38,
+        opacity: 0.94,
         depthWrite: false,
         toneMapped: false
       });
@@ -2188,16 +2140,28 @@
       group.add(bardoWallVideoMesh);
 
       scene.add(group);
-      initBardoYoutubePlayers();
+      startBardoWallVideo();
       return group;
     }
 
     function startBardoWallVideo() {
-      playWallYoutube();
+      if (!bardoWallVideo) return;
+      bardoWallVideo.volume = Number(bardoWallVolume?.value || 0.30);
+      bardoWallVideo.muted = !bardoWallSoundEnabled;
+      const playPromise = bardoWallVideo.play();
+      if (playPromise?.catch) {
+        playPromise.catch(() => {
+          bardoWallSoundEnabled = false;
+          if (bardoWallSoundToggle) bardoWallSoundToggle.textContent = "啟用超渡聲音";
+          if (mainDeityMessageEl) mainDeityMessageEl.textContent = "瀏覽器暫停了有聲播放，請點「啟用超渡聲音」。";
+          bardoWallVideo.muted = true;
+          bardoWallVideo.play().catch(() => {});
+        });
+      }
     }
 
     function pauseBardoWallVideo() {
-      pauseWallYoutube();
+      bardoWallVideo?.pause();
     }
 
     function createPhotoCanvasTexture(photo, mode = "placeholder") {
@@ -3763,10 +3727,8 @@
     }
 
     function updateCentralVideoTimeLabel() {
-      if (!bardoVideoTime) return;
-      const current = getCentralYoutubeTime();
-      const duration = getCentralYoutubeDuration();
-      bardoVideoTime.textContent = `${formatVideoTime(current)} / ${formatVideoTime(duration)}`;
+      if (!centralBardoVideo || !bardoVideoTime) return;
+      bardoVideoTime.textContent = `${formatVideoTime(centralBardoVideo.currentTime)} / ${formatVideoTime(centralBardoVideo.duration || 0)}`;
     }
 
     function updateBardoWallSoundButton() {
@@ -3777,8 +3739,10 @@
     function enableBardoWallSound() {
       bardoWallSoundEnabled = true;
       localStorage.setItem("bardoWallSoundEnabled", "true");
-      wallYoutubePlayer?.unMute?.();
-      wallYoutubePlayer?.setVolume?.(Math.round(Number(bardoWallVolume?.value || 0.30) * 100));
+      if (bardoWallVideo) {
+        bardoWallVideo.muted = false;
+        bardoWallVideo.volume = Number(bardoWallVolume?.value || 0.30);
+      }
       updateBardoWallSoundButton();
       startBardoWallVideo();
     }
@@ -3786,129 +3750,16 @@
     function disableBardoWallSound() {
       bardoWallSoundEnabled = false;
       localStorage.setItem("bardoWallSoundEnabled", "false");
-      wallYoutubePlayer?.mute?.();
+      if (bardoWallVideo) bardoWallVideo.muted = true;
       updateBardoWallSoundButton();
       startBardoWallVideo();
     }
 
-    function buildYoutubeVars(muted = true) {
-      const vars = {
-        start: BARDO_YOUTUBE_START_SECONDS,
-        enablejsapi: 1,
-        playsinline: 1,
-        rel: 0,
-        modestbranding: 1,
-        controls: 0,
-        disablekb: 1,
-        mute: muted ? 1 : 0
-      };
-      if (BARDO_YOUTUBE_ORIGIN) vars.origin = BARDO_YOUTUBE_ORIGIN;
-      return vars;
-    }
-
-    function initBardoYoutubePlayers() {
-      if (youtubePlayersReady || !window.YT?.Player) return;
-      youtubePlayersReady = true;
-      if (!wallYoutubePlayer && document.getElementById("bardoWallYoutube")) {
-        wallYoutubePlayer = new YT.Player("bardoWallYoutube", {
-          videoId: BARDO_YOUTUBE_VIDEO_ID,
-          playerVars: buildYoutubeVars(true),
-          events: {
-            onReady: () => {
-              wallYoutubePlayer.mute();
-              wallYoutubePlayer.setVolume(Math.round(Number(bardoWallVolume?.value || 0.30) * 100));
-              wallYoutubePlayer.seekTo(lastBardoVideoTime || BARDO_YOUTUBE_START_SECONDS, true);
-              playWallYoutube();
-            },
-            onStateChange: () => updateCentralVideoTimeLabel()
-          }
-        });
-        window.wallYoutubePlayer = wallYoutubePlayer;
-      }
-      if (!centralYoutubePlayer && document.getElementById("centralBardoYoutube")) {
-        centralYoutubePlayer = new YT.Player("centralBardoYoutube", {
-          videoId: BARDO_YOUTUBE_VIDEO_ID,
-          playerVars: buildYoutubeVars(true),
-          events: {
-            onReady: () => {
-              centralYoutubePlayer.mute();
-              centralYoutubePlayer.setVolume(Math.round(Number(bardoVideoVolume?.value || 0.35) * 100));
-              centralYoutubePlayer.seekTo(lastBardoVideoTime || BARDO_YOUTUBE_START_SECONDS, true);
-              updateCentralVideoTimeLabel();
-            },
-            onStateChange: () => updateCentralVideoTimeLabel()
-          }
-        });
-        window.centralYoutubePlayer = centralYoutubePlayer;
-      }
-    }
-
-    window.onYouTubeIframeAPIReady = initBardoYoutubePlayers;
-    if (window.YT?.Player) initBardoYoutubePlayers();
-
-    function getYoutubeState(player) {
-      try {
-        return player?.getPlayerState?.();
-      } catch (error) {
-        return null;
-      }
-    }
-
-    function isYoutubePlaying(player) {
-      return getYoutubeState(player) === 1;
-    }
-
-    function playWallYoutube() {
-      if (!wallYoutubePlayer?.playVideo) return;
-      if (bardoWallSoundEnabled) {
-        wallYoutubePlayer.unMute?.();
-        wallYoutubePlayer.setVolume?.(Math.round(Number(bardoWallVolume?.value || 0.30) * 100));
-      } else {
-        wallYoutubePlayer.mute?.();
-      }
-      try {
-        wallYoutubePlayer.playVideo();
-      } catch (error) {
-        if (mainDeityMessageEl) mainDeityMessageEl.textContent = "請點擊啟用超渡聲音";
-      }
-    }
-
-    function pauseWallYoutube() {
-      try {
-        wallYoutubePlayer?.pauseVideo?.();
-      } catch (error) {
-      }
-    }
-
-    function getWallYoutubeTime() {
-      try {
-        return wallYoutubePlayer?.getCurrentTime?.() || 0;
-      } catch (error) {
-        return 0;
-      }
-    }
-
-    function seekWallYoutube(seconds) {
-      try {
-        wallYoutubePlayer?.seekTo?.(Math.max(BARDO_YOUTUBE_START_SECONDS, seconds || BARDO_YOUTUBE_START_SECONDS), true);
-      } catch (error) {
-        console.warn("Unable to seek wall YouTube video.", error);
-      }
-    }
-
-    function getCentralYoutubeTime() {
-      try {
-        return centralYoutubePlayer?.getCurrentTime?.() || lastBardoVideoTime || BARDO_YOUTUBE_START_SECONDS;
-      } catch (error) {
-        return lastBardoVideoTime || BARDO_YOUTUBE_START_SECONDS;
-      }
-    }
-
-    function getCentralYoutubeDuration() {
-      try {
-        return centralYoutubePlayer?.getDuration?.() || 0;
-      } catch (error) {
-        return 0;
+    function preloadCentralBardoVideo() {
+      if (!centralBardoVideo) return;
+      if (!centralBardoVideo.src) {
+        centralBardoVideo.src = "assets/videos/bardo/videoplayback.mp4";
+        centralBardoVideo.preload = "metadata";
       }
     }
 
@@ -3920,17 +3771,45 @@
       }
     }
 
+    async function ensureCentralBardoVideoSource() {
+      if (centralBardoBlobUrl) return centralBardoBlobUrl;
+      if (!centralBardoBlobPromise) {
+        centralBardoBlobPromise = fetch("assets/videos/bardo/videoplayback.mp4")
+          .then((response) => {
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.blob();
+          })
+          .then((blob) => {
+            centralBardoBlobUrl = URL.createObjectURL(blob);
+            return centralBardoBlobUrl;
+          })
+          .catch((error) => {
+            console.warn("Unable to prepare seekable central bardo video blob; using direct URL.", error);
+            centralBardoBlobPromise = null;
+            return "";
+          });
+      }
+      return centralBardoBlobPromise;
+    }
+
     async function enterBardoVideoControlMode() {
-      initBardoYoutubePlayers();
+      if (!centralBardoVideo) return;
       console.time("enterCentralVideoMode");
-      wasWallVideoPlayingBeforeControl = isYoutubePlaying(wallYoutubePlayer);
-      const wallCurrentTime = getWallYoutubeTime();
+      wasWallVideoPlayingBeforeControl = !!bardoWallVideo && !bardoWallVideo.paused;
+      const wallCurrentTime = bardoWallVideo?.currentTime || 0;
       const resumeTime = wallCurrentTime >= Math.max(0, lastBardoVideoTime - 0.5)
         ? wallCurrentTime
-        : lastBardoVideoTime || wallCurrentTime || BARDO_YOUTUBE_START_SECONDS;
+        : lastBardoVideoTime || wallCurrentTime || 0;
       pauseBardoWallVideo();
-      if (mainDeityMessageEl) mainDeityMessageEl.textContent = "中央 YouTube 超渡影片控制已開啟。";
-      if (bardoVideoVolume) bardoVideoVolume.value = String(bardoWallSoundEnabled ? Number(bardoWallVolume?.value || 0.30) : Number(bardoVideoVolume?.value || 0.35));
+      if (mainDeityMessageEl) mainDeityMessageEl.textContent = "中央超渡影片載入中...";
+      if (!centralBardoVideo.src) {
+        centralBardoVideo.src = "assets/videos/bardo/videoplayback.mp4";
+        centralBardoVideo.preload = "metadata";
+        centralBardoVideo.load();
+      }
+      centralBardoVideo.muted = false;
+      centralBardoVideo.volume = bardoWallSoundEnabled ? Number(bardoWallVolume?.value || 0.30) : Number(bardoVideoVolume?.value || 0.35);
+      if (bardoVideoVolume) bardoVideoVolume.value = String(centralBardoVideo.volume);
       centralBardoVideoWrap?.classList.add("open");
       centralBardoVideoWrap?.setAttribute("aria-hidden", "false");
       bardoVideoControlPanel?.classList.add("open");
@@ -3938,19 +3817,48 @@
       startBardoProgressTimer();
       console.log("Central video overlay shown immediately");
       console.timeEnd("enterCentralVideoMode");
-      centralYoutubePlayer?.seekTo?.(resumeTime || BARDO_YOUTUBE_START_SECONDS, true);
-      centralYoutubePlayer?.unMute?.();
-      centralYoutubePlayer?.setVolume?.(Math.round(Number(bardoVideoVolume?.value || 0.35) * 100));
-      centralYoutubePlayer?.playVideo?.();
+      if (mainDeityMessageEl) mainDeityMessageEl.textContent = centralBardoVideo.readyState >= 1 ? "中央超渡影片控制已開啟。" : "中央超渡影片載入中...";
+      centralBardoVideo.addEventListener("loadedmetadata", () => {
+        if (bardoVideoProgress) {
+          bardoVideoProgress.max = String(centralBardoVideo.duration || 0);
+          bardoVideoProgress.value = String(Math.min(resumeTime, centralBardoVideo.duration || resumeTime));
+        }
+        try {
+          centralBardoVideo.currentTime = Math.min(resumeTime, centralBardoVideo.duration || resumeTime);
+        } catch (error) {
+          console.warn("Unable to set central video resume time after metadata.", error);
+        }
+        updateCentralVideoTimeLabel();
+      }, { once: true });
+      requestAnimationFrame(() => {
+        try {
+          centralBardoVideo.currentTime = resumeTime;
+        } catch (error) {
+          console.warn("Unable to set central video resume time immediately.", error);
+        }
+      });
       bardoVideoControlToggle?.classList.add("active");
       bardoVideoControlToggle?.setAttribute("aria-expanded", "true");
-      updateCentralVideoTimeLabel();
+      setTimeout(() => {
+        ensureCentralBardoVideoSource().then((blobUrl) => {
+          if (!blobUrl || !centralBardoVideoWrap?.classList.contains("open")) return;
+          if (centralBardoVideo.currentSrc.startsWith("blob:")) return;
+          const keepTime = centralBardoVideo.currentTime || resumeTime || lastBardoVideoTime;
+          const keepPaused = centralBardoVideo.paused;
+          centralBardoVideo.src = blobUrl;
+          centralBardoVideo.load();
+          centralBardoVideo.addEventListener("loadedmetadata", () => {
+            seekCentralBardoVideo(Math.min(keepTime, centralBardoVideo.duration || keepTime));
+            if (!keepPaused) playCentralBardoVideo();
+          }, { once: true });
+        });
+      }, 1500);
     }
 
     function exitBardoVideoControlMode() {
-      const centralTime = getCentralYoutubeTime();
+      const centralTime = centralBardoVideo?.currentTime || lastBardoVideoTime || 0;
       lastBardoVideoTime = centralTime || lastBardoVideoTime;
-      centralYoutubePlayer?.pauseVideo?.();
+      centralBardoVideo?.pause();
       centralBardoVideoWrap?.classList.remove("open");
       centralBardoVideoWrap?.setAttribute("aria-hidden", "true");
       bardoVideoControlPanel?.classList.remove("open");
@@ -3958,7 +3866,20 @@
       bardoVideoControlToggle?.classList.remove("active");
       bardoVideoControlToggle?.setAttribute("aria-expanded", "false");
       stopBardoProgressTimer();
-      seekWallYoutube(lastBardoVideoTime);
+      if (bardoWallVideo) {
+        try {
+          bardoWallVideo.currentTime = lastBardoVideoTime;
+        } catch (error) {
+          console.warn("Unable to sync wall video time after closing central control.", error);
+          bardoWallVideo.addEventListener("loadedmetadata", () => {
+            try {
+              bardoWallVideo.currentTime = lastBardoVideoTime;
+            } catch (retryError) {
+              console.warn("Unable to sync wall video time after metadata.", retryError);
+            }
+          }, { once: true });
+        }
+      }
       if (wasWallVideoPlayingBeforeControl || bardoWallSoundEnabled) startBardoWallVideo();
     }
 
@@ -3971,39 +3892,24 @@
     }
 
     function playCentralBardoVideo() {
-      centralYoutubePlayer?.playVideo?.();
+      centralBardoVideo?.play?.().catch?.(console.warn);
     }
 
     function pauseCentralBardoVideo() {
-      centralYoutubePlayer?.pauseVideo?.();
+      centralBardoVideo?.pause?.();
     }
 
     function seekCentralBardoVideo(seconds) {
-      if (!Number.isFinite(seconds)) return;
-      const duration = getCentralYoutubeDuration();
-      const target = Math.max(BARDO_YOUTUBE_START_SECONDS, Math.min(seconds, duration || seconds));
-      centralYoutubePlayer?.seekTo?.(target, true);
-      setTimeout(() => {
-        const current = getCentralYoutubeTime();
-        if (centralYoutubePlayer?.loadVideoById && Math.abs(current - target) > 3) {
-          const keepPlaying = isYoutubePlaying(centralYoutubePlayer) || wasPlayingBeforeSeek;
-          centralYoutubePlayer.loadVideoById({ videoId: BARDO_YOUTUBE_VIDEO_ID, startSeconds: target });
-          if (!keepPlaying) {
-            setTimeout(() => centralYoutubePlayer?.pauseVideo?.(), 350);
-          }
-        }
-      }, 450);
-      lastBardoVideoTime = target;
+      if (!centralBardoVideo || !Number.isFinite(seconds)) return;
+      centralBardoVideo.currentTime = Math.max(0, Math.min(seconds, centralBardoVideo.duration || seconds));
       updateCentralVideoTimeLabel();
     }
 
     function startBardoProgressTimer() {
       stopBardoProgressTimer();
       bardoVideoProgressTimer = setInterval(() => {
-        const duration = getCentralYoutubeDuration();
-        if (!bardoVideoProgress || !duration) return;
-        bardoVideoProgress.max = String(duration);
-        if (!isSeekingBardoVideo) bardoVideoProgress.value = String(getCentralYoutubeTime());
+        if (!centralBardoVideo || !bardoVideoProgress || !centralBardoVideo.duration) return;
+        if (!isSeekingBardoVideo) bardoVideoProgress.value = String(centralBardoVideo.currentTime);
         updateCentralVideoTimeLabel();
       }, 350);
     }
@@ -4023,41 +3929,47 @@
     bardoVideoPlay?.addEventListener("click", playCentralBardoVideo);
     bardoVideoPause?.addEventListener("click", pauseCentralBardoVideo);
     bardoVideoRestart?.addEventListener("click", () => {
-      seekCentralBardoVideo(BARDO_YOUTUBE_START_SECONDS);
+      seekCentralBardoVideo(0);
       playCentralBardoVideo();
     });
     bardoVideoMute?.addEventListener("click", () => {
-      const muted = centralYoutubePlayer?.isMuted?.();
-      if (muted) {
-        centralYoutubePlayer?.unMute?.();
-        bardoVideoMute.textContent = "靜音";
-      } else {
-        centralYoutubePlayer?.mute?.();
-        bardoVideoMute.textContent = "取消靜音";
-      }
+      if (!centralBardoVideo) return;
+      centralBardoVideo.muted = !centralBardoVideo.muted;
+      bardoVideoMute.textContent = centralBardoVideo.muted ? "取消靜音" : "靜音";
     });
     bardoVideoVolume?.addEventListener("input", () => {
-      centralYoutubePlayer?.setVolume?.(Math.round(Number(bardoVideoVolume.value || 0.35) * 100));
+      if (centralBardoVideo) centralBardoVideo.volume = Number(bardoVideoVolume.value || 0.35);
     });
     bardoWallSoundToggle?.addEventListener("click", () => {
       if (bardoWallSoundEnabled) disableBardoWallSound();
       else enableBardoWallSound();
     });
     bardoWallVolume?.addEventListener("input", () => {
-      wallYoutubePlayer?.setVolume?.(Math.round(Number(bardoWallVolume.value || 0.30) * 100));
+      if (bardoWallVideo) bardoWallVideo.volume = Number(bardoWallVolume.value || 0.30);
     });
     document.addEventListener("visibilitychange", () => {
       if (!document.hidden && !centralBardoVideoWrap?.classList.contains("open")) {
         startBardoWallVideo();
       }
     });
+    centralBardoVideo?.addEventListener("loadedmetadata", () => {
+      if (!bardoVideoProgress) return;
+      bardoVideoProgress.max = String(centralBardoVideo.duration || 0);
+      bardoVideoProgress.value = String(centralBardoVideo.currentTime || 0);
+      updateCentralVideoTimeLabel();
+    });
+    centralBardoVideo?.addEventListener("timeupdate", () => {
+      if (!bardoVideoProgress || isSeekingBardoVideo) return;
+      bardoVideoProgress.value = String(centralBardoVideo.currentTime || 0);
+      updateCentralVideoTimeLabel();
+    });
     bardoVideoProgress?.addEventListener("pointerdown", () => {
       isSeekingBardoVideo = true;
-      wasPlayingBeforeSeek = isYoutubePlaying(centralYoutubePlayer);
+      wasPlayingBeforeSeek = !!centralBardoVideo && !centralBardoVideo.paused;
     });
     bardoVideoProgress?.addEventListener("touchstart", () => {
       isSeekingBardoVideo = true;
-      wasPlayingBeforeSeek = isYoutubePlaying(centralYoutubePlayer);
+      wasPlayingBeforeSeek = !!centralBardoVideo && !centralBardoVideo.paused;
     }, { passive: true });
     bardoVideoProgress?.addEventListener("input", () => {
       seekCentralBardoVideo(Number(bardoVideoProgress.value));
@@ -4065,13 +3977,13 @@
     bardoVideoProgress?.addEventListener("change", async () => {
       seekCentralBardoVideo(Number(bardoVideoProgress.value));
       isSeekingBardoVideo = false;
-      if (wasPlayingBeforeSeek) playCentralBardoVideo();
+      if (wasPlayingBeforeSeek) await centralBardoVideo?.play?.().catch?.(console.warn);
     });
     bardoVideoProgress?.addEventListener("pointerup", () => {
       isSeekingBardoVideo = false;
     });
     updateBardoWallSoundButton();
-    initBardoYoutubePlayers();
+    preloadCentralBardoVideo();
 
     window.showBardoNameListPanel = showBardoNameListPanel;
     window.hideBardoNameListPanel = hideBardoNameListPanel;

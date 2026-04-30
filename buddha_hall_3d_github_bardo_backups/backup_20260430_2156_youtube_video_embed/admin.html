@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>超渡佛堂後台</title>
+  <style>
+    :root {
+      --bg: #2d0d06;
+      --panel: #fff8ea;
+      --gold: #c89535;
+      --red: #7b1f10;
+      --text: #2a1408;
+      --muted: #765b42;
+      --danger: #9d2419;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft JhengHei", "Noto Sans TC", system-ui, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, #7a2b11 0, var(--bg) 42%, #160603 100%);
+      min-height: 100vh;
+    }
+    header {
+      padding: 24px clamp(16px, 4vw, 48px);
+      color: #fff3ca;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    h1 { margin: 0; font-size: clamp(26px, 4vw, 42px); }
+    h2 { color: #fff3ca; max-width: 1380px; margin: 28px auto 12px; }
+    main { padding: 0 clamp(12px, 3vw, 36px) 40px; }
+    a, button { font: inherit; }
+    .link-button, button {
+      border: 1px solid rgba(201, 149, 53, 0.45);
+      border-radius: 10px;
+      background: linear-gradient(180deg, #d2a64e, #9b5f1d);
+      color: #fff7d8;
+      padding: 10px 14px;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    button.secondary { background: #6a2a16; }
+    button.danger { background: var(--danger); }
+    .toolbar, .notice, .table-wrap, .photo-grid {
+      background: rgba(255, 248, 234, 0.96);
+      border: 1px solid rgba(255, 222, 142, 0.55);
+      border-radius: 14px;
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.25);
+      margin: 0 auto 16px;
+      max-width: 1380px;
+    }
+    .toolbar {
+      padding: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .notice {
+      padding: 14px 16px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    input, select, textarea {
+      border: 1px solid rgba(123, 31, 16, 0.22);
+      border-radius: 8px;
+      padding: 9px 10px;
+      font: inherit;
+      background: #fffdf7;
+      color: var(--text);
+    }
+    input[type="search"] { min-width: min(320px, 100%); }
+    .table-wrap { overflow: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1100px;
+    }
+    th, td {
+      border-bottom: 1px solid rgba(123, 31, 16, 0.12);
+      padding: 10px;
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      position: sticky;
+      top: 0;
+      background: #f1dfb9;
+      color: #4a1a0b;
+      z-index: 1;
+    }
+    td input[type="text"], td input[type="date"] { width: 100%; }
+    .status { color: var(--red); font-weight: 800; }
+    .pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 13px;
+      background: #f3dfae;
+      color: #6a2a16;
+      white-space: nowrap;
+    }
+    .pill.expired { background: #ead6d2; color: #8c2119; }
+    .pill.empty { background: #e9e2d2; color: #6d604c; }
+    .hidden-file { display: none; }
+    .photo-grid {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: minmax(260px, 0.8fr) minmax(320px, 1.2fr);
+      gap: 16px;
+    }
+    .photo-list {
+      border: 1px solid rgba(123, 31, 16, 0.12);
+      border-radius: 12px;
+      min-height: 260px;
+      padding: 10px;
+      background: #fffdf7;
+      overflow: auto;
+      max-height: 520px;
+    }
+    .photo-item {
+      width: 100%;
+      margin: 0 0 8px;
+      text-align: left;
+      color: var(--text);
+      background: #f4e4bf;
+      border-color: rgba(123, 31, 16, 0.16);
+    }
+    .photo-item.active { outline: 3px solid rgba(201,149,53,.36); }
+    .photo-editor {
+      display: grid;
+      gap: 10px;
+    }
+    .photo-editor label {
+      display: grid;
+      gap: 5px;
+      font-weight: 700;
+      color: var(--red);
+    }
+    .photo-editor input[type="text"],
+    .photo-editor input[type="number"],
+    .photo-editor textarea { width: 100%; }
+    @media (max-width: 760px) {
+      header { align-items: flex-start; }
+      .toolbar { align-items: stretch; }
+      .toolbar > * { width: 100%; }
+      .photo-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>超渡佛堂後台</h1>
+      <div>管理地藏王菩薩與金剛薩埵兩排超渡名位，以及右牆法照 / 供養照片。</div>
+    </div>
+    <a class="link-button" href="./index.html">回到佛堂</a>
+  </header>
+
+  <main>
+    <h2>超渡名單管理</h2>
+    <section class="toolbar">
+      <input id="searchInput" type="search" placeholder="搜尋姓名、菩薩、左右側、備註" />
+      <select id="sideFilter">
+        <option value="">全部側邊</option>
+        <option value="left">左側</option>
+        <option value="right">右側</option>
+      </select>
+      <select id="deityFilter">
+        <option value="">全部菩薩</option>
+        <option value="地藏王菩薩">地藏王菩薩</option>
+        <option value="金剛薩埵">金剛薩埵</option>
+      </select>
+      <button id="reloadBtn" type="button" class="secondary">重新載入</button>
+      <button id="saveBtn" type="button">儲存全部</button>
+      <button id="exportBtn" type="button" class="secondary">匯出 bardo_names.json</button>
+      <button id="importBtn" type="button" class="secondary">匯入 bardo_names.json</button>
+      <input id="importFile" class="hidden-file" type="file" accept="application/json,.json" />
+      <button id="resetBtn" type="button" class="danger">重設待填名位</button>
+      <span id="status" class="status">準備中</span>
+    </section>
+
+    <section class="notice">
+      GitHub Pages 靜態版儲存只在本瀏覽器 localStorage。若要所有設備看到，請匯出 bardo_names.json 並上傳覆蓋 assets/data/bardo_names.json。
+      起始日期會自動加 49 天成為到期日；到期後前台顯示「待填名位」。
+    </section>
+
+    <section class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>側邊</th>
+            <th>菩薩</th>
+            <th>位置</th>
+            <th>超渡名位</th>
+            <th>起始日</th>
+            <th>到期日</th>
+            <th>啟用</th>
+            <th>狀態</th>
+            <th>備註</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody id="bardoBody"></tbody>
+      </table>
+    </section>
+
+    <h2>照片管理</h2>
+    <section class="notice">
+      GitHub Pages 靜態版無法直接上傳圖片或寫回伺服器。請先把圖片放到 assets/images/photos/，在此填入路徑，再匯出 photos.json 上傳到 assets/data/photos.json。
+    </section>
+    <section class="toolbar">
+      <button id="photoAddBtn" type="button">新增照片</button>
+      <button id="photoSaveBtn" type="button">儲存照片資料</button>
+      <button id="photoExportBtn" type="button" class="secondary">匯出 photos.json</button>
+      <button id="photoImportBtn" type="button" class="secondary">匯入 photos.json</button>
+      <input id="photoImportFile" class="hidden-file" type="file" accept="application/json,.json" />
+      <button id="photoResetBtn" type="button" class="danger">重設照片資料</button>
+      <span id="photoStatus" class="status">照片準備中</span>
+    </section>
+    <section class="photo-grid">
+      <div id="photoList" class="photo-list"></div>
+      <div class="photo-editor">
+        <label>ID
+          <input id="photoIdInput" type="text" readonly />
+        </label>
+        <label>標題
+          <input id="photoTitleInput" type="text" />
+        </label>
+        <label>圖片路徑
+          <input id="photoImageInput" type="text" placeholder="photo-001.jpg 或 assets/images/photos/photo-001.jpg" />
+        </label>
+        <label>說明文字
+          <input id="photoCaptionInput" type="text" />
+        </label>
+        <label>停留秒數
+          <input id="photoDurationInput" type="number" min="3" max="120" step="1" />
+        </label>
+        <label>
+          <span><input id="photoEnabledInput" type="checkbox" /> 啟用</span>
+        </label>
+        <div>
+          <button id="photoApplyBtn" type="button">套用編輯</button>
+          <button id="photoDeleteBtn" type="button" class="danger">刪除照片</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "buddhaHallBardoNames";
+    const CHANNEL_NAME = "bardo-names-updates";
+    const STATIC_DATA_PATH = "assets/data/bardo_names.json";
+    const DEFAULT_NAME = "待填名位";
+    const BARDO_ROWS = ["地藏王菩薩", "金剛薩埵"];
+    const BARDO_COLS_PER_SIDE = 20;
+
+    const PHOTO_STORAGE_KEY = "buddhaHallPhotos";
+    const PHOTO_DATA_PATH = "assets/data/photos.json";
+    const PHOTO_CHANNEL_NAME = "buddha-hall-photos-updates";
+    const DEFAULT_PHOTOS = [
+      {
+        id: "photo-001",
+        title: "供養照片",
+        image: "",
+        file: "",
+        caption: "",
+        enabled: true,
+        durationSeconds: 14
+      }
+    ];
+
+    let bardoNames = [];
+    let photos = [];
+    let selectedPhotoId = "";
+
+    const body = document.getElementById("bardoBody");
+    const statusEl = document.getElementById("status");
+    const searchInput = document.getElementById("searchInput");
+    const sideFilter = document.getElementById("sideFilter");
+    const deityFilter = document.getElementById("deityFilter");
+
+    const photoListEl = document.getElementById("photoList");
+    const photoStatusEl = document.getElementById("photoStatus");
+    const photoIdInput = document.getElementById("photoIdInput");
+    const photoTitleInput = document.getElementById("photoTitleInput");
+    const photoImageInput = document.getElementById("photoImageInput");
+    const photoCaptionInput = document.getElementById("photoCaptionInput");
+    const photoDurationInput = document.getElementById("photoDurationInput");
+    const photoEnabledInput = document.getElementById("photoEnabledInput");
+
+    function addDays(dateString, days) {
+      if (!dateString) return "";
+      const date = new Date(`${dateString}T00:00:00`);
+      if (Number.isNaN(date.getTime())) return "";
+      date.setDate(date.getDate() + days);
+      return date.toISOString().slice(0, 10);
+    }
+
+    function isExpired(endDate) {
+      if (!endDate) return false;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const end = new Date(`${endDate}T00:00:00`);
+      return !Number.isNaN(end.getTime()) && today > end;
+    }
+
+    function makeId(side, row, col) {
+      return `bardo-${side}-row${row}-col${col}`;
+    }
+
+    function buildDefaults() {
+      const result = [];
+      ["left", "right"].forEach((side) => {
+        BARDO_ROWS.forEach((deity, row) => {
+          for (let col = 0; col < BARDO_COLS_PER_SIDE; col++) {
+            result.push({
+              id: makeId(side, row, col),
+              side,
+              row,
+              col,
+              deity,
+              name: "",
+              startDate: "",
+              endDate: "",
+              enabled: true,
+              notes: ""
+            });
+          }
+        });
+      });
+      return result;
+    }
+
+    function normalize(item) {
+      const startDate = item?.startDate || "";
+      const endDate = item?.endDate || (startDate ? addDays(startDate, 49) : "");
+      return {
+        id: String(item?.id || "").trim(),
+        side: item?.side === "right" ? "right" : "left",
+        row: Number(item?.row || 0),
+        col: Number(item?.col || 0),
+        deity: String(item?.deity || BARDO_ROWS[Number(item?.row || 0)] || "地藏王菩薩"),
+        name: String(item?.name || item?.sponsorName || "").trim(),
+        startDate,
+        endDate,
+        enabled: item?.enabled !== false,
+        notes: String(item?.notes || item?.wishText || "")
+      };
+    }
+
+    function mergeData(base, incoming) {
+      const byId = new Map((Array.isArray(incoming) ? incoming : []).map((item) => {
+        const normalized = normalize(item);
+        return [normalized.id, normalized];
+      }));
+      return base.map((item) => normalize({ ...item, ...(byId.get(item.id) || {}) }));
+    }
+
+    function statusOf(item) {
+      if (!item.name) return { text: "未填名位", cls: "empty" };
+      if (isExpired(item.endDate)) return { text: "已到期", cls: "expired" };
+      if (!item.startDate) return { text: "未填日期", cls: "empty" };
+      return { text: "有效中", cls: "" };
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;");
+    }
+
+    function syncFromTable() {
+      body.querySelectorAll("tr[data-id]").forEach((tr) => {
+        const item = bardoNames.find((entry) => entry.id === tr.dataset.id);
+        if (!item) return;
+        item.name = tr.querySelector('[data-field="name"]').value.trim();
+        item.startDate = tr.querySelector('[data-field="startDate"]').value;
+        item.endDate = tr.querySelector('[data-field="endDate"]').value;
+        item.enabled = tr.querySelector('[data-field="enabled"]').checked;
+        item.notes = tr.querySelector('[data-field="notes"]').value.trim();
+      });
+    }
+
+    function render() {
+      const q = searchInput.value.trim().toLowerCase();
+      const side = sideFilter.value;
+      const deity = deityFilter.value;
+      body.innerHTML = "";
+      const rows = bardoNames.filter((item) => {
+        const text = `${item.id} ${item.side} ${item.deity} ${item.name} ${item.notes}`.toLowerCase();
+        return (!q || text.includes(q)) && (!side || item.side === side) && (!deity || item.deity === deity);
+      });
+      rows.forEach((item) => {
+        const state = statusOf(item);
+        const tr = document.createElement("tr");
+        tr.dataset.id = item.id;
+        tr.innerHTML = `
+          <td>${escapeHtml(item.id)}</td>
+          <td>${item.side === "left" ? "左側" : "右側"}</td>
+          <td>${escapeHtml(item.deity)}</td>
+          <td>第 ${item.row + 1} 排 / 第 ${item.col + 1} 格</td>
+          <td><input data-field="name" type="text" value="${escapeHtml(item.name)}" placeholder="${DEFAULT_NAME}" /></td>
+          <td><input data-field="startDate" type="date" value="${item.startDate || ""}" /></td>
+          <td><input data-field="endDate" type="date" value="${item.endDate || ""}" /></td>
+          <td><input data-field="enabled" type="checkbox" ${item.enabled ? "checked" : ""} /></td>
+          <td><span class="pill ${state.cls}">${state.text}</span></td>
+          <td><input data-field="notes" type="text" value="${escapeHtml(item.notes)}" /></td>
+          <td><button type="button" class="secondary" data-reset-one>清空</button></td>
+        `;
+        body.appendChild(tr);
+      });
+      statusEl.textContent = `顯示 ${rows.length} / ${bardoNames.length} 格`;
+    }
+
+    async function loadData() {
+      const defaults = buildDefaults();
+      let staticData = [];
+      try {
+        const response = await fetch(STATIC_DATA_PATH, { cache: "no-store" });
+        if (response.ok) staticData = await response.json();
+      } catch (error) {
+      }
+      try {
+        const localData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        bardoNames = mergeData(mergeData(defaults, staticData), localData);
+      } catch (error) {
+        bardoNames = mergeData(defaults, staticData);
+      }
+      render();
+    }
+
+    function publishUpdate() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(bardoNames));
+      try {
+        new BroadcastChannel(CHANNEL_NAME).postMessage({ type: "bardo-names-updated", names: bardoNames });
+      } catch (error) {
+      }
+    }
+
+    function saveAll() {
+      syncFromTable();
+      bardoNames.forEach((item) => {
+        if (item.startDate && !item.endDate) item.endDate = addDays(item.startDate, 49);
+      });
+      publishUpdate();
+      render();
+      statusEl.textContent = "已儲存到 localStorage";
+    }
+
+    function exportJson() {
+      syncFromTable();
+      downloadJson("bardo_names.json", bardoNames);
+    }
+
+    function downloadJson(filename, data) {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function normalizePhoto(item) {
+      const image = String(item?.image || item?.file || "").trim();
+      const file = image && !image.includes("/") ? `assets/images/photos/${image}` : image;
+      return {
+        id: String(item?.id || `photo-${Date.now()}`).trim(),
+        title: String(item?.title || "供養照片").trim() || "供養照片",
+        image: file,
+        file,
+        caption: String(item?.caption || ""),
+        enabled: item?.enabled !== false,
+        durationSeconds: Math.max(3, Number(item?.durationSeconds || 14))
+      };
+    }
+
+    function validatePhotos(data) {
+      if (!Array.isArray(data)) throw new Error("photos.json 必須是 array");
+      return data.map(normalizePhoto);
+    }
+
+    function renderPhotos() {
+      photoListEl.innerHTML = "";
+      if (!photos.length) {
+        photoListEl.innerHTML = '<div>尚無照片資料</div>';
+      }
+      photos.forEach((item) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `photo-item${item.id === selectedPhotoId ? " active" : ""}`;
+        button.dataset.id = item.id;
+        button.innerHTML = `${escapeHtml(item.title)}<br><small>${escapeHtml(item.image || "尚未設定圖片")}</small>`;
+        photoListEl.appendChild(button);
+      });
+      const selected = photos.find((item) => item.id === selectedPhotoId) || photos[0];
+      if (selected) {
+        selectedPhotoId = selected.id;
+        photoIdInput.value = selected.id;
+        photoTitleInput.value = selected.title;
+        photoImageInput.value = selected.image || selected.file || "";
+        photoCaptionInput.value = selected.caption || "";
+        photoDurationInput.value = selected.durationSeconds || 14;
+        photoEnabledInput.checked = selected.enabled !== false;
+      } else {
+        photoIdInput.value = "";
+        photoTitleInput.value = "";
+        photoImageInput.value = "";
+        photoCaptionInput.value = "";
+        photoDurationInput.value = 14;
+        photoEnabledInput.checked = true;
+      }
+      photoStatusEl.textContent = `照片資料 ${photos.length} 筆`;
+    }
+
+    function applyPhotoEditor() {
+      const index = photos.findIndex((item) => item.id === selectedPhotoId);
+      if (index < 0) return;
+      photos[index] = normalizePhoto({
+        ...photos[index],
+        title: photoTitleInput.value,
+        image: photoImageInput.value,
+        file: photoImageInput.value,
+        caption: photoCaptionInput.value,
+        enabled: photoEnabledInput.checked,
+        durationSeconds: photoDurationInput.value
+      });
+      renderPhotos();
+    }
+
+    function savePhotos() {
+      applyPhotoEditor();
+      localStorage.setItem(PHOTO_STORAGE_KEY, JSON.stringify(photos));
+      try {
+        new BroadcastChannel(PHOTO_CHANNEL_NAME).postMessage({ type: "photos-updated", photos });
+      } catch (error) {
+      }
+      photoStatusEl.textContent = "照片資料已儲存到 localStorage";
+    }
+
+    async function loadPhotoData() {
+      try {
+        const local = localStorage.getItem(PHOTO_STORAGE_KEY);
+        if (local) {
+          photos = validatePhotos(JSON.parse(local));
+          selectedPhotoId = photos[0]?.id || "";
+          renderPhotos();
+          return;
+        }
+      } catch (error) {
+      }
+      try {
+        const response = await fetch(PHOTO_DATA_PATH, { cache: "no-store" });
+        if (response.ok) {
+          photos = validatePhotos(await response.json());
+          selectedPhotoId = photos[0]?.id || "";
+          renderPhotos();
+          return;
+        }
+      } catch (error) {
+      }
+      photos = DEFAULT_PHOTOS.map(normalizePhoto);
+      selectedPhotoId = photos[0]?.id || "";
+      renderPhotos();
+    }
+
+    function exportPhotos() {
+      applyPhotoEditor();
+      downloadJson("photos.json", photos);
+    }
+
+    document.getElementById("saveBtn").addEventListener("click", saveAll);
+    document.getElementById("reloadBtn").addEventListener("click", loadData);
+    document.getElementById("exportBtn").addEventListener("click", exportJson);
+    document.getElementById("importBtn").addEventListener("click", () => document.getElementById("importFile").click());
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      bardoNames = buildDefaults();
+      publishUpdate();
+      render();
+    });
+    document.getElementById("importFile").addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      try {
+        const imported = JSON.parse(await file.text());
+        if (!Array.isArray(imported)) throw new Error("bardo_names.json 必須是 array");
+        bardoNames = mergeData(buildDefaults(), imported);
+        publishUpdate();
+        render();
+      } catch (error) {
+        statusEl.textContent = `匯入失敗：${error.message}`;
+      } finally {
+        event.target.value = "";
+      }
+    });
+    function autoFillEndDate(event) {
+      const input = event.target;
+      if (input.dataset.field === "startDate") {
+        const tr = input.closest("tr");
+        const end = tr?.querySelector('[data-field="endDate"]');
+        if (end && input.value) end.value = addDays(input.value, 49);
+      }
+    }
+    body.addEventListener("input", autoFillEndDate);
+    body.addEventListener("change", autoFillEndDate);
+    body.addEventListener("click", (event) => {
+      if (!event.target.matches("[data-reset-one]")) return;
+      const tr = event.target.closest("tr[data-id]");
+      const item = bardoNames.find((entry) => entry.id === tr?.dataset.id);
+      if (!item) return;
+      item.name = "";
+      item.startDate = "";
+      item.endDate = "";
+      item.enabled = true;
+      item.notes = "";
+      render();
+    });
+    searchInput.addEventListener("input", render);
+    sideFilter.addEventListener("change", render);
+    deityFilter.addEventListener("change", render);
+
+    photoListEl.addEventListener("click", (event) => {
+      const button = event.target.closest(".photo-item");
+      if (!button) return;
+      applyPhotoEditor();
+      selectedPhotoId = button.dataset.id;
+      renderPhotos();
+    });
+    document.getElementById("photoAddBtn").addEventListener("click", () => {
+      applyPhotoEditor();
+      const item = normalizePhoto({
+        id: `photo-${Date.now()}`,
+        title: "供養照片",
+        image: "photo-001.jpg",
+        caption: "",
+        enabled: true,
+        durationSeconds: 14
+      });
+      photos.push(item);
+      selectedPhotoId = item.id;
+      renderPhotos();
+    });
+    document.getElementById("photoApplyBtn").addEventListener("click", applyPhotoEditor);
+    document.getElementById("photoSaveBtn").addEventListener("click", savePhotos);
+    document.getElementById("photoExportBtn").addEventListener("click", exportPhotos);
+    document.getElementById("photoImportBtn").addEventListener("click", () => document.getElementById("photoImportFile").click());
+    document.getElementById("photoResetBtn").addEventListener("click", () => {
+      photos = DEFAULT_PHOTOS.map(normalizePhoto);
+      selectedPhotoId = photos[0]?.id || "";
+      savePhotos();
+      renderPhotos();
+    });
+    document.getElementById("photoDeleteBtn").addEventListener("click", () => {
+      photos = photos.filter((item) => item.id !== selectedPhotoId);
+      selectedPhotoId = photos[0]?.id || "";
+      renderPhotos();
+    });
+    document.getElementById("photoImportFile").addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      try {
+        photos = validatePhotos(JSON.parse(await file.text()));
+        selectedPhotoId = photos[0]?.id || "";
+        savePhotos();
+        renderPhotos();
+      } catch (error) {
+        photoStatusEl.textContent = `匯入失敗：${error.message}`;
+      } finally {
+        event.target.value = "";
+      }
+    });
+
+    loadData();
+    loadPhotoData();
+  </script>
+</body>
+</html>
