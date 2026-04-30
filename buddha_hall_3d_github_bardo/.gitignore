@@ -1,0 +1,7 @@
+assets/videos/bardo/original_videoplayback_203mb.mp4
+screenshots/
+backups/
+*_backup*
+*.log
+.DS_Store
+Thumbs.db
