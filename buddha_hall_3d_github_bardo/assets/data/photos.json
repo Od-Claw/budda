@@ -1,8 +1,17 @@
 [
   {
-    "id": "photo-001",
-    "title": "供養照片",
-    "file": "",
+    "id": "photo-1777467987450",
+    "title": "法王如意寶",
+    "file": "assets/images/photos/S__5488808.jpg",
+    "enabled": true,
+    "caption": "",
+    "createdAt": "2026-04-29",
+    "updatedAt": "2026-04-29"
+  },
+  {
+    "id": "photo-1777469525990",
+    "title": "新照片",
+    "file": "assets/images/photos/01.png",
     "enabled": true,
     "caption": "",
     "createdAt": "2026-04-29",
