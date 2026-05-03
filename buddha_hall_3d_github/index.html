@@ -759,6 +759,13 @@
       max-width: 310px;
     }
 
+    @media (max-width: 700px) {
+      #npcProstrationWrap {
+        min-width: 70px;
+        max-width: 125px;
+      }
+    }
+
     #npcProstrationWrap img {
       width: 100%;
       height: auto;
@@ -1421,7 +1428,17 @@
     }
 
     function getNpcWidthByY(y) {
-      return 210 * getNpcScaleByY(y);
+      const rect = innerShrineStage?.getBoundingClientRect();
+      const isMobileStage = rect && (rect.width < 700 || rect.height < 420);
+      const widthFromDepth = 210 * getNpcScaleByY(y);
+      if (!rect || rect.height <= 0) return widthFromDepth;
+
+      const maxHeightRatio = isMobileStage ? 0.52 : 0.62;
+      const maxHeight = rect.height * maxHeightRatio;
+      const maxWidthByHeight = maxHeight * (300 / 430);
+      const minWidth = isMobileStage ? 70 : 150;
+      const maxWidth = isMobileStage ? 125 : 310;
+      return Math.max(minWidth, Math.min(maxWidth, Math.min(widthFromDepth, maxWidthByHeight)));
     }
 
     function clearNpcTimers() {
@@ -1679,7 +1696,9 @@
       clearNpcTimers();
       npcState.mode = "prostrateLoop";
       npcState.x = NPC_CENTER_POINT.x;
-      npcState.y = 0.87;
+      const stageRect = innerShrineStage?.getBoundingClientRect();
+      const isMobileStage = stageRect && (stageRect.width < 700 || stageRect.height < 420);
+      npcState.y = isMobileStage ? 0.84 : 0.87;
       npcState.targetX = npcState.x;
       npcState.targetY = npcState.y;
       npcState.actionLocked = true;
