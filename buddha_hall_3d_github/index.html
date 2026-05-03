@@ -1,0 +1,4479 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>輝煌 3D 佛堂供佛空間 V2</title>
+  <style>
+    :root {
+      --gold: #ffe29b;
+      --gold2: #d69b2f;
+      --red: #4b130d;
+      --panel: rgba(55, 25, 7, 0.72);
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #100704;
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      user-select: none;
+    }
+
+    canvas {
+      display: block;
+      outline: none;
+    }
+
+    .collapsible-panel {
+      transition: transform 0.32s ease, opacity 0.22s ease;
+    }
+
+    .side-tab {
+      position: fixed;
+      z-index: 24;
+      border: 1px solid rgba(255, 235, 178, 0.58);
+      border-radius: 999px;
+      padding: 10px 14px;
+      color: #2d1604;
+      background: linear-gradient(180deg, #fff1b8, #d39a31);
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.3);
+    }
+
+    .left-tab {
+      top: 16px;
+      left: 16px;
+    }
+
+    .left-tab.music-tab {
+      top: auto;
+      bottom: 92px;
+      left: 16px;
+    }
+
+    .right-tab.info-tab {
+      top: 16px;
+      right: 16px;
+    }
+
+    .right-tab.main-deity-tab {
+      top: 64px;
+      right: 16px;
+    }
+
+    .right-tab.offering-tab {
+      right: 16px;
+      bottom: 92px;
+    }
+
+    .bottom-tab {
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+    }
+
+    .panel-close {
+      border: 1px solid rgba(255, 235, 178, 0.34);
+      border-radius: 999px;
+      padding: 6px 10px;
+      color: #fff0bf;
+      background: linear-gradient(180deg, rgba(102, 42, 14, 0.92), rgba(54, 19, 8, 0.92));
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    #hud {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 10;
+      width: min(420px, calc(100vw - 32px));
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 226, 155, 0.42);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(79, 34, 10, 0.76), rgba(21, 9, 3, 0.68));
+      color: #fff1c2;
+      font-size: 14px;
+      line-height: 1.65;
+      backdrop-filter: blur(10px);
+      box-shadow:
+        0 12px 34px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    #hud.panel-collapsed {
+      transform: translateX(calc(-100% - 28px));
+      opacity: 0;
+    }
+
+    #hud strong {
+      display: block;
+      margin-bottom: 2px;
+      color: #fff7dc;
+      font-size: 16px;
+      letter-spacing: 0.05em;
+    }
+
+    #hud .hint {
+      color: rgba(255, 240, 196, 0.86);
+    }
+
+    #hud .panel-head,
+    #sidePanel .panel-head,
+    #offeringPanel .panel-head,
+    #toolbar .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    #toolbar {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      z-index: 12;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+      max-width: min(900px, calc(100vw - 28px));
+      padding: 12px 14px;
+      border-radius: 22px;
+      background: rgba(17, 8, 3, 0.55);
+      border: 1px solid rgba(255, 226, 155, 0.28);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 36px rgba(0,0,0,0.38);
+    }
+
+    #toolbar.panel-collapsed {
+      transform: translate(-50%, calc(100% + 28px));
+      opacity: 0;
+    }
+
+    #toolbar .toolbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    button.view-btn {
+      border: 1px solid rgba(255, 235, 178, 0.5);
+      border-radius: 999px;
+      padding: 9px 14px;
+      color: #2d1604;
+      background: linear-gradient(180deg, #fff1b8, #d39a31);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(215, 158, 50, 0.22);
+    }
+
+    button.view-btn.secondary {
+      color: #fff0bf;
+      background: linear-gradient(180deg, rgba(102, 42, 14, 0.86), rgba(54, 19, 8, 0.86));
+    }
+
+    button.view-btn:hover {
+      filter: brightness(1.08);
+    }
+
+    #sidePanel {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 10;
+      width: min(320px, calc(100vw - 32px));
+      padding: 13px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 226, 155, 0.34);
+      background: rgba(24, 10, 4, 0.58);
+      color: rgba(255, 244, 216, 0.88);
+      line-height: 1.62;
+      font-size: 13px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 12px 34px rgba(0,0,0,0.34);
+    }
+
+    #sidePanel.panel-collapsed {
+      transform: translateX(calc(100% + 28px));
+      opacity: 0;
+    }
+
+    #sidePanel b {
+      color: #fff3cd;
+    }
+
+    #sidePanel .asset-note {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 226, 155, 0.2);
+      color: rgba(255, 240, 196, 0.84);
+    }
+
+    #deityImageStatus {
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: rgba(255, 226, 155, 0.08);
+      border: 1px solid rgba(255, 226, 155, 0.16);
+      color: #fff1c8;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    #mainBuddhaStatus {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: rgba(255, 201, 114, 0.1);
+      border: 1px solid rgba(255, 226, 155, 0.18);
+      color: #fff4d1;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    #deityMissingWrap {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255, 226, 155, 0.06);
+      border: 1px solid rgba(255, 226, 155, 0.14);
+    }
+
+    #deityMissingWrap b {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    #deityMissingList {
+      margin: 0;
+      padding-left: 18px;
+      color: rgba(255, 244, 216, 0.9);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    #offeringPanel {
+      position: fixed;
+      right: 16px;
+      bottom: 92px;
+      z-index: 20;
+      width: min(312px, calc(100vw - 32px));
+      padding: 11px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 226, 155, 0.45);
+      background: rgba(38, 10, 4, 0.72);
+      color: #fff1c2;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 16px 42px rgba(0,0,0,0.42);
+    }
+
+    #offeringPanel.panel-collapsed {
+      transform: translateX(calc(100% + 28px));
+      opacity: 0;
+    }
+
+    #musicPanel {
+      position: fixed;
+      left: 16px;
+      bottom: 92px;
+      z-index: 20;
+      width: min(320px, calc(100vw - 32px));
+      padding: 11px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 226, 155, 0.45);
+      background: rgba(38, 10, 4, 0.72);
+      color: #fff1c2;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 16px 42px rgba(0,0,0,0.42);
+    }
+
+    #musicPanel.panel-collapsed {
+      transform: translateX(calc(-100% - 28px));
+      opacity: 0;
+    }
+
+    #mainDeityPanel {
+      position: fixed;
+      top: 112px;
+      right: 16px;
+      z-index: 18;
+      width: min(300px, calc(100vw - 32px));
+      padding: 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 226, 155, 0.45);
+      background: rgba(38, 10, 4, 0.72);
+      color: #fff1c2;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 16px 42px rgba(0,0,0,0.42);
+    }
+
+    #mainDeityPanel.panel-collapsed {
+      transform: translateX(calc(100% + 28px));
+      opacity: 0;
+    }
+
+    #mainDeityPanel strong {
+      color: #fff7dc;
+      letter-spacing: 0.04em;
+    }
+
+    #mainDeityPanel select {
+      width: 100%;
+      margin-top: 10px;
+      padding: 9px 10px;
+      border: 1px solid rgba(255, 235, 178, 0.58);
+      border-radius: 10px;
+      background: rgba(255, 236, 179, 0.92);
+      color: #2d1604;
+      font-weight: 800;
+    }
+
+    #mainDeityCurrent,
+    #mainDeityMessage {
+      margin-top: 9px;
+      color: rgba(255, 244, 216, 0.9);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    #offeringPanel strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #fff7dc;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+    }
+
+    #offeringPanel .hint {
+      color: rgba(255, 238, 190, 0.82);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    #offeringButtons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    #offeringPanel button {
+      margin: 0;
+      padding: 6px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 235, 178, 0.6);
+      background: linear-gradient(180deg, #fff1b8, #d39a31);
+      color: #2d1604;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(215, 158, 50, 0.2);
+    }
+
+    #offeringPanel button.secondary {
+      color: #fff0bf;
+      background: linear-gradient(180deg, rgba(102, 42, 14, 0.92), rgba(54, 19, 8, 0.92));
+    }
+
+    #musicPanel strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #fff7dc;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+    }
+
+    #musicPanel select,
+    #musicPanel input[type="range"] {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    #musicPanel select {
+      padding: 8px 10px;
+      border: 1px solid rgba(255, 235, 178, 0.58);
+      border-radius: 10px;
+      background: rgba(255, 236, 179, 0.92);
+      color: #2d1604;
+      font-weight: 800;
+    }
+
+    #musicControls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    #musicPanel button {
+      margin: 0;
+      padding: 6px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 235, 178, 0.6);
+      background: linear-gradient(180deg, #fff1b8, #d39a31);
+      color: #2d1604;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(215, 158, 50, 0.2);
+    }
+
+    .music-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(255, 244, 216, 0.92);
+    }
+
+    #musicNowPlaying,
+    #musicMessage {
+      margin-top: 8px;
+      color: #fff5d6;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    #offeringStatus {
+      margin-top: 10px;
+      color: rgba(255, 236, 184, 0.82);
+      font-size: 12px;
+    }
+
+    #offeringMessage {
+      min-height: 3.2em;
+      max-height: 48px;
+      overflow-y: auto;
+      margin-top: 8px;
+      line-height: 1.45;
+      color: #fff5d6;
+      font-size: 12px;
+    }
+
+    #dedicationModal {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(12, 4, 2, 0.62);
+      backdrop-filter: blur(8px);
+    }
+
+    #dedicationModal.open {
+      display: flex;
+    }
+
+    #dedicationModal .dialog {
+      width: min(540px, calc(100vw - 36px));
+      padding: 24px 22px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 226, 155, 0.45);
+      background: linear-gradient(180deg, rgba(65, 22, 8, 0.9), rgba(22, 8, 4, 0.9));
+      color: #fff1c8;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+
+    #dedicationModal h2 {
+      margin: 0 0 12px;
+      color: #fff6db;
+      letter-spacing: 0.08em;
+    }
+
+    #dedicationText {
+      margin: 0 0 18px;
+      white-space: pre-line;
+      line-height: 1.9;
+      font-size: 16px;
+      color: #fff5d6;
+    }
+
+    #mobileMoveTab {
+      position: fixed;
+      z-index: 13;
+      left: 14px;
+      bottom: 82px;
+      display: none;
+      width: 52px;
+      height: 52px;
+      padding: 0;
+      border: 1px solid rgba(255, 230, 164, 0.54);
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ffe8a5, #d99d35);
+      color: #2b1504;
+      font-size: 13px;
+      font-weight: 900;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+    }
+
+    #mobileControlsPanel {
+      position: fixed;
+      z-index: 11;
+      left: 12px;
+      bottom: 140px;
+      display: none;
+      grid-template-columns: repeat(3, 48px);
+      grid-template-rows: repeat(3, 48px);
+      gap: 6px;
+      width: 172px;
+      max-width: 172px;
+      padding: 10px;
+      border-radius: 18px;
+      background: rgba(35, 15, 5, 0.72);
+      border: 1px solid rgba(255, 226, 155, 0.35);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.26);
+    }
+
+    #mobileControlsPanel.mobile-controls-open {
+      display: grid;
+    }
+
+    #mobileControlsPanel button {
+      width: 48px;
+      height: 48px;
+      padding: 0;
+      border: 1px solid rgba(255, 230, 164, 0.35);
+      border-radius: 12px;
+      background: rgba(216, 160, 54, 0.78);
+      color: #2b1504;
+      font-weight: 900;
+      font-size: 18px;
+    }
+
+    #mobileControlsPanel .blank {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #mobileControlClose {
+      background: rgba(255, 238, 190, 0.86) !important;
+      font-size: 16px !important;
+    }
+
+    #fileProtocolNotice {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      z-index: 80;
+      display: none;
+      width: min(720px, calc(100vw - 32px));
+      transform: translateX(-50%);
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 235, 178, 0.72);
+      border-radius: 12px;
+      background: rgba(52, 18, 7, 0.94);
+      color: #fff4cf;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.38);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    #fileProtocolNotice strong {
+      color: #fff8df;
+    }
+
+    #fileProtocolNotice button {
+      float: right;
+      margin-left: 12px;
+      padding: 5px 10px;
+      border: 1px solid rgba(255, 235, 178, 0.68);
+      border-radius: 999px;
+      background: linear-gradient(180deg, #fff1b8, #d39a31);
+      color: #2d1604;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    @media (max-width: 760px) {
+      .side-tab {
+        font-size: 12px;
+        padding: 9px 12px;
+      }
+      #hud {
+        font-size: 12px;
+        line-height: 1.5;
+        width: min(360px, calc(100vw - 28px));
+      }
+      #sidePanel {
+        top: 70px;
+        width: min(320px, calc(100vw - 28px));
+      }
+      .right-tab.info-tab {
+        top: 16px;
+      }
+      .right-tab.main-deity-tab {
+        top: 62px;
+      }
+      #toolbar {
+        bottom: 12px;
+        border-radius: 18px;
+        max-width: calc(100vw - 24px);
+      }
+      button.view-btn {
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+      #offeringPanel {
+        left: 16px;
+        right: 16px;
+        bottom: 118px;
+        width: auto;
+      }
+      #musicPanel {
+        left: 16px;
+        right: 16px;
+        bottom: 118px;
+        width: auto;
+      }
+      .right-tab.offering-tab {
+        right: 16px;
+        bottom: 132px;
+      }
+      .left-tab.music-tab {
+        left: 16px;
+        bottom: 132px;
+        top: auto;
+      }
+      #mobileMoveTab {
+        display: block;
+      }
+      #mobileControlsPanel {
+        left: 12px;
+        bottom: 142px;
+        transform: scale(0.9);
+        transform-origin: left bottom;
+      }
+    }
+
+    #innerShrineLayer {
+      position: fixed;
+      inset: 0;
+      z-index: 5;
+      display: none;
+      background-color: #120805;
+      pointer-events: none;
+      overflow: hidden;
+      transform-origin: center center;
+      will-change: transform;
+    }
+
+    #innerShrineBackdropBlur {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background-image: url("assets/images/backgrounds/imageall_v2.png");
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      filter: blur(18px) brightness(0.55);
+      transform: scale(1.08);
+      pointer-events: none;
+    }
+
+    #innerShrineStage {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: min(100vw, calc(100vh * 16 / 9));
+      height: min(100vh, calc(100vw * 9 / 16));
+      transform: translate(-50%, -50%);
+      overflow: hidden;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    #innerShrineBackgroundImage {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center center;
+      z-index: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    #innerShrineCinematicOverlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      background:
+        radial-gradient(circle at 50% 32%, rgba(255, 190, 80, 0.18), transparent 34%),
+        radial-gradient(circle at center, transparent 58%, rgba(0, 0, 0, 0.30) 100%);
+      pointer-events: none;
+    }
+
+    #npcLayer {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    #npcCharacter,
+    #npcProstrationWrap {
+      position: absolute;
+      left: 50%;
+      top: 78%;
+      width: 240px;
+      z-index: 20;
+      transform: translate(-50%, -100%);
+      transform-origin: 50% 100%;
+      pointer-events: none;
+      display: none;
+      isolation: isolate;
+      will-change: left, top, width, transform;
+    }
+
+    #npcCharacter {
+      aspect-ratio: 300 / 430;
+      background-image: url("assets/images/npc/practitioner-bow-30frames-v3-corrected-sprite.png");
+      background-repeat: no-repeat;
+      background-size: 3000% 100%;
+      background-position: 0% center;
+      filter: sepia(0.06) saturate(0.96) brightness(0.84) contrast(1.06) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.42));
+      mix-blend-mode: multiply;
+    }
+
+    #npcProstrationWrap {
+      z-index: 22;
+      top: 87%;
+      width: 15.5%;
+      min-width: 190px;
+      max-width: 310px;
+    }
+
+    #npcProstrationWrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: sepia(0.06) saturate(0.96) brightness(0.84) contrast(1.06) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.42));
+      mix-blend-mode: multiply;
+    }
+
+    #npcProstrationSprite {
+      width: 100%;
+      aspect-ratio: 300 / 430;
+      display: none;
+      background-image: url("assets/images/npc/practitioner-bow-30frames-v3-corrected-sprite.png");
+      background-repeat: no-repeat;
+      background-size: 3000% 100%;
+      background-position: 0% center;
+      filter: sepia(0.06) saturate(0.96) brightness(0.84) contrast(1.06) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.42));
+      mix-blend-mode: multiply;
+    }
+
+    #npcCharacter::after,
+    #npcProstrationWrap::after {
+      content: "";
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      width: 56%;
+      height: 14px;
+      z-index: -1;
+      transform: translateX(-50%);
+      background: radial-gradient(ellipse, rgba(0, 0, 0, 0.30), transparent 70%);
+      filter: blur(7px);
+    }
+
+    #npcCharacter.npc-walking {
+      animation: npcWalkBob 0.9s ease-in-out infinite;
+    }
+
+    #npcCharacter.npc-walking::after {
+      animation: npcShadowPulse 0.9s ease-in-out infinite;
+    }
+
+    #npcCharacter.npc-meditating {
+      animation: npcMeditateBreath 4.8s ease-in-out infinite;
+    }
+
+    #npcTargetMarker {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border: 1px solid rgba(255, 231, 156, 0.86);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 16px rgba(255, 211, 105, 0.5);
+      pointer-events: none;
+      display: none;
+      z-index: 19;
+    }
+
+    body.inner-shrine-active canvas {
+      visibility: hidden;
+    }
+
+    body.inner-shrine-active #innerShrineLayer {
+      display: block;
+      pointer-events: auto;
+      animation: shrineBreath 14s ease-in-out infinite;
+    }
+
+    body.inner-shrine-active #innerShrineStage {
+      pointer-events: auto;
+    }
+
+    body.inner-shrine-active.npc-prostration-visible #npcProstrationWrap {
+      display: block;
+    }
+
+    @keyframes npcWalkBob {
+      0%, 100% { margin-top: 0; }
+      50% { margin-top: -4px; }
+    }
+
+    @keyframes npcShadowPulse {
+      0%, 100% {
+        transform: translateX(-50%) scaleX(1);
+        opacity: 0.78;
+      }
+      50% {
+        transform: translateX(-50%) scaleX(0.88);
+        opacity: 0.58;
+      }
+    }
+
+    @keyframes npcMeditateBreath {
+      0%, 100% { filter: sepia(0.06) saturate(0.96) brightness(0.84) contrast(1.06) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.42)); }
+      50% { filter: sepia(0.06) saturate(0.98) brightness(0.90) contrast(1.06) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.42)); }
+    }
+
+    @keyframes shrineBreath {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.012);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    body.inner-shrine-active .side-tab,
+    body.inner-shrine-active .collapsible-panel,
+    body.inner-shrine-active #toolbarToggle,
+    body.inner-shrine-active #toolbar,
+    body.inner-shrine-active #mobileMoveTab,
+    body.inner-shrine-active #mobileControlsPanel {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.28s ease;
+    }
+
+    #sceneTransition {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: #050100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    #sceneTransition.transition-dark {
+      opacity: 1;
+    }
+  </style>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.184.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.184.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+
+<body>
+  <div id="fileProtocolNotice" role="status" aria-live="polite">
+    <button type="button" aria-label="關閉提示" onclick="this.parentElement.style.display='none'">關閉</button>
+    <strong>請使用本機伺服器開啟此頁，不要直接雙擊 HTML。</strong><br/>
+    請在資料夾中執行 <code>python -m http.server 8090</code>，然後打開終端機顯示的本機網址。
+  </div>
+  <script>
+    if (location.protocol === "file:") {
+      document.getElementById("fileProtocolNotice").style.display = "block";
+    }
+  </script>
+  <div id="innerShrineLayer" aria-hidden="true">
+    <div id="innerShrineBackdropBlur" aria-hidden="true"></div>
+    <div id="innerShrineStage" aria-hidden="true">
+      <img
+        id="innerShrineBackgroundImage"
+        src="assets/images/backgrounds/imageall_v2.png"
+        alt=""
+        aria-hidden="true"
+      />
+      <div id="innerShrineCinematicOverlay" aria-hidden="true"></div>
+      <div id="npcLayer" aria-hidden="true">
+        <div id="npcTargetMarker" aria-hidden="true"></div>
+        <div id="npcCharacter" class="npc-idle" aria-hidden="true"></div>
+        <div id="npcProstrationWrap" aria-hidden="true">
+          <img
+            id="npcProstrationApng"
+            src="assets/images/npc/practitioner-bow-30frames-v3-corrected.apng"
+            alt=""
+            aria-hidden="true"
+          />
+          <div id="npcProstrationSprite" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="sceneTransition" aria-hidden="true"></div>
+  <button id="hudToggle" class="side-tab left-tab" type="button" aria-controls="hud" aria-expanded="false">操作</button>
+  <div id="hud" class="collapsible-panel panel-collapsed">
+    <div class="panel-head">
+      <strong>藏式木作 3D 佛堂</strong>
+      <button class="panel-close" type="button" data-panel-close="hud">收合</button>
+    </div>
+    <span class="hint">
+      左鍵拖曳：環視佛堂｜滾輪：遠近｜右鍵拖曳：平移<br/>
+      W/A/S/D 或方向鍵：在佛堂中移動｜R：回到全景<br/>
+      也可以直接點下方快速視角。
+    </span>
+  </div>
+
+  <button id="sidePanelToggle" class="side-tab right-tab info-tab" type="button" aria-controls="sidePanel" aria-expanded="false">資訊</button>
+  <div id="sidePanel" class="collapsible-panel panel-collapsed">
+    <div class="panel-head">
+      <b>佛堂資訊</b>
+      <button class="panel-close" type="button" data-panel-close="sidePanel">收合</button>
+    </div>
+    <b>操作改良</b><br/>
+    這版取消滑鼠鎖定，不會一點進去就像 FPS 遊戲。你可以像看 3D 展廳一樣慢慢拖曳、縮放、平移。<br/><br/>
+    <b>視覺改良</b><br/>
+    佛堂已改為深紅木作、暗金雕花、唐卡壁布、暖黃主壇聚光與藏式地毯，整體更接近莊嚴寺院內殿。
+    <div id="deityImageStatus">佛像圖片：檢查中...<br/>供品圖片：檢查中...</div>
+    <div id="mainBuddhaStatus">佛像來源：AI 生成高清透明 PNG</div>
+    <div id="deityMissingWrap">
+      <b>缺少圖片</b>
+      <ul id="deityMissingList"></ul>
+    </div>
+    <div class="asset-note">佛像來源：AI 生成高清透明 PNG。主佛預設 <code>shakyamuni.png</code>，左右佛龕採三排分區供奉，名牌保留供養人欄位。</div>
+  </div>
+
+  <button id="mainDeityPanelToggle" class="side-tab right-tab main-deity-tab" type="button" aria-controls="mainDeityPanel" aria-expanded="false">主尊</button>
+  <div id="mainDeityPanel" class="collapsible-panel panel-collapsed">
+    <div class="panel-head">
+      <strong>主尊選擇</strong>
+      <button class="panel-close" type="button" data-panel-close="mainDeityPanel">收合</button>
+    </div>
+    <label for="mainDeitySelect">選擇主尊</label>
+    <select id="mainDeitySelect">
+      <option value="釋迦牟尼佛">釋迦牟尼佛</option>
+      <option value="阿彌陀佛">阿彌陀佛</option>
+      <option value="藥師佛">藥師佛</option>
+      <option value="蓮花生大士">蓮花生大士</option>
+      <option value="綠度母">綠度母</option>
+      <option value="黃財神">黃財神</option>
+      <option value="文殊菩薩">文殊菩薩</option>
+      <option value="四臂觀音">四臂觀音</option>
+      <option value="金剛薩埵">金剛薩埵</option>
+      <option value="地藏王菩薩">地藏王菩薩</option>
+    </select>
+    <div id="mainDeityCurrent">目前主尊：釋迦牟尼佛</div>
+    <div id="mainDeityMessage">主佛位置、光環與供品會保持不變。</div>
+  </div>
+
+  <button id="offeringPanelToggle" class="side-tab right-tab offering-tab" type="button" aria-controls="offeringPanel" aria-expanded="false">供養</button>
+  <div id="offeringPanel" class="collapsible-panel panel-collapsed">
+    <div class="panel-head">
+      <strong>中壇供養</strong>
+      <button class="panel-close" type="button" data-panel-close="offeringPanel">收合</button>
+    </div>
+    <div class="hint">可在主供桌前依序供燈、供香、供水、供花、供果、供食子、供曼扎與八吉祥。佛像與供品會優先使用 <code>assets/images/</code> 內的高清透明 PNG。</div>
+    <div id="offeringButtons">
+      <button data-offering="lamp">供燈</button>
+      <button data-offering="incense">供香</button>
+      <button data-offering="water">供水</button>
+      <button data-offering="flower">供花</button>
+      <button data-offering="fruit">供果</button>
+      <button data-offering="torma">供食子</button>
+      <button data-offering="mandala">供曼扎</button>
+      <button data-action="eight-auspicious">八吉祥</button>
+      <button class="secondary" data-action="clear-offerings">清空供品</button>
+      <button class="secondary" data-action="dedicate-merit">功德回向</button>
+    </div>
+    <div id="offeringStatus">目前供品：0 / 15</div>
+    <div id="offeringMessage">請先選擇一種供養，供品會依序排列在主供桌上。</div>
+  </div>
+
+  <button id="musicPanelToggle" class="side-tab left-tab music-tab" type="button" aria-controls="musicPanel" aria-expanded="false">佛樂</button>
+  <div id="musicPanel" class="collapsible-panel panel-collapsed">
+    <div class="panel-head">
+      <strong>佛樂</strong>
+      <button class="panel-close" type="button" data-panel-close="musicPanel">收合</button>
+    </div>
+    <select id="musicSelect" aria-label="選擇佛樂"></select>
+    <div id="musicControls">
+      <button id="musicPrevious" type="button">上一首</button>
+      <button id="musicPlayPause" type="button">播放</button>
+      <button id="musicNext" type="button">下一首</button>
+      <button id="musicMute" type="button">靜音</button>
+    </div>
+    <label class="music-row">
+      <input id="musicLoop" type="checkbox" />
+      單曲循環
+    </label>
+    <label class="music-row">
+      音量
+      <input id="musicVolume" type="range" min="0" max="1" step="0.01" value="0.18" />
+    </label>
+    <div id="musicNowPlaying">尚未播放</div>
+    <div id="musicMessage">請按播放開始佛樂。瀏覽器需要使用者互動後才允許播放音訊。</div>
+  </div>
+
+  <button id="toolbarToggle" class="side-tab bottom-tab" type="button" aria-controls="toolbar" aria-expanded="false">視角</button>
+  <div id="toolbar" class="collapsible-panel panel-collapsed">
+    <div class="panel-head">
+      <strong>快速視角</strong>
+      <button class="panel-close" type="button" data-panel-close="toolbar">收合</button>
+    </div>
+    <div class="toolbar-actions">
+      <button class="view-btn" data-view="front">主佛正面</button>
+      <button class="view-btn" data-view="panorama">大殿全景</button>
+      <button class="view-btn" data-view="left">左側供佛牆</button>
+      <button class="view-btn" data-view="right">右側供佛牆</button>
+      <button class="view-btn" data-view="center">中道前行</button>
+      <button class="view-btn secondary" data-view="reset">重設視角</button>
+    </div>
+  </div>
+
+  <button id="mobileMoveTab" type="button" aria-controls="mobileControlsPanel" aria-expanded="false">移動</button>
+  <div id="mobileControlsPanel" aria-label="手機方向控制">
+    <button class="blank" tabindex="-1"></button><button id="mobileForwardBtn" class="mobile-dir-btn" data-move="forward">▲</button><button id="mobileControlClose" type="button" aria-label="關閉方向控制">×</button>
+    <button id="mobileLeftBtn" class="mobile-dir-btn" data-move="left">◀</button><button id="mobileStopBtn" class="mobile-dir-btn" data-move="stop">●</button><button id="mobileRightBtn" class="mobile-dir-btn" data-move="right">▶</button>
+    <button class="blank" tabindex="-1"></button><button id="mobileBackBtn" class="mobile-dir-btn" data-move="back">▼</button><button class="blank" tabindex="-1"></button>
+  </div>
+
+  <div id="dedicationModal" aria-hidden="true">
+    <div class="dialog">
+      <h2>功德回向</h2>
+      <p id="dedicationText">願以此功德，莊嚴佛淨土，
+上報四重恩，下濟三途苦，
+若有見聞者，悉發菩提心，
+盡此一報身，同生極樂國。</p>
+      <button class="view-btn secondary" type="button" data-action="close-dedication">關閉</button>
+    </div>
+  </div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+    const IS_MOBILE = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const LOW_PERFORMANCE_MODE = IS_MOBILE;
+    const TARGET_FPS = LOW_PERFORMANCE_MODE ? 30 : 60;
+    const RENDERER_PIXEL_RATIO_LIMIT = LOW_PERFORMANCE_MODE ? 1.0 : 1.5;
+    const SIDE_SHRINE_COLUMNS_PER_SIDE = LOW_PERFORMANCE_MODE ? 16 : 30;
+    const SIDE_SHRINE_TEXTURE_MAX_EDGE = LOW_PERFORMANCE_MODE ? 384 : 768;
+
+    // ---------- Scene ----------
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1b0803);
+    scene.fog = new THREE.Fog(0x2c1005, 42, 86);
+
+    const camera = new THREE.PerspectiveCamera(54, window.innerWidth / window.innerHeight, 0.1, 160);
+    camera.position.set(0, 4.15, 19.8);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    const rendererPixelRatio = Math.min(window.devicePixelRatio || 1, RENDERER_PIXEL_RATIO_LIMIT);
+    renderer.setPixelRatio(rendererPixelRatio);
+    renderer.shadowMap.enabled = !LOW_PERFORMANCE_MODE;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.92;
+    document.body.appendChild(renderer.domElement);
+
+    // ---------- Easier controls ----------
+    const INVERT_HORIZONTAL_DRAG = true;
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 3.55, -12.6);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.065;
+    controls.rotateSpeed = INVERT_HORIZONTAL_DRAG ? -0.46 : 0.46;
+    controls.zoomSpeed = 0.78;
+    controls.panSpeed = 0.55;
+    controls.minDistance = 4.2;
+    controls.maxDistance = 24;
+    controls.maxPolarAngle = Math.PI * 0.47;
+    controls.minPolarAngle = Math.PI * 0.16;
+    controls.screenSpacePanning = true;
+    controls.update();
+
+    const HALL_BOUNDS = {
+      minX: -10.5,
+      maxX: 10.5,
+      minZ: -21.0,
+      maxZ: 17.8,
+      minY: 1.2,
+      maxY: 9.2
+    };
+
+    const TARGET_BOUNDS = {
+      minX: -10.5,
+      maxX: 10.5,
+      minZ: -21.0,
+      maxZ: 17.8,
+      minY: 1.0,
+      maxY: 7.8
+    };
+
+    const clock = new THREE.Clock();
+    const keys = { w:false, a:false, s:false, d:false, up:false, down:false, left:false, right:false };
+    const mobileMove = { forward:false, back:false, left:false, right:false };
+    let hallSceneState = "frontHall";
+    let isHallSceneTransitioning = false;
+    let frontHallEntranceApproach = 0;
+    let frontHallEntranceHoldStartedAt = 0;
+    let frontHallEntranceTimer = null;
+    const FRONT_HALL_ENTRANCE_PROGRESS = 7.2;
+    const FRONT_HALL_ENTRANCE_HOLD_MS = 2200;
+    const innerShrinePosition = { x: 0, y: 0.38 };
+    const innerShrineBounds = { minX: -0.08, maxX: 0.08, minY: 0.10, maxY: 0.96 };
+    const NPC_APNG_SRC = "assets/images/npc/practitioner-bow-30frames-v3-corrected.apng";
+    const NPC_SPRITE_SRC = "assets/images/npc/practitioner-bow-30frames-v3-corrected-sprite.png";
+    const NPC_WALK_AREA = { xMin: 0.36, xMax: 0.64, yMin: 0.68, yMax: 0.86 };
+    const NPC_CENTER_POINT = { x: 0.50, y: 0.78 };
+    const NPC_PROSTRATION_MS = 11700;
+    window.hallSceneState = hallSceneState;
+    const mobileMoveTab = document.getElementById('mobileMoveTab');
+    const mobileControlsPanel = document.getElementById('mobileControlsPanel');
+    const mobileControlClose = document.getElementById('mobileControlClose');
+    const offeringPanel = document.getElementById('offeringPanel');
+    const offeringMessage = document.getElementById('offeringMessage');
+    const offeringStatus = document.getElementById('offeringStatus');
+    const dedicationModal = document.getElementById('dedicationModal');
+    const deityImageStatusEl = document.getElementById('deityImageStatus');
+    const mainBuddhaStatusEl = document.getElementById('mainBuddhaStatus');
+    const deityMissingListEl = document.getElementById('deityMissingList');
+    const hudToggle = document.getElementById('hudToggle');
+    const sidePanelToggle = document.getElementById('sidePanelToggle');
+    const mainDeityPanelToggle = document.getElementById('mainDeityPanelToggle');
+    const mainDeitySelect = document.getElementById('mainDeitySelect');
+    const mainDeityCurrentEl = document.getElementById('mainDeityCurrent');
+    const mainDeityMessageEl = document.getElementById('mainDeityMessage');
+    const offeringPanelToggle = document.getElementById('offeringPanelToggle');
+    const musicPanelToggle = document.getElementById('musicPanelToggle');
+    const toolbarToggle = document.getElementById('toolbarToggle');
+    const musicSelect = document.getElementById('musicSelect');
+    const musicPlayPause = document.getElementById('musicPlayPause');
+    const musicPrevious = document.getElementById('musicPrevious');
+    const musicNext = document.getElementById('musicNext');
+    const musicLoop = document.getElementById('musicLoop');
+    const musicVolume = document.getElementById('musicVolume');
+    const musicMute = document.getElementById('musicMute');
+    const musicNowPlaying = document.getElementById('musicNowPlaying');
+    const musicMessage = document.getElementById('musicMessage');
+    const innerShrineLayer = document.getElementById('innerShrineLayer');
+    const innerShrineStage = document.getElementById('innerShrineStage');
+    const npcLayer = document.getElementById('npcLayer');
+    const npcCharacter = document.getElementById('npcCharacter');
+    const npcProstrationWrap = document.getElementById('npcProstrationWrap');
+    const npcProstrationApng = document.getElementById('npcProstrationApng');
+    const npcProstrationSprite = document.getElementById('npcProstrationSprite');
+    const npcTargetMarker = document.getElementById('npcTargetMarker');
+    const sceneTransitionLayer = document.getElementById('sceneTransition');
+    const panelStateStore = {
+      hud: { panel: document.getElementById('hud'), toggle: hudToggle, key: 'buddhaHallHudOpen' },
+      sidePanel: { panel: document.getElementById('sidePanel'), toggle: sidePanelToggle, key: 'buddhaHallInfoOpen' },
+      mainDeityPanel: { panel: document.getElementById('mainDeityPanel'), toggle: mainDeityPanelToggle, key: 'buddhaHallMainDeityOpen' },
+      offeringPanel: { panel: document.getElementById('offeringPanel'), toggle: offeringPanelToggle, key: 'buddhaHallOfferingOpen' },
+      musicPanel: { panel: document.getElementById('musicPanel'), toggle: musicPanelToggle, key: 'buddhaHallMusicOpen' },
+      toolbar: { panel: document.getElementById('toolbar'), toggle: toolbarToggle, key: 'buddhaHallToolbarOpen' }
+    };
+    const ASSET_VERSION = "20260428_layout_v4";
+    const PHOTO_REFERENCE_BACKDROP = "assets/images/backgrounds/tibetan-temple-full-frame-1920x1080.png";
+    const MAIN_ALTAR_BACKGROUND_STATIC = "assets/images/backgrounds/imageall.png";
+    const MAIN_ALTAR_BACKGROUND_MANIFEST = "assets/images/backgrounds/background_frames.json";
+    const BACKGROUND_ANIMATION_ENABLED = true;
+    const BACKGROUND_ANIMATION_FPS = 10;
+    const ENABLE_BACKGROUND_ANIMATION_ON_MOBILE = false;
+    const BACKGROUND_ANIMATION_MOBILE_FPS = 6;
+    const SHOW_VERTICAL_ZONE_DIVIDERS = false;
+    const SHRINE_LAYOUT_TUNING = {
+      rows: 3,
+      columnsPerSide: SIDE_SHRINE_COLUMNS_PER_SIDE,
+      statueHeightRatio: 0.52,
+      statueMaxWidthRatio: 0.58,
+      statueForwardOffset: 0.18,
+      labelScale: 1.12,
+      labelYOffset: -0.18,
+      zoneTitleScale: 1.35,
+      haloScale: 0.72,
+      cellPaddingX: 0.06,
+      cellPaddingY: 0.08
+    };
+    const PERFORMANCE_MODE_LABEL = LOW_PERFORMANCE_MODE ? 'Mobile low performance mode' : 'Desktop full mode';
+    const SPONSOR_LABEL_STYLE = {
+      text: "善信供養",
+      widthScale: 0.96,
+      heightScale: 0.40,
+      fontSize: 132,
+      opacity: 0.62
+    };
+    const SPONSOR_STORAGE_KEY = "shrineOfferings";
+    const SPONSOR_DATA_CHANNEL = "shrine-offerings-updates";
+    const SPONSOR_DISPLAY_MAX_CHARS = 8;
+    let currentMainBuddhaImagePath = 'assets/images/deities/shakyamuni.png';
+    let currentMainDeityName = '釋迦牟尼佛';
+    let mainDeityHolder = null;
+    let shrineOfferings = [];
+    const sponsorLabelMap = new Map();
+    const sponsorLabelSprites = new Map();
+
+    window.shrineOfferings = shrineOfferings;
+    window.sponsorLabelMap = sponsorLabelMap;
+
+    function formatSponsorDisplayName(name) {
+      const clean = String(name || SPONSOR_LABEL_STYLE.text).trim() || SPONSOR_LABEL_STYLE.text;
+      if (clean.length <= SPONSOR_DISPLAY_MAX_CHARS) return clean;
+      return `${clean.slice(0, SPONSOR_DISPLAY_MAX_CHARS - 1)}…`;
+    }
+
+    function rememberPanelState(id, isOpen) {
+      try {
+        localStorage.setItem(panelStateStore[id].key, isOpen ? 'open' : 'collapsed');
+      } catch (error) {
+      }
+    }
+
+    function setPanelOpen(id, isOpen) {
+      const entry = panelStateStore[id];
+      if (!entry) return;
+      entry.panel.classList.toggle('panel-open', isOpen);
+      entry.panel.classList.toggle('panel-collapsed', !isOpen);
+      entry.toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      rememberPanelState(id, isOpen);
+    }
+
+    function restorePanelState(id) {
+      setPanelOpen(id, false);
+    }
+
+    Object.keys(panelStateStore).forEach((id) => restorePanelState(id));
+    Object.entries(panelStateStore).forEach(([id, entry]) => {
+      entry.toggle.addEventListener('click', () => setPanelOpen(id, !entry.panel.classList.contains('panel-open')));
+    });
+    document.querySelectorAll('[data-panel-close]').forEach((button) => {
+      button.addEventListener('click', () => setPanelOpen(button.dataset.panelClose, false));
+    });
+
+    function clearFrontHallEntranceTimer() {
+      if (!frontHallEntranceTimer) return;
+      clearTimeout(frontHallEntranceTimer);
+      frontHallEntranceTimer = null;
+    }
+
+    function scheduleFrontHallEntranceTimer() {
+      if (hallSceneState !== "frontHall" || isHallSceneTransitioning || frontHallEntranceTimer) return;
+      frontHallEntranceTimer = setTimeout(() => {
+        frontHallEntranceTimer = null;
+        const stillMovingForward = keys.w || keys.up || mobileMove.forward;
+        if (hallSceneState === "frontHall" && !isHallSceneTransitioning && stillMovingForward && Math.abs(camera.position.x) < 4.2) {
+          transitionToInnerShrine();
+        }
+      }, FRONT_HALL_ENTRANCE_HOLD_MS);
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'KeyW') {
+        keys.w = true;
+        scheduleFrontHallEntranceTimer();
+      }
+      if (e.code === 'KeyA') keys.a = true;
+      if (e.code === 'KeyS') keys.s = true;
+      if (e.code === 'KeyD') keys.d = true;
+      if (e.code === 'ArrowUp') keys.up = true;
+      if (e.code === 'ArrowDown') keys.down = true;
+      if (e.code === 'ArrowLeft') keys.left = true;
+      if (e.code === 'ArrowRight') keys.right = true;
+      if (e.code === 'KeyR') flyToView('reset');
+      if (e.code === 'Escape' && dedicationModal.classList.contains('open')) closeDedication();
+    });
+
+    window.addEventListener('keyup', (e) => {
+      if (e.code === 'KeyW') {
+        keys.w = false;
+        clearFrontHallEntranceTimer();
+      }
+      if (e.code === 'KeyA') keys.a = false;
+      if (e.code === 'KeyS') keys.s = false;
+      if (e.code === 'KeyD') keys.d = false;
+      if (e.code === 'ArrowUp') keys.up = false;
+      if (e.code === 'ArrowDown') keys.down = false;
+      if (e.code === 'ArrowLeft') keys.left = false;
+      if (e.code === 'ArrowRight') keys.right = false;
+    });
+
+    function setMobileControlsOpen(isOpen) {
+      mobileControlsPanel?.classList.toggle('mobile-controls-open', isOpen);
+      mobileMoveTab?.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      if (!isOpen) Object.keys(mobileMove).forEach(k => mobileMove[k] = false);
+    }
+    mobileMoveTab?.addEventListener('click', () => {
+      setMobileControlsOpen(!mobileControlsPanel.classList.contains('mobile-controls-open'));
+    });
+    mobileControlClose?.addEventListener('click', () => setMobileControlsOpen(false));
+
+    document.querySelectorAll('#mobileControlsPanel button[data-move]').forEach(btn => {
+      const move = btn.dataset.move;
+      const set = (v) => {
+        if (move === 'stop') {
+          Object.keys(mobileMove).forEach(k => mobileMove[k] = false);
+          clearFrontHallEntranceTimer();
+          return;
+        }
+        mobileMove[move] = v;
+        if (move === 'forward' && v) scheduleFrontHallEntranceTimer();
+        if (move === 'forward' && !v) clearFrontHallEntranceTimer();
+      };
+      btn.addEventListener('pointerdown', () => set(true));
+      btn.addEventListener('pointerup', () => set(false));
+      btn.addEventListener('pointerleave', () => set(false));
+    });
+
+    function clearMovementState() {
+      Object.keys(keys).forEach((key) => keys[key] = false);
+      Object.keys(mobileMove).forEach((key) => mobileMove[key] = false);
+      clearFrontHallEntranceTimer();
+    }
+
+    function waitMs(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    async function fadeSceneToDark() {
+      sceneTransitionLayer?.classList.add('transition-dark');
+      await waitMs(520);
+    }
+
+    async function fadeSceneFromDark() {
+      sceneTransitionLayer?.classList.remove('transition-dark');
+      await waitMs(520);
+    }
+
+    function updateInnerShrineBackgroundPosition() {
+      if (!innerShrineLayer) return;
+      const x = THREE.MathUtils.clamp(innerShrinePosition.x, innerShrineBounds.minX, innerShrineBounds.maxX);
+      const y = THREE.MathUtils.clamp(innerShrinePosition.y, innerShrineBounds.minY, innerShrineBounds.maxY);
+      innerShrinePosition.x = x;
+      innerShrinePosition.y = y;
+    }
+
+    const npcState = {
+      mode: "idle",
+      x: NPC_CENTER_POINT.x,
+      y: NPC_CENTER_POINT.y,
+      targetX: NPC_CENTER_POINT.x,
+      targetY: NPC_CENTER_POINT.y,
+      speed: 0.075,
+      actionLocked: false,
+      arriveAction: null,
+      prostrateTimer: null,
+      spriteTimer: null,
+      spriteFrame: 0,
+      apngFailed: false,
+      wanderTimer: null,
+      animationFrame: null,
+      lastFrameTime: 0,
+      lastMoveSign: 0
+    };
+
+    function setNpcStatus(text) {
+    }
+
+    function clampNpcPoint(point) {
+      const y = THREE.MathUtils.clamp(point.y, NPC_WALK_AREA.yMin, NPC_WALK_AREA.yMax);
+      const x = THREE.MathUtils.clamp(point.x, NPC_WALK_AREA.xMin, NPC_WALK_AREA.xMax);
+      return { x, y };
+    }
+
+    function getNpcScaleByY(y) {
+      const t = (y - NPC_WALK_AREA.yMin) / (NPC_WALK_AREA.yMax - NPC_WALK_AREA.yMin);
+      const clamped = Math.max(0, Math.min(1, t));
+      return 0.78 + clamped * 0.32;
+    }
+
+    function getNpcWidthByY(y) {
+      return 210 * getNpcScaleByY(y);
+    }
+
+    function clearNpcTimers() {
+      if (npcState.prostrateTimer) {
+        clearTimeout(npcState.prostrateTimer);
+        npcState.prostrateTimer = null;
+      }
+      if (npcState.spriteTimer) {
+        clearTimeout(npcState.spriteTimer);
+        npcState.spriteTimer = null;
+      }
+      if (npcState.wanderTimer) {
+        clearTimeout(npcState.wanderTimer);
+        npcState.wanderTimer = null;
+      }
+    }
+
+    function restartApng(img, src) {
+      if (!img) return;
+      img.removeAttribute('src');
+      requestAnimationFrame(() => {
+        img.src = `${src}?t=${Date.now()}`;
+      });
+    }
+
+    function setNpcVisualState(mode) {
+      if (!npcCharacter) return;
+      npcCharacter.classList.remove('npc-idle', 'npc-walking', 'npc-meditating');
+      npcCharacter.classList.add(mode === 'walking' ? 'npc-walking' : mode === 'meditating' ? 'npc-meditating' : 'npc-idle');
+    }
+
+    function showNpcStand(mode = 'idle') {
+      if (npcCharacter) npcCharacter.style.display = '';
+      document.body.classList.add('npc-stand-visible');
+      document.body.classList.remove('npc-prostration-visible');
+      setNpcVisualState(mode);
+    }
+
+    function showNpcProstration() {
+      if (npcProstrationWrap) npcProstrationWrap.style.display = '';
+      document.body.classList.remove('npc-stand-visible');
+      document.body.classList.add('npc-prostration-visible');
+      if (npcProstrationApng) npcProstrationApng.style.display = npcState.apngFailed ? 'none' : 'block';
+      if (npcProstrationSprite) npcProstrationSprite.style.display = npcState.apngFailed ? 'block' : 'none';
+      if (npcState.apngFailed) startNpcSpriteProstrationLoop();
+    }
+
+    function hideNpcVisuals() {
+      document.body.classList.remove('npc-stand-visible', 'npc-prostration-visible');
+      if (npcProstrationSprite) npcProstrationSprite.style.display = 'none';
+    }
+
+    function setNpcSpriteFrame(frameIndex) {
+      if (!npcProstrationSprite) return;
+      const percent = (frameIndex / 29) * 100;
+      npcProstrationSprite.style.backgroundPosition = `${percent}% center`;
+    }
+
+    function startNpcSpriteProstrationLoop() {
+      if (!npcProstrationSprite) return;
+      if (npcState.spriteTimer) clearTimeout(npcState.spriteTimer);
+      npcState.spriteFrame = 0;
+      const next = () => {
+        setNpcSpriteFrame(npcState.spriteFrame);
+        npcState.spriteFrame = (npcState.spriteFrame + 1) % 30;
+        npcState.spriteTimer = setTimeout(next, NPC_PROSTRATION_MS / 30);
+      };
+      next();
+    }
+
+    function updateNpcPosition() {
+      const width = getNpcWidthByY(npcState.y);
+      for (const el of [npcCharacter, npcProstrationWrap]) {
+        if (!el) continue;
+        el.style.left = `${npcState.x * 100}%`;
+        el.style.top = `${npcState.y * 100}%`;
+        el.style.width = `${width}px`;
+      }
+      if (npcTargetMarker) {
+        npcTargetMarker.style.left = `${npcState.targetX * 100}%`;
+        npcTargetMarker.style.top = `${npcState.targetY * 100}%`;
+      }
+    }
+
+    function randomNpcPoint() {
+      return {
+        x: NPC_WALK_AREA.xMin + Math.random() * (NPC_WALK_AREA.xMax - NPC_WALK_AREA.xMin),
+        y: NPC_WALK_AREA.yMin + Math.random() * (NPC_WALK_AREA.yMax - NPC_WALK_AREA.yMin)
+      };
+    }
+
+    function setNpcTarget(point, arriveAction = null) {
+      const clamped = clampNpcPoint(point);
+      npcState.targetX = clamped.x;
+      npcState.targetY = clamped.y;
+      npcState.arriveAction = arriveAction;
+      npcState.actionLocked = false;
+      npcState.mode = "walkToTarget";
+      showNpcStand('walking');
+      updateNpcPosition();
+    }
+
+    function scheduleNextWanderPoint() {
+      if (npcState.mode !== "wander" || hallSceneState !== "innerShrine") return;
+      if (npcState.wanderTimer) clearTimeout(npcState.wanderTimer);
+      npcState.wanderTimer = setTimeout(() => {
+        if (npcState.mode === "wander" && hallSceneState === "innerShrine") {
+          setNpcTarget(randomNpcPoint(), () => {
+            npcState.mode = "wander";
+            showNpcStand('idle');
+            scheduleNextWanderPoint();
+          });
+        }
+      }, 800 + Math.random() * 1600);
+    }
+
+    function commandNpcWander() {
+      clearNpcTimers();
+      npcState.mode = "wander";
+      npcState.actionLocked = false;
+      setNpcStatus("自由行走");
+      setNpcTarget(randomNpcPoint(), () => {
+        npcState.mode = "wander";
+        showNpcStand('idle');
+        scheduleNextWanderPoint();
+      });
+    }
+
+    function commandNpcGoCenter() {
+      clearNpcTimers();
+      npcState.mode = "walkToTarget";
+      npcState.actionLocked = false;
+      setNpcStatus("走向圓圈");
+      setNpcTarget(NPC_CENTER_POINT, () => {
+        npcState.mode = "idle";
+        showNpcStand('idle');
+        setNpcStatus("已到圓圈");
+      });
+    }
+
+    function startNpcProstrationOnce() {
+      clearNpcTimers();
+      npcState.mode = "prostrateOnce";
+      npcState.actionLocked = true;
+      restartApng(npcProstrationApng, NPC_APNG_SRC);
+      showNpcProstration();
+      setNpcStatus("頂禮一次");
+      npcState.prostrateTimer = setTimeout(() => {
+        npcState.prostrateTimer = null;
+        npcState.actionLocked = false;
+        npcState.mode = "idle";
+        showNpcStand('idle');
+        setNpcStatus("待命");
+      }, NPC_PROSTRATION_MS);
+    }
+
+    function startNpcProstrationLoop() {
+      clearNpcTimers();
+      npcState.mode = "prostrateLoop";
+      npcState.actionLocked = true;
+      restartApng(npcProstrationApng, NPC_APNG_SRC);
+      showNpcProstration();
+      setNpcStatus("循環頂禮");
+    }
+
+    function commandNpcProstrateOnce() {
+      clearNpcTimers();
+      npcState.mode = "walkToTarget";
+      setNpcStatus("前往頂禮點");
+      setNpcTarget(NPC_CENTER_POINT, startNpcProstrationOnce);
+    }
+
+    function commandNpcProstrateLoop() {
+      clearNpcTimers();
+      npcState.mode = "walkToTarget";
+      setNpcStatus("前往頂禮點");
+      setNpcTarget(NPC_CENTER_POINT, startNpcProstrationLoop);
+    }
+
+    function commandNpcMeditate() {
+      clearNpcTimers();
+      npcState.mode = "walkToTarget";
+      setNpcStatus("前往禪修點");
+      setNpcTarget(NPC_CENTER_POINT, () => {
+        npcState.mode = "meditate";
+        npcState.actionLocked = true;
+        showNpcStand('meditating');
+        setNpcStatus("禪修中");
+      });
+    }
+
+    function commandNpcStop() {
+      clearNpcTimers();
+      npcState.mode = "idle";
+      npcState.actionLocked = false;
+      npcState.arriveAction = null;
+      npcState.targetX = npcState.x;
+      npcState.targetY = npcState.y;
+      showNpcStand('idle');
+      setNpcStatus("待命");
+      updateNpcPosition();
+    }
+
+    function runNpcCommand(command) {
+      if (hallSceneState !== "innerShrine") return;
+      if (command === "wander") commandNpcWander();
+      if (command === "goCenter") commandNpcGoCenter();
+      if (command === "prostrateOnce") commandNpcProstrateOnce();
+      if (command === "prostrateLoop") commandNpcProstrateLoop();
+      if (command === "meditate") commandNpcMeditate();
+      if (command === "stop") commandNpcStop();
+    }
+
+    function updateNpc(dt) {
+      if (hallSceneState !== "innerShrine" || npcState.actionLocked) return;
+      const dx = npcState.targetX - npcState.x;
+      const dy = npcState.targetY - npcState.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist > 0.003) {
+        const step = npcState.speed * dt;
+        const ratio = Math.min(1, step / dist);
+        npcState.x += dx * ratio;
+        npcState.y += dy * ratio;
+        npcState.lastMoveSign = Math.abs(dx) > 0.001 ? Math.sign(dx) : npcState.lastMoveSign;
+        showNpcStand('walking');
+      } else {
+        npcState.x = npcState.targetX;
+        npcState.y = npcState.targetY;
+        if (npcState.arriveAction) {
+          const action = npcState.arriveAction;
+          npcState.arriveAction = null;
+          action();
+        } else if (npcState.mode === "walkToTarget") {
+          npcState.mode = "idle";
+          showNpcStand('idle');
+          setNpcStatus("待命");
+        }
+      }
+      updateNpcPosition();
+    }
+
+    function npcTick(now) {
+      if (hallSceneState !== "innerShrine") {
+        npcState.animationFrame = null;
+        return;
+      }
+      const dt = Math.min(0.05, (now - (npcState.lastFrameTime || now)) / 1000);
+      npcState.lastFrameTime = now;
+      updateNpc(dt);
+      npcState.animationFrame = requestAnimationFrame(npcTick);
+    }
+
+    function startNpcController() {
+      if (!npcProstrationWrap) return;
+      clearNpcTimers();
+      npcState.mode = "prostrateLoop";
+      npcState.x = NPC_CENTER_POINT.x;
+      npcState.y = 0.87;
+      npcState.targetX = npcState.x;
+      npcState.targetY = npcState.y;
+      npcState.actionLocked = true;
+      updateNpcPosition();
+      restartApng(npcProstrationApng, NPC_APNG_SRC);
+      showNpcProstration();
+      if (npcProstrationApng && !npcState.apngFailed) console.log("Using corrected NPC APNG:", NPC_APNG_SRC);
+      if (npcProstrationSprite && npcState.apngFailed) console.log("Using corrected NPC sprite fallback:", NPC_SPRITE_SRC);
+    }
+
+    function initNpcProstrationAssets() {
+      if (!npcProstrationApng) return;
+      npcProstrationApng.addEventListener('load', () => {
+        npcState.apngFailed = false;
+        console.log("Using corrected NPC APNG:", NPC_APNG_SRC);
+      });
+      npcProstrationApng.addEventListener('error', () => {
+        npcState.apngFailed = true;
+        if (npcProstrationApng) npcProstrationApng.style.display = 'none';
+        if (npcProstrationSprite) {
+          npcProstrationSprite.style.display = 'block';
+          npcProstrationSprite.style.backgroundImage = `url("${NPC_SPRITE_SRC}")`;
+        }
+        console.warn("Corrected NPC APNG failed, using sprite fallback:", NPC_SPRITE_SRC);
+      });
+      npcProstrationApng.src = NPC_APNG_SRC;
+    }
+
+    initNpcProstrationAssets();
+
+    function stopNpcController() {
+      clearNpcTimers();
+      hideNpcVisuals();
+      if (npcCharacter) npcCharacter.style.display = 'none';
+      if (npcProstrationWrap) npcProstrationWrap.style.display = 'none';
+      npcState.actionLocked = false;
+      npcState.arriveAction = null;
+      if (npcState.animationFrame) {
+        cancelAnimationFrame(npcState.animationFrame);
+        npcState.animationFrame = null;
+      }
+    }
+
+    async function transitionToInnerShrine() {
+      if (hallSceneState !== "frontHall" || isHallSceneTransitioning) return;
+      isHallSceneTransitioning = true;
+      frontHallEntranceApproach = 0;
+      frontHallEntranceHoldStartedAt = 0;
+      clearMovementState();
+      await fadeSceneToDark();
+      hallSceneState = "innerShrine";
+      window.hallSceneState = hallSceneState;
+      innerShrinePosition.x = 0;
+      innerShrinePosition.y = 0.38;
+      updateInnerShrineBackgroundPosition();
+      document.body.classList.add('inner-shrine-active');
+      innerShrineLayer?.setAttribute('aria-hidden', 'false');
+      startNpcController();
+      controls.enabled = false;
+      await fadeSceneFromDark();
+      isHallSceneTransitioning = false;
+    }
+
+    async function transitionToFrontHall() {
+      if (hallSceneState !== "innerShrine" || isHallSceneTransitioning) return;
+      isHallSceneTransitioning = true;
+      clearMovementState();
+      await fadeSceneToDark();
+      hallSceneState = "frontHall";
+      window.hallSceneState = hallSceneState;
+      document.body.classList.remove('inner-shrine-active');
+      innerShrineLayer?.setAttribute('aria-hidden', 'true');
+      stopNpcController();
+      controls.enabled = true;
+      camera.position.set(0, 4.2, -15.2);
+      controls.target.set(0, 4.5, -24.2);
+      controls.update();
+      frontHallEntranceApproach = 0;
+      frontHallEntranceHoldStartedAt = 0;
+      await fadeSceneFromDark();
+      isHallSceneTransitioning = false;
+    }
+
+    function checkFrontHallEntranceTrigger() {
+      if (hallSceneState !== "frontHall" || isHallSceneTransitioning) return;
+      const reachedBackGate = Math.abs(camera.position.x) < 2.35 && camera.position.z < -16.8;
+      const heldForwardTowardGate = frontHallEntranceHoldStartedAt > 0 && performance.now() - frontHallEntranceHoldStartedAt >= FRONT_HALL_ENTRANCE_HOLD_MS;
+      const walkedTowardGate = Math.abs(camera.position.x) < 4.2 && (frontHallEntranceApproach >= FRONT_HALL_ENTRANCE_PROGRESS || heldForwardTowardGate);
+      if (reachedBackGate || walkedTowardGate) {
+        transitionToInnerShrine();
+      }
+    }
+
+    function moveInnerShrineView(delta) {
+      if (hallSceneState !== "innerShrine" || isHallSceneTransitioning) return;
+      const forward = (keys.w || keys.up || mobileMove.forward) ? 1 : 0;
+      const back = (keys.s || keys.down || mobileMove.back) ? 1 : 0;
+      const left = (keys.a || keys.left || mobileMove.left) ? 1 : 0;
+      const right = (keys.d || keys.right || mobileMove.right) ? 1 : 0;
+      if (!forward && !back && !left && !right) return;
+      innerShrinePosition.y += (forward - back) * delta * 0.32;
+      innerShrinePosition.x += (right - left) * delta * 0.15;
+      updateInnerShrineBackgroundPosition();
+      if (back && innerShrinePosition.y <= innerShrineBounds.minY + 0.02) {
+        transitionToFrontHall();
+      }
+    }
+
+    window.transitionToInnerShrine = transitionToInnerShrine;
+    window.transitionToFrontHall = transitionToFrontHall;
+    window.__npcDebug = () => ({
+      mode: npcState.mode,
+      x: npcState.x,
+      y: npcState.y,
+      targetX: npcState.targetX,
+      targetY: npcState.targetY,
+      actionLocked: npcState.actionLocked
+    });
+    window.__hallNavigationDebug = () => ({
+      state: hallSceneState,
+      keys: { ...keys },
+      frontHallEntranceApproach,
+      frontHallEntranceHoldStartedAt
+    });
+
+    // ---------- Procedural visual upgrade textures ----------
+    const persistentTextures = new Set();
+    function makeCanvasTexture(width, height, draw, repeatX = 1, repeatY = 1) {
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      draw(ctx, width, height);
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.set(repeatX, repeatY);
+      texture.anisotropy = 8;
+      persistentTextures.add(texture);
+      return texture;
+    }
+
+    function drawVineOrnament(ctx, x, y, w, h, color = 'rgba(255, 208, 98, 0.62)') {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = Math.max(2, Math.min(w, h) * 0.035);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      const mid = y + h / 2;
+      ctx.beginPath();
+      ctx.moveTo(x + w * 0.08, mid);
+      for (let i = 0; i < 4; i++) {
+        const sx = x + w * (0.12 + i * 0.22);
+        ctx.bezierCurveTo(sx + w * 0.07, y + h * 0.05, sx + w * 0.14, y + h * 0.95, sx + w * 0.22, mid);
+      }
+      ctx.stroke();
+      for (let i = 0; i < 5; i++) {
+        const cx = x + w * (0.14 + i * 0.18);
+        ctx.beginPath();
+        ctx.ellipse(cx, y + h * 0.28, w * 0.035, h * 0.11, -0.65, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(cx + w * 0.05, y + h * 0.72, w * 0.035, h * 0.11, 0.65, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    const textureSet = {
+      wood: makeCanvasTexture(768, 768, (ctx, w, h) => {
+        const grd = ctx.createLinearGradient(0, 0, w, h);
+        grd.addColorStop(0, '#2b0e08');
+        grd.addColorStop(0.42, '#5a1e10');
+        grd.addColorStop(1, '#170604');
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, w, h);
+        for (let i = 0; i < 52; i++) {
+          const y = i * h / 52 + Math.sin(i * 1.7) * 10;
+          ctx.strokeStyle = i % 3 === 0 ? 'rgba(255, 175, 74, 0.18)' : 'rgba(30, 7, 3, 0.35)';
+          ctx.lineWidth = 2 + (i % 5);
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          for (let x = 0; x <= w; x += 48) ctx.lineTo(x, y + Math.sin(x * 0.018 + i) * 14);
+          ctx.stroke();
+        }
+      }, 3, 3),
+      brocade: makeCanvasTexture(1024, 1024, (ctx, w, h) => {
+        const grd = ctx.createRadialGradient(w * 0.5, h * 0.32, 30, w * 0.5, h * 0.5, w * 0.78);
+        grd.addColorStop(0, '#9b3a19');
+        grd.addColorStop(0.45, '#5f170d');
+        grd.addColorStop(1, '#260604');
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, w, h);
+        for (let y = 72; y < h; y += 150) {
+          for (let x = 72; x < w; x += 150) {
+            drawVineOrnament(ctx, x - 56, y - 48, 112, 96, 'rgba(255, 204, 91, 0.36)');
+          }
+        }
+      }, 2, 2),
+      rug: makeCanvasTexture(1024, 2048, (ctx, w, h) => {
+        const grd = ctx.createLinearGradient(0, 0, 0, h);
+        grd.addColorStop(0, '#5b1008');
+        grd.addColorStop(0.48, '#9f2416');
+        grd.addColorStop(1, '#4b0c07');
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, w, h);
+        ctx.strokeStyle = 'rgba(255, 210, 101, 0.72)';
+        ctx.lineWidth = 34;
+        ctx.strokeRect(58, 58, w - 116, h - 116);
+        ctx.strokeStyle = 'rgba(255, 236, 171, 0.44)';
+        ctx.lineWidth = 9;
+        ctx.strokeRect(118, 118, w - 236, h - 236);
+        for (let y = 170; y < h - 170; y += 245) drawVineOrnament(ctx, 165, y, w - 330, 120, 'rgba(255, 209, 99, 0.40)');
+        ctx.beginPath();
+        ctx.ellipse(w / 2, h / 2, w * 0.27, h * 0.15, 0, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255, 222, 128, 0.58)';
+        ctx.lineWidth = 20;
+        ctx.stroke();
+      }, 1, 1),
+      thangka: makeCanvasTexture(1024, 1536, (ctx, w, h) => {
+        const grd = ctx.createLinearGradient(0, 0, 0, h);
+        grd.addColorStop(0, '#1c2a2d');
+        grd.addColorStop(0.35, '#74311c');
+        grd.addColorStop(1, '#2b0d08');
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = 'rgba(218, 149, 52, 0.23)';
+        for (let i = 0; i < 34; i++) {
+          ctx.beginPath();
+          ctx.arc((i * 131) % w, (i * 229) % h, 18 + (i % 5) * 11, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.strokeStyle = 'rgba(255, 210, 104, 0.70)';
+        ctx.lineWidth = 22;
+        ctx.strokeRect(56, 56, w - 112, h - 112);
+        ctx.strokeStyle = 'rgba(37, 119, 92, 0.60)';
+        ctx.lineWidth = 12;
+        ctx.strokeRect(96, 96, w - 192, h - 192);
+        drawVineOrnament(ctx, 160, 95, w - 320, 135, 'rgba(255, 216, 114, 0.68)');
+        drawVineOrnament(ctx, 160, h - 230, w - 320, 135, 'rgba(255, 216, 114, 0.68)');
+      }, 1, 1),
+      goldFiligree: makeCanvasTexture(1024, 256, (ctx, w, h) => {
+        const grd = ctx.createLinearGradient(0, 0, w, h);
+        grd.addColorStop(0, '#6e3a08');
+        grd.addColorStop(0.5, '#f1c86d');
+        grd.addColorStop(1, '#7a3e09');
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, w, h);
+        drawVineOrnament(ctx, 40, 34, w - 80, h - 68, 'rgba(83, 35, 5, 0.56)');
+        drawVineOrnament(ctx, 40, 34, w - 80, h - 68, 'rgba(255, 246, 185, 0.36)');
+      }, 2, 1)
+    };
+
+    // ---------- Materials ----------
+    const makeMat = (params) => new THREE.MeshStandardMaterial(params);
+    const mat = {
+      floor: makeMat({ color: 0x5f371d, map: textureSet.wood, roughness: 0.52, metalness: 0.10, emissive: 0x120604, emissiveIntensity: 0.08 }),
+      carpet: makeMat({ color: 0x8e1f14, map: textureSet.rug, roughness: 0.82, metalness: 0.03, emissive: 0x250603, emissiveIntensity: 0.12 }),
+      wall: makeMat({ color: 0x5d160b, map: textureSet.brocade, roughness: 0.72, metalness: 0.05, emissive: 0x160302, emissiveIntensity: 0.16 }),
+      goldWall: makeMat({ color: 0xb47a24, map: textureSet.goldFiligree, roughness: 0.34, metalness: 0.76, emissive: 0x361803, emissiveIntensity: 0.24 }),
+      wood: makeMat({ color: 0x4b160b, map: textureSet.wood, roughness: 0.66, metalness: 0.10, emissive: 0x0b0201, emissiveIntensity: 0.08 }),
+      darkWood: makeMat({ color: 0x240904, map: textureSet.wood, roughness: 0.78, metalness: 0.06, emissive: 0x050100, emissiveIntensity: 0.08 }),
+      gold: makeMat({ color: 0xd9a13a, map: textureSet.goldFiligree, roughness: 0.30, metalness: 0.76, emissive: 0x5f2c04, emissiveIntensity: 0.28 }),
+      brightGold: makeMat({ color: 0xffd37a, map: textureSet.goldFiligree, roughness: 0.23, metalness: 0.84, emissive: 0x7a3a04, emissiveIntensity: 0.42 }),
+      oldGold: makeMat({ color: 0xa46a1d, map: textureSet.goldFiligree, roughness: 0.38, metalness: 0.68, emissive: 0x341501, emissiveIntensity: 0.24 }),
+      robe: makeMat({ color: 0xb53b1d, roughness: 0.62, metalness: 0.06, emissive: 0x2b0502, emissiveIntensity: 0.22 }),
+      blue: makeMat({ color: 0x4a85db, roughness: 0.56, metalness: 0.08, emissive: 0x071f4c, emissiveIntensity: 0.22 }),
+      white: makeMat({ color: 0xf1ead6, roughness: 0.56, metalness: 0.04, emissive: 0x5d4c2e, emissiveIntensity: 0.18 }),
+      green: makeMat({ color: 0x4cb565, roughness: 0.56, metalness: 0.06, emissive: 0x062c0d, emissiveIntensity: 0.22 }),
+      amber: makeMat({ color: 0xe28b29, roughness: 0.45, metalness: 0.18, emissive: 0x452006, emissiveIntensity: 0.28 }),
+      glow: makeMat({ color: 0xffdfa0, roughness: 0.25, metalness: 0.24, emissive: 0xffb640, emissiveIntensity: 1.25 }),
+      glass: makeMat({ color: 0x5a1d10, roughness: 0.50, metalness: 0.12, transparent: true, opacity: 0.36, emissive: 0x2a0803, emissiveIntensity: 0.18 })
+    };
+
+    // ---------- Helpers ----------
+    function box(name, size, pos, material, cast=false, receive=true) {
+      const mesh = new THREE.Mesh(new THREE.BoxGeometry(size[0], size[1], size[2]), material);
+      mesh.name = name;
+      mesh.position.set(pos[0], pos[1], pos[2]);
+      mesh.castShadow = cast;
+      mesh.receiveShadow = receive;
+      scene.add(mesh);
+      return mesh;
+    }
+
+    function cyl(name, radiusTop, radiusBottom, height, pos, material, segments=48, cast=true, receive=true) {
+      const mesh = new THREE.Mesh(new THREE.CylinderGeometry(radiusTop, radiusBottom, height, segments), material);
+      mesh.name = name;
+      mesh.position.set(pos[0], pos[1], pos[2]);
+      mesh.castShadow = cast;
+      mesh.receiveShadow = receive;
+      scene.add(mesh);
+      return mesh;
+    }
+
+    function plane(name, width, height, pos, rotation, material, renderOrder = 0) {
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(width, height), material);
+      mesh.name = name;
+      mesh.position.set(pos[0], pos[1], pos[2]);
+      mesh.rotation.set(rotation[0] || 0, rotation[1] || 0, rotation[2] || 0);
+      mesh.renderOrder = renderOrder;
+      mesh.receiveShadow = true;
+      scene.add(mesh);
+      return mesh;
+    }
+
+    const thangkaMat = new THREE.MeshBasicMaterial({ map: textureSet.thangka, transparent: true, opacity: 0.74, toneMapped: false });
+    const rugOverlayMat = new THREE.MeshBasicMaterial({ map: textureSet.rug, transparent: true, opacity: 0.94, toneMapped: false });
+    const darkBrocadeMat = new THREE.MeshBasicMaterial({ map: textureSet.brocade, transparent: true, opacity: 0.58, toneMapped: false });
+    const photoReferenceBackdropMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.68,
+      depthWrite: false,
+      toneMapped: false
+    });
+    const mainAltarBackgroundMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.84,
+      depthWrite: false,
+      toneMapped: false
+    });
+    const MAIN_ALTAR_BACKGROUND_PLANE = {
+      width: 9.05,
+      height: 7.55
+    };
+    let mainAltarBackgroundPlane = null;
+    let mainBackgroundFrameTextures = [];
+    const mainBackgroundAnimationState = {
+      enabled: false,
+      fps: BACKGROUND_ANIMATION_FPS,
+      elapsed: 0,
+      frameIndex: 0
+    };
+    new THREE.TextureLoader().load(PHOTO_REFERENCE_BACKDROP, (texture) => {
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.anisotropy = 8;
+      persistentTextures.add(texture);
+      photoReferenceBackdropMat.map = texture;
+      photoReferenceBackdropMat.needsUpdate = true;
+    });
+
+    // ---------- Hall: brighter and more glorious ----------
+    box('floor', [28, 0.22, 46], [0, -0.11, -3], mat.floor, false, true);
+    box('ceiling', [28, 0.24, 46], [0, 10.7, -3], mat.goldWall, false, true);
+    box('leftWall', [0.32, 10.7, 46], [-14, 5.25, -3], mat.wall, false, true);
+    box('rightWall', [0.32, 10.7, 46], [14, 5.25, -3], mat.wall, false, true);
+    box('frontWall', [28, 10.7, 0.32], [0, 5.25, -25.8], mat.wall, false, true);
+    box('backWall', [28, 10.7, 0.32], [0, 5.25, 20], mat.wall, false, true);
+    plane('frontWallBrocadeOverlay', 26.6, 10.0, [0, 5.45, -25.61], [0, 0, 0], darkBrocadeMat, 1);
+
+    const outerShell = new THREE.Mesh(
+      new THREE.BoxGeometry(44, 24, 64),
+      new THREE.MeshStandardMaterial({
+        color: 0x180706,
+        roughness: 0.82,
+        metalness: 0.08,
+        emissive: 0x2a0907,
+        emissiveIntensity: 0.42,
+        side: THREE.BackSide
+      })
+    );
+    outerShell.position.set(0, 5.2, -3);
+    scene.add(outerShell);
+
+    // glossy carpet and golden runway
+    box('centralCarpet', [5.8, 0.035, 34], [0, 0.03, -2.6], mat.carpet, false, true);
+    plane('ornateTibetanRugOverlay', 8.6, 35.5, [0, 0.082, -2.6], [-Math.PI / 2, 0, 0], rugOverlayMat, 4);
+    box('goldRunnerL', [0.18, 0.045, 34], [-3.05, 0.055, -2.6], mat.brightGold, false, true);
+    box('goldRunnerR', [0.18, 0.045, 34], [3.05, 0.055, -2.6], mat.brightGold, false, true);
+
+    // thangka-like textile panels and carved side columns
+    for (const x of [-5.9, 5.9]) {
+      plane('sideThangkaWallPanel', 4.35, 7.35, [x, 5.65, -25.39], [0, 0, 0], thangkaMat.clone(), 6);
+      box('sideThangkaTopGold', [4.75, 0.18, 0.14], [x, 9.42, -25.22], mat.brightGold, true, true);
+      box('sideThangkaBottomGold', [4.75, 0.18, 0.14], [x, 1.88, -25.22], mat.brightGold, true, true);
+      box('sideThangkaLeftGold', [0.18, 7.55, 0.14], [x - 2.42, 5.65, -25.22], mat.brightGold, true, true);
+      box('sideThangkaRightGold', [0.18, 7.55, 0.14], [x + 2.42, 5.65, -25.22], mat.brightGold, true, true);
+    }
+    for (const x of [-10.6, 10.6, -3.15, 3.15]) {
+      box('frontCarvedWoodPillar', [0.34, 9.0, 0.38], [x, 5.2, -25.12], mat.darkWood, true, true);
+      box('frontPillarGoldInlay', [0.12, 8.35, 0.10], [x, 5.24, -24.88], mat.oldGold, true, true);
+    }
+    for (const x of [-12.65, 12.65]) {
+      box('hangingBrocadeBannerRed', [0.28, 6.8, 0.10], [x, 6.2, -24.92], mat.robe, false, true);
+      box('hangingBrocadeBannerGold', [0.08, 6.5, 0.12], [x + Math.sign(x) * -0.20, 6.2, -24.84], mat.brightGold, false, true);
+      for (let y = 2.6; y <= 9.0; y += 0.9) {
+        cyl('bannerTasselGold', 0.035, 0.035, 0.32, [x, y, -24.78], mat.oldGold, 12, false, true);
+      }
+    }
+
+    // Ceiling coffers and warm light bands
+    for (let z = -24; z <= 18; z += 4.5) {
+      box('ceilingBeam', [27.4, 0.34, 0.22], [0, 10.35, z], mat.brightGold, false, true);
+      box('ceilingBeamDark', [27.4, 0.14, 0.12], [0, 10.12, z + 0.38], mat.darkWood, false, true);
+    }
+
+    if (SHOW_VERTICAL_ZONE_DIVIDERS) {
+      for (let x of [-11.2, 11.2]) {
+        for (let z = -23; z <= 16; z += 4.5) {
+          const frame = box('wallGoldFrame', [0.2, 2.8, 0.12], [x, 6.9, z], mat.brightGold, true, true);
+          frame.name = 'wallGoldFrameVerticalStrip';
+        }
+      }
+    }
+
+    // ---------- Lighting: warmer temple interior ----------
+    const ambient = new THREE.AmbientLight(0xffc27c, 0.72);
+    scene.add(ambient);
+
+    const hemi = new THREE.HemisphereLight(0xffd9a4, 0x210604, 0.86);
+    scene.add(hemi);
+
+    const frontKey = new THREE.DirectionalLight(0xffd49a, 0.92);
+    frontKey.position.set(0, 10, 10);
+    frontKey.castShadow = true;
+    frontKey.shadow.mapSize.width = 2048;
+    frontKey.shadow.mapSize.height = 2048;
+    scene.add(frontKey);
+
+    const mainSpot = new THREE.SpotLight(0xffc978, 330, 48, Math.PI / 6.6, 0.54, 1.0);
+    mainSpot.position.set(0, 10.1, -12.2);
+    mainSpot.target.position.set(0, 4.1, -24.0);
+    mainSpot.castShadow = true;
+    mainSpot.shadow.mapSize.width = 2048;
+    mainSpot.shadow.mapSize.height = 2048;
+    scene.add(mainSpot, mainSpot.target);
+
+    const altarGlow = new THREE.PointLight(0xffb65c, 118, 17, 1.18);
+    altarGlow.position.set(0, 4.4, -22.45);
+    scene.add(altarGlow);
+
+    for (let z = -22; z <= 16; z += 5) {
+      const lampL = new THREE.PointLight(0xffa85e, 42, 9.8, 1.35);
+      lampL.position.set(-10.7, 5.2, z);
+      scene.add(lampL);
+      const lampR = new THREE.PointLight(0xffa85e, 42, 9.8, 1.35);
+      lampR.position.set(10.7, 5.2, z);
+      scene.add(lampR);
+
+      const lampC = new THREE.PointLight(0xffbd78, 44, 11.2, 1.35);
+      lampC.position.set(0, 8.75, z);
+      scene.add(lampC);
+    }
+
+    // ---------- Text Sprites ----------
+    function makeTextSprite(text, options={}) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 1024;
+      canvas.height = 256;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const variant = options.variant || 'default';
+      const rect = variant === 'sponsor'
+        ? { x: 112, y: 46, w: 800, h: 154, r: 38 }
+        : (variant === 'zone'
+          ? { x: 96, y: 56, w: 832, h: 126, r: 30 }
+          : { x: 36, y: 56, w: 952, h: 128, r: 34 });
+      const grd = ctx.createLinearGradient(rect.x, rect.y, rect.x + rect.w, rect.y + rect.h);
+      if (variant === 'sponsor') {
+        const sponsorOpacity = options.opacity ?? SPONSOR_LABEL_STYLE.opacity;
+        grd.addColorStop(0, `rgba(82, 42, 16, ${sponsorOpacity})`);
+        grd.addColorStop(0.52, `rgba(139, 88, 32, ${Math.min(sponsorOpacity + 0.08, 0.86)})`);
+        grd.addColorStop(1, `rgba(54, 25, 9, ${sponsorOpacity})`);
+      } else if (variant === 'zone') {
+        grd.addColorStop(0, 'rgba(255, 229, 145, 0.92)');
+        grd.addColorStop(0.48, 'rgba(214, 156, 48, 0.94)');
+        grd.addColorStop(1, 'rgba(255, 229, 145, 0.92)');
+      } else {
+        grd.addColorStop(0, 'rgba(97, 37, 8, 0.86)');
+        grd.addColorStop(0.5, 'rgba(33, 12, 4, 0.82)');
+        grd.addColorStop(1, 'rgba(112, 49, 10, 0.86)');
+      }
+      ctx.fillStyle = grd;
+      roundRect(ctx, rect.x, rect.y, rect.w, rect.h, rect.r);
+      ctx.fill();
+
+      ctx.strokeStyle = variant === 'sponsor' ? 'rgba(255, 236, 179, 0.54)' : 'rgba(255, 226, 155, 0.92)';
+      ctx.lineWidth = variant === 'sponsor' ? 3 : 6;
+      ctx.stroke();
+
+      let fontSize = options.fontSize || 76;
+      ctx.font = `800 ${fontSize}px "Noto Sans TC", "Microsoft JhengHei", sans-serif`;
+      const maxTextWidth = variant === 'sponsor' ? rect.w - 56 : rect.w - 70;
+      while (ctx.measureText(text).width > maxTextWidth && fontSize > 54) {
+        fontSize -= 4;
+        ctx.font = `800 ${fontSize}px "Noto Sans TC", "Microsoft JhengHei", sans-serif`;
+      }
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.shadowColor = variant === 'sponsor' ? 'rgba(80, 36, 6, 0.32)' : 'rgba(255, 187, 66, 0.68)';
+      ctx.shadowBlur = variant === 'sponsor' ? 6 : 18;
+      ctx.fillStyle = variant === 'zone' ? '#381804' : '#fff2bf';
+      ctx.fillText(text, 512, variant === 'sponsor' ? 124 : 122);
+
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      const material = new THREE.SpriteMaterial({ map: texture, transparent: true });
+      const sprite = new THREE.Sprite(material);
+      const scale = options.scale || 1;
+      const widthScale = variant === 'sponsor'
+        ? (options.widthScale || SPONSOR_LABEL_STYLE.widthScale)
+        : (variant === 'zone' ? 2.85 : 2.55);
+      const heightScale = variant === 'sponsor'
+        ? (options.heightScale || SPONSOR_LABEL_STYLE.heightScale)
+        : (variant === 'zone' ? 0.70 : 0.64);
+      sprite.scale.set(widthScale * scale, heightScale * scale, 1);
+      return sprite;
+    }
+
+    function createSponsorLabelSprite(text, options = {}) {
+      const fullText = String(text || SPONSOR_LABEL_STYLE.text).trim() || SPONSOR_LABEL_STYLE.text;
+      const label = makeTextSprite(formatSponsorDisplayName(fullText), {
+        scale: 1,
+        fontSize: options.fontSize || (fullText.length > SPONSOR_DISPLAY_MAX_CHARS ? 116 : SPONSOR_LABEL_STYLE.fontSize),
+        variant: 'sponsor',
+        widthScale: options.widthScale || SPONSOR_LABEL_STYLE.widthScale,
+        heightScale: options.heightScale || SPONSOR_LABEL_STYLE.heightScale,
+        opacity: options.opacity ?? SPONSOR_LABEL_STYLE.opacity
+      });
+      label.name = 'sponsorNameLabel';
+      label.userData.fullSponsorName = fullText;
+      label.renderOrder = options.renderOrder || 30;
+      return label;
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+    }
+
+    // ---------- Statues ----------
+    const loader = new GLTFLoader();
+
+    const DEITY_GLBS = {
+      "釋迦牟尼佛": "assets/models/deities/shakyamuni.glb",
+      "阿彌陀佛": "assets/models/deities/amitabha.glb",
+      "藥師佛": "assets/models/deities/yaoshi-buddha.glb",
+      "金剛薩埵": "assets/models/deities/vajrasattva.glb",
+      "蓮花生大士": "assets/models/deities/padmasambhava.glb",
+      "文殊菩薩": "assets/models/deities/manjushri.glb",
+      "四臂觀音": "assets/models/deities/chenrezig-four-arm.glb",
+      "綠度母": "assets/models/deities/green-tara.glb",
+      "地藏王菩薩": "assets/models/deities/ksitigarbha.glb",
+      "黃財神": "assets/models/deities/yellow-jambhala.glb"
+    };
+
+    const DEITY_PRESETS = {
+      "釋迦牟尼佛": { bodyColor: 0xffc94c, robeColor: 0xb33b1b, haloColor: 0xffe39b, attributes: ["earthTouch", "bowl"], crown: false },
+      "阿彌陀佛": { bodyColor: 0xffc94c, robeColor: 0xa31916, haloColor: 0xffd37a, attributes: ["meditation"], crown: false },
+      "藥師佛": { bodyColor: 0x2f74d0, robeColor: 0xc79635, haloColor: 0x9ec8ff, attributes: ["medicineBowl"], crown: false },
+      "金剛薩埵": { bodyColor: 0xf5f0df, robeColor: 0xd8b66a, haloColor: 0xffffff, attributes: ["vajra", "bell"], crown: true },
+      "蓮花生大士": { bodyColor: 0xffc94c, robeColor: 0xb72a1e, haloColor: 0xffd37a, attributes: ["lotusHat", "vajra", "staff"], crown: true },
+      "文殊菩薩": { bodyColor: 0xffc94c, robeColor: 0xf0a629, haloColor: 0xffe39b, attributes: ["sword", "book"], crown: true },
+      "四臂觀音": { bodyColor: 0xf6f1df, robeColor: 0xffffff, haloColor: 0xffffff, attributes: ["fourArms", "lotus"], crown: true },
+      "綠度母": { bodyColor: 0x41b866, robeColor: 0xf0c46b, haloColor: 0x9cffb2, attributes: ["lotus", "gracePose"], crown: true },
+      "地藏王菩薩": { bodyColor: 0xffc94c, robeColor: 0x8b2a18, haloColor: 0xffe39b, attributes: ["staff", "jewel"], crown: false, monk: true },
+      "黃財神": { bodyColor: 0xffd44f, robeColor: 0xc44118, haloColor: 0xffe39b, attributes: ["wealthBowl", "jewel"], crown: true }
+    };
+
+    const DEITY_IMAGES = {
+      "釋迦牟尼佛": "assets/images/deities/shakyamuni.png",
+      "阿彌陀佛": "assets/images/deities/amitabha.png",
+      "藥師佛": "assets/images/deities/yaoshi-buddha.png",
+      "金剛薩埵": "assets/images/deities/vajrasattva.png",
+      "蓮花生大士": "assets/images/deities/padmasambhava.png",
+      "文殊菩薩": "assets/images/deities/manjushri.png",
+      "四臂觀音": "assets/images/deities/chenrezig-four-arm.png",
+      "綠度母": "assets/images/deities/green-tara.png",
+      "地藏王菩薩": "assets/images/deities/ksitigarbha.png",
+      "黃財神": "assets/images/deities/yellow-jambhala.png"
+    };
+
+    const CANONICAL_DEITY_IMAGES = {
+      "釋迦牟尼佛": "assets/images/deities/shakyamuni.png",
+      "阿彌陀佛": "assets/images/deities/amitabha.png",
+      "藥師佛": "assets/images/deities/yaoshi-buddha.png",
+      "金剛薩埵": "assets/images/deities/vajrasattva.png",
+      "蓮花生大士": "assets/images/deities/padmasambhava.png",
+      "文殊菩薩": "assets/images/deities/manjushri.png",
+      "四臂觀音": "assets/images/deities/chenrezig-four-arm.png",
+      "綠度母": "assets/images/deities/green-tara.png",
+      "地藏王菩薩": "assets/images/deities/ksitigarbha.png",
+      "黃財神": "assets/images/deities/yellow-jambhala.png"
+    };
+    Object.assign(DEITY_IMAGES, CANONICAL_DEITY_IMAGES);
+
+    const DESKTOP_SHRINE_ZONES = {
+      left: [
+        { deity: "藥師佛", cols: 6, title: "藥師佛區" },
+        { deity: "阿彌陀佛", cols: 6, title: "阿彌陀佛區" },
+        { deity: "蓮花生大士", cols: 6, title: "蓮師區" },
+        { deity: "文殊菩薩", cols: 6, title: "文殊區" },
+        { deity: "綠度母", cols: 6, title: "綠度母區" }
+      ],
+      right: [
+        { deity: "釋迦牟尼佛", cols: 6, title: "佛陀區" },
+        { deity: "金剛薩埵", cols: 6, title: "金剛薩埵區" },
+        { deity: "四臂觀音", cols: 6, title: "觀音區" },
+        { deity: "地藏王菩薩", cols: 6, title: "地藏區" },
+        { deity: "黃財神", cols: 6, title: "黃財神區" }
+      ]
+    };
+    const MOBILE_SHRINE_ZONES = {
+      left: [
+        { deity: "藥師佛", cols: 3, title: "藥師佛區" },
+        { deity: "阿彌陀佛", cols: 3, title: "阿彌陀佛區" },
+        { deity: "蓮花生大士", cols: 3, title: "蓮師區" },
+        { deity: "文殊菩薩", cols: 3, title: "文殊區" },
+        { deity: "綠度母", cols: 4, title: "綠度母區" }
+      ],
+      right: [
+        { deity: "釋迦牟尼佛", cols: 3, title: "佛陀區" },
+        { deity: "金剛薩埵", cols: 3, title: "金剛薩埵區" },
+        { deity: "四臂觀音", cols: 3, title: "觀音區" },
+        { deity: "地藏王菩薩", cols: 3, title: "地藏區" },
+        { deity: "黃財神", cols: 4, title: "黃財神區" }
+      ]
+    };
+    const SHRINE_ZONES = LOW_PERFORMANCE_MODE ? MOBILE_SHRINE_ZONES : DESKTOP_SHRINE_ZONES;
+
+    const OFFERING_IMAGES = {
+      lamp: "assets/images/offerings/lamp.png",
+      incense: "assets/images/offerings/incense.png",
+      water: "assets/images/offerings/water.png",
+      flower: "assets/images/offerings/flower.png",
+      fruit: "assets/images/offerings/fruit.png",
+      torma: "assets/images/offerings/torma.png",
+      mandala: "assets/images/offerings/mandala.png"
+    };
+
+    const SYMBOL_IMAGES = {
+      parasol: "assets/images/symbols/parasol.png",
+      goldenFish: "assets/images/symbols/golden-fish.png",
+      treasureVase: "assets/images/symbols/treasure-vase.png",
+      lotus: "assets/images/symbols/lotus.png",
+      conch: "assets/images/symbols/conch.png",
+      endlessKnot: "assets/images/symbols/endless-knot.png",
+      victoryBanner: "assets/images/symbols/victory-banner.png",
+      dharmaWheel: "assets/images/symbols/dharma-wheel.png"
+    };
+
+    const textureLoader = new THREE.TextureLoader();
+    const deityTextureCache = new Map();
+    const deityTexturePending = new Map();
+    const resizedDeityTextureCache = new Map();
+    const offeringTextureCache = new Map();
+    const offeringTexturePending = new Map();
+    const symbolTextureCache = new Map();
+    const symbolTexturePending = new Map();
+    const deityImageStates = new Map(Object.values(DEITY_IMAGES).map((path) => [path, 'pending']));
+    const offeringImageStates = new Map(Object.values(OFFERING_IMAGES).map((path) => [path, 'pending']));
+    const symbolImageStates = new Map(Object.values(SYMBOL_IMAGES).map((path) => [path, 'pending']));
+    const DEBUG_SHELF_BOUNDS = false;
+    let totalShelfStatues = 0;
+    const deityModelCache = new Map();
+    const deityModelSources = new Map(Object.keys(DEITY_GLBS).map((name) => [name, 'pending']));
+    const deityGlbCache = new Map();
+    const deityGlbPending = new Map();
+    const availableGlbPaths = new Set();
+    const glbWarningPaths = new Set();
+    let deityGlbDiscoveryPromise = null;
+
+    const catalog = [
+      { name: "藥師佛" },
+      { name: "金剛薩埵" },
+      { name: "蓮花生大士" },
+      { name: "文殊菩薩" },
+      { name: "四臂觀音" },
+      { name: "綠度母" },
+      { name: "地藏王菩薩" },
+      { name: "黃財神" },
+      { name: "阿彌陀佛" },
+      { name: "釋迦牟尼佛" }
+    ];
+
+    function addStatueLabel(holder, name, main=false) {
+      const label = makeTextSprite(name, { scale: main ? 1.38 : 0.62, fontSize: main ? 74 : 82, variant: main ? 'default' : 'sponsor' });
+      label.position.set(0, main ? -0.20 : -0.24, 0.08);
+      holder.add(label);
+    }
+
+    function fileNameFromPath(path) {
+      return path ? path.split('/').pop() : '';
+    }
+
+    function statueSourceLabel(source) {
+      if (source === 'glb') return 'GLB 模型';
+      if (source === 'procedural') return '程序化 3D';
+      return '檢查中';
+    }
+
+    function refreshDeityModelStatus() {
+      const statuses = [...deityModelSources.values()];
+      const ready = statuses.filter((value) => value !== 'pending').length;
+      const glbCount = statuses.filter((value) => value === 'glb').length;
+      const proceduralCount = statuses.filter((value) => value === 'procedural').length;
+      deityImageStatusEl.textContent = ready === statuses.length
+        ? `佛像模型：${glbCount} 個 GLB，${proceduralCount} 個程序化生成`
+        : `佛像模型：${ready} / ${statuses.length} 生成中`;
+
+      mainBuddhaStatusEl.textContent = `主佛：${statueSourceLabel(currentMainBuddhaMode)}`;
+      deityMissingListEl.innerHTML = '';
+      const smallStatuses = [...deityModelSources.entries()]
+        .filter(([name]) => name !== '釋迦牟尼佛')
+        .map(([, source]) => source)
+        .filter((source) => source !== 'pending');
+      const smallGlb = smallStatuses.filter((value) => value === 'glb').length;
+      const smallProcedural = smallStatuses.filter((value) => value === 'procedural').length;
+      const smallSummary = smallStatuses.length === 0
+        ? '檢查中'
+        : (smallGlb > 0 && smallProcedural > 0
+          ? `${smallGlb} 種 GLB，${smallProcedural} 種程序化`
+          : statueSourceLabel(smallStatuses[0]));
+      [
+        `主佛：${statueSourceLabel(currentMainBuddhaMode)}`,
+        `小佛像：${smallSummary}`,
+        '可將授權 GLB 放入 assets/models/deities/ 自動替換'
+      ].forEach((text) => {
+        const item = document.createElement('li');
+        item.textContent = text;
+        deityMissingListEl.appendChild(item);
+      });
+    }
+
+    function markDeitySource(name, source) {
+      const current = deityModelSources.get(name);
+      if (current === 'glb' || current === source) return;
+      deityModelSources.set(name, source);
+      refreshDeityModelStatus();
+    }
+
+    function createStatueMaterial(color, overrides={}) {
+      const baseColor = new THREE.Color(color);
+      return new THREE.MeshStandardMaterial({
+        color,
+        metalness: 0.62,
+        roughness: 0.28,
+        emissive: baseColor.clone().multiplyScalar(0.12),
+        emissiveIntensity: 0.22,
+        ...overrides
+      });
+    }
+
+    function statueMesh(geometry, material) {
+      geometry.computeVertexNormals?.();
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      return mesh;
+    }
+
+    function capsuleBetween(start, end, radius, material, radialSegments=18, capSegments=28) {
+      const length = start.distanceTo(end);
+      const mesh = statueMesh(
+        new THREE.CapsuleGeometry(radius, Math.max(0.02, length - radius * 2), capSegments, radialSegments),
+        material
+      );
+      mesh.position.copy(start).add(end).multiplyScalar(0.5);
+      mesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), end.clone().sub(start).normalize());
+      return mesh;
+    }
+
+    function createLotusSeat(detail, materials, main=false) {
+      const group = new THREE.Group();
+      const petalCount = main ? 20 : 14;
+      const petalSegments = detail.sphere;
+      const petalGeo = new THREE.SphereGeometry(0.17, Math.max(12, Math.floor(petalSegments / 2)), Math.max(8, Math.floor(petalSegments / 3)));
+
+      const lowerBase = statueMesh(new THREE.CylinderGeometry(0.92, 1.06, 0.2, detail.cylinder), materials.gold);
+      lowerBase.position.y = 0.10;
+      group.add(lowerBase);
+
+      const upperBase = statueMesh(new THREE.CylinderGeometry(0.76, 0.88, 0.22, detail.cylinder), materials.goldSoft);
+      upperBase.position.y = 0.28;
+      group.add(upperBase);
+
+      const ring = statueMesh(new THREE.TorusGeometry(0.78, 0.06, 18, detail.torus), materials.goldSoft);
+      ring.position.y = 0.42;
+      ring.rotation.x = Math.PI / 2;
+      group.add(ring);
+
+      for (let i = 0; i < petalCount; i++) {
+        const angle = (Math.PI * 2 * i) / petalCount;
+        const petal = statueMesh(petalGeo.clone(), i % 2 === 0 ? materials.goldSoft : materials.gold);
+        petal.scale.set(0.56, 1.20, 0.34);
+        petal.position.set(Math.cos(angle) * 0.74, 0.36, Math.sin(angle) * 0.74);
+        petal.rotation.y = -angle;
+        petal.rotation.z = Math.PI * 0.08;
+        group.add(petal);
+
+        const innerPetal = statueMesh(petalGeo.clone(), materials.goldHighlight);
+        innerPetal.scale.set(0.42, 0.96, 0.24);
+        innerPetal.position.set(Math.cos(angle) * 0.52, 0.52, Math.sin(angle) * 0.52);
+        innerPetal.rotation.y = -angle;
+        innerPetal.rotation.z = -Math.PI * 0.04;
+        group.add(innerPetal);
+      }
+
+      return group;
+    }
+
+    function createCrown(detail, materials, monk=false, lotusHat=false) {
+      const group = new THREE.Group();
+      if (lotusHat) {
+        const brim = statueMesh(new THREE.CylinderGeometry(0.31, 0.42, 0.08, detail.cylinder), materials.crown);
+        brim.position.y = 2.36;
+        const crown = statueMesh(new THREE.ConeGeometry(0.24, 0.44, detail.cylinder), materials.crown);
+        crown.position.y = 2.62;
+        const jewel = statueMesh(new THREE.SphereGeometry(0.06, 24, 18), materials.halo);
+        jewel.position.set(0, 2.82, 0.06);
+        group.add(brim, crown, jewel);
+        return group;
+      }
+      if (monk) {
+        const ushnisha = statueMesh(new THREE.SphereGeometry(0.12, 28, 18), materials.body);
+        ushnisha.position.y = 2.48;
+        group.add(ushnisha);
+        return group;
+      }
+      const circlet = statueMesh(new THREE.TorusGeometry(0.28, 0.04, 14, detail.torus), materials.crown);
+      circlet.position.y = 2.34;
+      circlet.rotation.x = Math.PI / 2;
+      group.add(circlet);
+      for (let i = 0; i < 5; i++) {
+        const angle = -0.72 + i * 0.36;
+        const spike = statueMesh(new THREE.ConeGeometry(0.06, 0.28, 18), materials.crown);
+        spike.position.set(Math.sin(angle) * 0.18, 2.48 + Math.cos(angle) * 0.02, 0.24);
+        spike.rotation.z = angle * 0.26;
+        group.add(spike);
+      }
+      const centerGem = statueMesh(new THREE.SphereGeometry(0.055, 20, 16), materials.halo);
+      centerGem.position.set(0, 2.41, 0.28);
+      group.add(centerGem);
+      return group;
+    }
+
+    function createFace(detail, materials) {
+      const group = new THREE.Group();
+      const eyeL = capsuleBetween(new THREE.Vector3(-0.085, 2.22, 0.25), new THREE.Vector3(-0.028, 2.20, 0.26), 0.010, materials.feature, 10, 12);
+      const eyeR = capsuleBetween(new THREE.Vector3(0.028, 2.20, 0.26), new THREE.Vector3(0.085, 2.22, 0.25), 0.010, materials.feature, 10, 12);
+      const browL = capsuleBetween(new THREE.Vector3(-0.10, 2.29, 0.22), new THREE.Vector3(-0.03, 2.31, 0.23), 0.008, materials.feature, 10, 12);
+      const browR = capsuleBetween(new THREE.Vector3(0.03, 2.31, 0.23), new THREE.Vector3(0.10, 2.29, 0.22), 0.008, materials.feature, 10, 12);
+      const nose = statueMesh(new THREE.ConeGeometry(0.028, 0.11, 16), materials.featureSoft);
+      nose.position.set(0, 2.10, 0.29);
+      nose.rotation.x = Math.PI / 2;
+      const mouth = statueMesh(new THREE.TorusGeometry(0.045, 0.006, 10, 22, Math.PI), materials.featureSoft);
+      mouth.position.set(0, 1.97, 0.255);
+      mouth.rotation.z = Math.PI;
+      group.add(eyeL, eyeR, browL, browR, nose, mouth);
+      return group;
+    }
+
+    function createProceduralDeity(name, options = {}) {
+      const preset = DEITY_PRESETS[name] || DEITY_PRESETS["釋迦牟尼佛"];
+      const main = !!options.main;
+      const detailLevel = options.detailLevel || (main ? 'high' : 'medium');
+      const detail = detailLevel === 'high'
+        ? { sphere: 64, cylinder: 64, torus: 96 }
+        : { sphere: 34, cylinder: 34, torus: 60 };
+
+      const materials = {
+        body: createStatueMaterial(preset.bodyColor, { metalness: 0.68, roughness: 0.24 }),
+        robe: createStatueMaterial(preset.robeColor, { metalness: 0.38, roughness: 0.42, emissiveIntensity: 0.16 }),
+        gold: createStatueMaterial(0xffca57, { metalness: 0.76, roughness: 0.22 }),
+        goldSoft: createStatueMaterial(0xf3d48f, { metalness: 0.66, roughness: 0.26 }),
+        goldHighlight: createStatueMaterial(0xffecb7, { metalness: 0.54, roughness: 0.18, emissiveIntensity: 0.28 }),
+        halo: createStatueMaterial(preset.haloColor, { metalness: 0.42, roughness: 0.18, emissive: new THREE.Color(preset.haloColor).multiplyScalar(0.42), emissiveIntensity: main ? 0.44 : 0.26 }),
+        aura: new THREE.MeshBasicMaterial({ color: preset.haloColor, transparent: true, opacity: main ? 0.12 : 0.08, side: THREE.DoubleSide, depthWrite: false, toneMapped: false }),
+        crown: createStatueMaterial(0xffd87d, { metalness: 0.72, roughness: 0.24 }),
+        feature: createStatueMaterial(0x5f3318, { metalness: 0.18, roughness: 0.54, emissiveIntensity: 0.06 }),
+        featureSoft: createStatueMaterial(0x7a4a22, { metalness: 0.16, roughness: 0.52, emissiveIntensity: 0.06 }),
+        jewel: createStatueMaterial(0xffe7a0, { metalness: 0.26, roughness: 0.18, emissive: new THREE.Color(0xffd873), emissiveIntensity: 0.48 })
+      };
+
+      const group = new THREE.Group();
+      group.add(createLotusSeat(detail, materials, main));
+
+      const skirtProfile = [
+        new THREE.Vector2(0.18, 0.00),
+        new THREE.Vector2(0.92, 0.08),
+        new THREE.Vector2(0.86, 0.48),
+        new THREE.Vector2(0.66, 0.92),
+        new THREE.Vector2(0.46, 1.28),
+        new THREE.Vector2(0.28, 1.56),
+        new THREE.Vector2(0.18, 1.72)
+      ];
+      const skirt = statueMesh(new THREE.LatheGeometry(skirtProfile, detail.cylinder), materials.robe);
+      skirt.position.y = 0.52;
+      skirt.scale.set(1.0, 0.62, 0.78);
+      group.add(skirt);
+
+      const lap = statueMesh(new THREE.SphereGeometry(0.68, detail.sphere, Math.floor(detail.sphere / 2)), materials.robe);
+      lap.position.set(0, 0.94, 0.12);
+      lap.scale.set(1.12, 0.62, 0.94);
+      group.add(lap);
+
+      const kneeL = statueMesh(new THREE.SphereGeometry(0.30, Math.max(20, detail.sphere - 8), Math.max(14, Math.floor(detail.sphere / 2) - 4)), materials.robe);
+      kneeL.position.set(-0.34, 0.80, 0.34);
+      kneeL.scale.set(1.14, 0.86, 1.12);
+      const kneeR = kneeL.clone();
+      kneeR.position.x = 0.34;
+      group.add(kneeL, kneeR);
+
+      const torso = statueMesh(new THREE.CapsuleGeometry(0.28, 0.62, 24, detail.cylinder), materials.body);
+      torso.position.set(0, 1.52, 0.05);
+      torso.scale.set(0.96, 1.12, 0.84);
+      group.add(torso);
+
+      const robeChest = statueMesh(new THREE.SphereGeometry(0.52, detail.sphere, Math.floor(detail.sphere / 2)), materials.robe);
+      robeChest.position.set(0, 1.44, 0.10);
+      robeChest.scale.set(1.05, 0.92, 0.82);
+      group.add(robeChest);
+
+      const sash = statueMesh(new THREE.TorusGeometry(0.32, 0.028, 12, detail.torus), materials.goldHighlight);
+      sash.position.set(0, 1.18, 0.18);
+      sash.rotation.x = Math.PI / 2;
+      group.add(sash);
+
+      const head = statueMesh(new THREE.SphereGeometry(0.24, detail.sphere, Math.floor(detail.sphere / 2)), materials.body);
+      head.position.set(0, 2.14, 0.04);
+      head.scale.set(0.96, 1.06, 0.92);
+      group.add(head);
+
+      const earL = statueMesh(new THREE.SphereGeometry(0.065, 18, 12), materials.body);
+      earL.position.set(-0.24, 2.08, 0.04);
+      earL.scale.set(0.48, 1.35, 0.52);
+      const earR = earL.clone();
+      earR.position.x = 0.24;
+      group.add(earL, earR);
+
+      const crownOrHat = createCrown(detail, materials, !!preset.monk, preset.attributes.includes('lotusHat'));
+      group.add(crownOrHat);
+      group.add(createFace(detail, materials));
+
+      const headHalo = statueMesh(new THREE.TorusGeometry(main ? 0.50 : 0.42, main ? 0.045 : 0.036, 20, detail.torus), materials.halo);
+      headHalo.position.set(0, 2.16, -0.16);
+      const bodyHalo = statueMesh(new THREE.TorusGeometry(main ? 0.98 : 0.78, main ? 0.06 : 0.045, 20, detail.torus), materials.halo);
+      bodyHalo.position.set(0, 1.62, -0.22);
+      const innerAura = new THREE.Mesh(new THREE.CircleGeometry(main ? 0.90 : 0.70, detail.cylinder), materials.aura);
+      innerAura.position.set(0, 1.62, -0.28);
+      innerAura.renderOrder = 2;
+      group.add(headHalo, bodyHalo, innerAura);
+
+      const defaultShoulderL = new THREE.Vector3(-0.34, 1.60, 0.12);
+      const defaultShoulderR = new THREE.Vector3(0.34, 1.60, 0.12);
+      const leftHand = new THREE.Vector3(-0.18, 1.02, 0.42);
+      const rightHand = new THREE.Vector3(0.18, 1.02, 0.42);
+      group.add(capsuleBetween(defaultShoulderL, new THREE.Vector3(-0.22, 1.28, 0.28), 0.052, materials.body, 16, 24));
+      group.add(capsuleBetween(new THREE.Vector3(-0.22, 1.28, 0.28), leftHand, 0.048, materials.body, 16, 24));
+      group.add(capsuleBetween(defaultShoulderR, new THREE.Vector3(0.22, 1.28, 0.28), 0.052, materials.body, 16, 24));
+      group.add(capsuleBetween(new THREE.Vector3(0.22, 1.28, 0.28), rightHand, 0.048, materials.body, 16, 24));
+
+      if (preset.attributes.includes('earthTouch')) {
+        group.add(capsuleBetween(defaultShoulderR, new THREE.Vector3(0.42, 1.20, 0.18), 0.052, materials.body, 16, 24));
+        group.add(capsuleBetween(new THREE.Vector3(0.42, 1.20, 0.18), new THREE.Vector3(0.58, 0.82, 0.48), 0.046, materials.body, 16, 24));
+      }
+
+      if (preset.attributes.includes('gracePose')) {
+        group.add(capsuleBetween(defaultShoulderL, new THREE.Vector3(-0.42, 1.34, 0.14), 0.05, materials.body, 16, 24));
+        group.add(capsuleBetween(new THREE.Vector3(-0.42, 1.34, 0.14), new THREE.Vector3(-0.58, 1.00, 0.44), 0.044, materials.body, 16, 24));
+      }
+
+      const handGeo = new THREE.SphereGeometry(0.07, 18, 12);
+      const handL = statueMesh(handGeo.clone(), materials.body);
+      handL.position.copy(leftHand);
+      handL.scale.set(1.0, 0.72, 1.18);
+      const handR = statueMesh(handGeo.clone(), materials.body);
+      handR.position.copy(preset.attributes.includes('earthTouch') ? new THREE.Vector3(0.58, 0.82, 0.48) : rightHand);
+      handR.scale.set(1.0, 0.72, 1.18);
+      group.add(handL, handR);
+
+      if (preset.attributes.includes('fourArms')) {
+        const upperL = capsuleBetween(new THREE.Vector3(-0.30, 1.78, 0.04), new THREE.Vector3(-0.60, 1.98, -0.02), 0.046, materials.body, 16, 24);
+        const lowerL = capsuleBetween(new THREE.Vector3(-0.60, 1.98, -0.02), new THREE.Vector3(-0.72, 1.48, 0.16), 0.040, materials.body, 16, 24);
+        const upperR = capsuleBetween(new THREE.Vector3(0.30, 1.78, 0.04), new THREE.Vector3(0.60, 1.98, -0.02), 0.046, materials.body, 16, 24);
+        const lowerR = capsuleBetween(new THREE.Vector3(0.60, 1.98, -0.02), new THREE.Vector3(0.72, 1.48, 0.16), 0.040, materials.body, 16, 24);
+        group.add(upperL, lowerL, upperR, lowerR);
+      }
+
+      if (preset.attributes.includes('bowl') || preset.attributes.includes('medicineBowl')) {
+        const bowlMat = preset.attributes.includes('medicineBowl')
+          ? createStatueMaterial(0x4b8de0, { metalness: 0.34, roughness: 0.22, emissive: new THREE.Color(0x2b67bf), emissiveIntensity: 0.18 })
+          : materials.goldSoft;
+        const bowl = statueMesh(new THREE.CylinderGeometry(0.14, 0.17, 0.11, detail.cylinder), bowlMat);
+        bowl.position.set(0, 0.96, 0.44);
+        group.add(bowl);
+      }
+
+      if (preset.attributes.includes('jewel')) {
+        const jewel = statueMesh(new THREE.SphereGeometry(0.08, 18, 14), materials.jewel);
+        jewel.position.set(-0.20, 1.08, 0.46);
+        group.add(jewel);
+      }
+
+      if (preset.attributes.includes('wealthBowl')) {
+        const wealthBowl = statueMesh(new THREE.CylinderGeometry(0.18, 0.22, 0.14, detail.cylinder), materials.goldSoft);
+        wealthBowl.position.set(0.24, 1.04, 0.44);
+        group.add(wealthBowl);
+        for (let i = 0; i < 4; i++) {
+          const gem = statueMesh(new THREE.SphereGeometry(0.04, 14, 10), i % 2 === 0 ? materials.jewel : materials.halo);
+          gem.position.set(0.16 + i * 0.05, 1.10 + (i % 2) * 0.02, 0.46 + (i % 2 ? 0.03 : -0.02));
+          group.add(gem);
+        }
+      }
+
+      if (preset.attributes.includes('vajra')) {
+        const vajra = statueMesh(new THREE.CylinderGeometry(0.02, 0.02, 0.26, detail.cylinder), materials.goldHighlight);
+        vajra.position.set(0.30, 1.10, 0.48);
+        vajra.rotation.z = Math.PI / 2;
+        const coneA = statueMesh(new THREE.ConeGeometry(0.035, 0.08, 16), materials.goldHighlight);
+        const coneB = coneA.clone();
+        coneA.position.set(0.18, 1.10, 0.48);
+        coneA.rotation.z = Math.PI / 2;
+        coneB.position.set(0.42, 1.10, 0.48);
+        coneB.rotation.z = -Math.PI / 2;
+        group.add(vajra, coneA, coneB);
+      }
+
+      if (preset.attributes.includes('bell')) {
+        const bell = statueMesh(new THREE.ConeGeometry(0.08, 0.16, 18), materials.gold);
+        bell.position.set(-0.26, 1.06, 0.48);
+        bell.scale.y = 0.85;
+        const bellCap = statueMesh(new THREE.SphereGeometry(0.036, 14, 10), materials.goldHighlight);
+        bellCap.position.set(-0.26, 1.16, 0.48);
+        group.add(bell, bellCap);
+      }
+
+      if (preset.attributes.includes('staff')) {
+        const staff = statueMesh(new THREE.CylinderGeometry(0.025, 0.025, 1.42, detail.cylinder), materials.goldHighlight);
+        staff.position.set(0.56, 1.44, 0.02);
+        const rings = [];
+        for (let i = 0; i < 3; i++) {
+          const ringSmall = statueMesh(new THREE.TorusGeometry(0.055, 0.009, 10, 20), materials.goldSoft);
+          ringSmall.position.set(0.56, 2.08 + i * 0.07, 0.02);
+          ringSmall.rotation.x = Math.PI / 2;
+          rings.push(ringSmall);
+        }
+        group.add(staff, ...rings);
+      }
+
+      if (preset.attributes.includes('lotus')) {
+        [-1, 1].forEach((side) => {
+          const stem = capsuleBetween(new THREE.Vector3(side * 0.44, 1.02, 0.02), new THREE.Vector3(side * 0.66, 1.94, -0.10), 0.02, materials.goldSoft, 12, 18);
+          const bloom = statueMesh(new THREE.SphereGeometry(0.10, 20, 14), materials.halo);
+          bloom.position.set(side * 0.70, 2.08, -0.08);
+          bloom.scale.set(1.0, 1.15, 0.68);
+          group.add(stem, bloom);
+        });
+      }
+
+      if (preset.attributes.includes('book')) {
+        const stem = capsuleBetween(new THREE.Vector3(-0.22, 1.18, 0.10), new THREE.Vector3(-0.52, 1.98, -0.08), 0.018, materials.goldSoft, 12, 18);
+        const book = statueMesh(new THREE.BoxGeometry(0.22, 0.07, 0.16), materials.goldHighlight);
+        book.position.set(-0.54, 2.08, -0.04);
+        book.rotation.z = -0.18;
+        group.add(stem, book);
+      }
+
+      if (preset.attributes.includes('sword')) {
+        const handle = statueMesh(new THREE.CylinderGeometry(0.024, 0.024, 0.24, detail.cylinder), materials.gold);
+        handle.position.set(0.42, 2.04, 0.00);
+        handle.rotation.z = -0.30;
+        const blade = statueMesh(new THREE.ConeGeometry(0.05, 0.82, 18), materials.halo);
+        blade.position.set(0.58, 2.46, 0.00);
+        blade.rotation.z = -0.28;
+        group.add(handle, blade);
+      }
+
+      if (name === "黃財神") {
+        const belly = statueMesh(new THREE.SphereGeometry(0.36, Math.max(24, detail.sphere - 6), Math.max(16, Math.floor(detail.sphere / 2) - 2)), materials.body);
+        belly.position.set(0, 1.28, 0.18);
+        belly.scale.set(1.1, 0.88, 0.96);
+        group.add(belly);
+      }
+
+      if (name === "蓮花生大士") {
+        const moustacheL = capsuleBetween(new THREE.Vector3(-0.12, 2.02, 0.24), new THREE.Vector3(-0.03, 1.98, 0.26), 0.007, materials.featureSoft, 10, 12);
+        const moustacheR = capsuleBetween(new THREE.Vector3(0.03, 1.98, 0.26), new THREE.Vector3(0.12, 2.02, 0.24), 0.007, materials.featureSoft, 10, 12);
+        group.add(moustacheL, moustacheR);
+      }
+
+      group.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+      return group;
+    }
+
+    function cloneRenderable(source) {
+      const clone = source.clone(true);
+      clone.traverse((child) => {
+        if (child.isMesh) {
+          child.material = Array.isArray(child.material)
+            ? child.material.map((material) => material.clone())
+            : child.material?.clone?.() || child.material;
+          child.castShadow = true;
+          child.receiveShadow = true;
+        } else if (child.isSprite && child.material?.clone) {
+          child.material = child.material.clone();
+        }
+      });
+      return clone;
+    }
+
+    function getProceduralDeityModel(name, detailLevel='medium', options={}) {
+      const key = `${name}_${detailLevel}`;
+      if (!deityModelCache.has(key)) {
+        deityModelCache.set(key, createProceduralDeity(name, { ...options, detailLevel }));
+      }
+      return cloneRenderable(deityModelCache.get(key));
+    }
+
+    function discoverAvailableDeityGlbs() {
+      if (deityGlbDiscoveryPromise) return deityGlbDiscoveryPromise;
+      deityGlbDiscoveryPromise = fetch('assets/models/deities/')
+        .then((response) => response.ok ? response.text() : '')
+        .then((html) => {
+          Object.values(DEITY_GLBS).forEach((path) => {
+            if (html.includes(fileNameFromPath(path))) {
+              availableGlbPaths.add(path);
+            }
+          });
+          return availableGlbPaths;
+        })
+        .catch(() => availableGlbPaths);
+      return deityGlbDiscoveryPromise;
+    }
+
+    function requestDeityGlb(name, onLoad, onFail) {
+      const modelPath = DEITY_GLBS[name];
+      if (!modelPath) {
+        onFail();
+        return;
+      }
+
+      const cached = deityGlbCache.get(modelPath);
+      if (cached) {
+        onLoad(cloneRenderable(cached));
+        return;
+      }
+      if (cached === null) {
+        onFail();
+        return;
+      }
+
+      const pending = deityGlbPending.get(modelPath);
+      if (pending) {
+        pending.resolve.push(onLoad);
+        pending.reject.push(onFail);
+        return;
+      }
+
+      deityGlbPending.set(modelPath, { resolve: [onLoad], reject: [onFail] });
+      loader.load(modelPath, (gltf) => {
+        deityGlbCache.set(modelPath, gltf.scene);
+        const queue = deityGlbPending.get(modelPath);
+        deityGlbPending.delete(modelPath);
+        queue?.resolve.forEach((cb) => cb(cloneRenderable(gltf.scene)));
+      }, undefined, () => {
+        deityGlbCache.set(modelPath, null);
+        if (!glbWarningPaths.has(modelPath)) {
+          glbWarningPaths.add(modelPath);
+          console.warn(`未找到佛像 GLB，改用程序化 3D：${name} -> ${modelPath}`);
+        }
+        const queue = deityGlbPending.get(modelPath);
+        deityGlbPending.delete(modelPath);
+        queue?.reject.forEach((cb) => cb());
+      });
+    }
+
+    function addDeityStatue(name, position, scale, rotationY, options={}) {
+      const opts = { main: false, detailLevel: options.main ? 'high' : 'medium', ...options };
+      const holder = new THREE.Group();
+      holder.position.copy(position);
+      holder.rotation.y = rotationY || 0;
+      scene.add(holder);
+
+      function attachModel(model, source) {
+        model.scale.setScalar(scale);
+        holder.add(model);
+        addStatueLabel(holder, name, opts.main);
+        markDeitySource(name, source);
+        if (opts.main) {
+          currentMainBuddhaMode = source;
+          refreshDeityModelStatus();
+        }
+      }
+
+      discoverAvailableDeityGlbs().then(() => {
+        const modelPath = DEITY_GLBS[name];
+        if (modelPath && availableGlbPaths.has(modelPath)) {
+          requestDeityGlb(name, (model) => attachModel(model, 'glb'), () => {
+            attachModel(getProceduralDeityModel(name, opts.detailLevel, opts), 'procedural');
+          });
+        } else {
+          attachModel(getProceduralDeityModel(name, opts.detailLevel, opts), 'procedural');
+        }
+      });
+
+      return holder;
+    }
+
+    function imageFileName(path) {
+      return path ? path.split('/').pop() : '';
+    }
+
+    function refreshImageAssetStatus() {
+      const deityTotal = deityImageStates.size;
+      const deityReady = [...deityImageStates.values()].filter((state) => state === 'loaded').length;
+      const offeringTotal = offeringImageStates.size;
+      const offeringReady = [...offeringImageStates.values()].filter((state) => state === 'loaded').length;
+      const symbolTotal = symbolImageStates.size;
+      const symbolReady = [...symbolImageStates.values()].filter((state) => state === 'loaded').length;
+      const deityText = deityReady === deityTotal ? `佛像圖片：${deityTotal} / ${deityTotal} 已載入` : `佛像圖片：${deityReady} / ${deityTotal}`;
+      const offeringText = offeringReady === offeringTotal ? `供品圖片：${offeringTotal} / ${offeringTotal} 已載入` : `供品圖片：${offeringReady} / ${offeringTotal}`;
+      const symbolText = symbolReady === symbolTotal ? `八吉祥：${symbolTotal} / ${symbolTotal} 已載入` : `八吉祥：${symbolReady} / ${symbolTotal}`;
+      deityImageStatusEl.innerHTML = `${deityText}<br/>${offeringText}<br/>${symbolText}<br/>左右佛龕：${totalShelfStatues} 尊<br/>Performance mode: ${PERFORMANCE_MODE_LABEL}`;
+      mainBuddhaStatusEl.innerHTML = `佛像來源：AI 生成高清透明 PNG<br/>主佛：${imageFileName(currentMainBuddhaImagePath)}<br/>左右佛龕：${totalShelfStatues} 尊，三排分區供奉<br/>Performance mode: ${PERFORMANCE_MODE_LABEL}`;
+
+      const missing = [
+        ...[...deityImageStates.entries()].filter(([, state]) => state === 'missing').map(([path]) => path),
+        ...[...offeringImageStates.entries()].filter(([, state]) => state === 'missing').map(([path]) => path),
+        ...[...symbolImageStates.entries()].filter(([, state]) => state === 'missing').map(([path]) => path)
+      ];
+      deityMissingListEl.innerHTML = '';
+      if (missing.length === 0) {
+        const item = document.createElement('li');
+        item.textContent = '目前沒有缺圖';
+        deityMissingListEl.appendChild(item);
+        return;
+      }
+      missing.forEach((path) => {
+        const item = document.createElement('li');
+        item.textContent = imageFileName(path);
+        deityMissingListEl.appendChild(item);
+      });
+    }
+    function withAssetVersion(path) {
+      if (!path) return path;
+      const separator = path.includes('?') ? '&' : '?';
+      return `${path}${separator}v=${ASSET_VERSION}`;
+    }
+
+    function applyCoverUV(texture, planeAspect, imageAspect) {
+      if (!texture || !imageAspect || !planeAspect) return;
+      texture.wrapS = THREE.ClampToEdgeWrapping;
+      texture.wrapT = THREE.ClampToEdgeWrapping;
+      texture.repeat.set(1, 1);
+      texture.offset.set(0, 0);
+      if (imageAspect > planeAspect) {
+        const repeatX = planeAspect / imageAspect;
+        texture.repeat.x = repeatX;
+        texture.offset.x = (1 - repeatX) * 0.5;
+      } else {
+        const repeatY = imageAspect / planeAspect;
+        texture.repeat.y = repeatY;
+        texture.offset.y = (1 - repeatY) * 0.5;
+      }
+      texture.needsUpdate = true;
+    }
+
+    function prepareMainBackgroundTexture(texture) {
+      if (!texture) return texture;
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy?.() || 1, 8);
+      const image = texture.image || {};
+      applyCoverUV(texture, MAIN_ALTAR_BACKGROUND_PLANE.width / MAIN_ALTAR_BACKGROUND_PLANE.height, image.width / image.height);
+      persistentTextures.add(texture);
+      return texture;
+    }
+
+    function loadMainBackgroundTexture(path = MAIN_ALTAR_BACKGROUND_STATIC) {
+      textureLoader.load(withAssetVersion(path), (texture) => {
+        prepareMainBackgroundTexture(texture);
+        mainAltarBackgroundMat.map = texture;
+        mainAltarBackgroundMat.needsUpdate = true;
+        console.log("Background mode:", "static", { path });
+      }, undefined, (error) => {
+        console.warn("Main altar background failed to load", path, error);
+      });
+    }
+
+    async function loadBackgroundFrameManifest() {
+      const response = await fetch(withAssetVersion(MAIN_ALTAR_BACKGROUND_MANIFEST));
+      if (!response.ok) throw new Error(`manifest ${response.status}`);
+      const manifest = await response.json();
+      return {
+        static: manifest.static || MAIN_ALTAR_BACKGROUND_STATIC,
+        frames: Array.isArray(manifest.frames) ? manifest.frames.filter(Boolean) : [],
+        fps: Number(manifest.fps) || BACKGROUND_ANIMATION_FPS
+      };
+    }
+
+    function loadTextureAsync(path) {
+      return new Promise((resolve, reject) => {
+        textureLoader.load(withAssetVersion(path), (texture) => {
+          prepareMainBackgroundTexture(texture);
+          resolve(texture);
+        }, undefined, reject);
+      });
+    }
+
+    async function preloadBackgroundFrames(framePaths) {
+      const textures = await Promise.all(framePaths.map((path) => loadTextureAsync(path)));
+      mainBackgroundFrameTextures = textures;
+      return textures;
+    }
+
+    function startBackgroundFrameAnimation(textures, fps = BACKGROUND_ANIMATION_FPS) {
+      if (!BACKGROUND_ANIMATION_ENABLED || !textures?.length || !mainAltarBackgroundPlane) return;
+      mainBackgroundAnimationState.enabled = true;
+      mainBackgroundAnimationState.fps = fps;
+      mainBackgroundAnimationState.elapsed = 0;
+      mainBackgroundAnimationState.frameIndex = 0;
+      mainAltarBackgroundMat.map = textures[0];
+      mainAltarBackgroundMat.needsUpdate = true;
+      console.log("Background mode:", "animated frames", { frames: textures.length, fps });
+    }
+
+    function stopBackgroundFrameAnimation() {
+      mainBackgroundAnimationState.enabled = false;
+      mainBackgroundAnimationState.elapsed = 0;
+    }
+
+    function updateBackgroundFrameTexture(delta) {
+      if (!mainBackgroundAnimationState.enabled || mainBackgroundFrameTextures.length < 2) return;
+      mainBackgroundAnimationState.elapsed += delta;
+      const interval = 1 / mainBackgroundAnimationState.fps;
+      if (mainBackgroundAnimationState.elapsed < interval) return;
+      mainBackgroundAnimationState.elapsed %= interval;
+      mainBackgroundAnimationState.frameIndex = (mainBackgroundAnimationState.frameIndex + 1) % mainBackgroundFrameTextures.length;
+      mainAltarBackgroundMat.map = mainBackgroundFrameTextures[mainBackgroundAnimationState.frameIndex];
+      mainAltarBackgroundMat.needsUpdate = true;
+    }
+
+    function initMainBackgroundFrames() {
+      loadMainBackgroundTexture(MAIN_ALTAR_BACKGROUND_STATIC);
+      window.setTimeout(async () => {
+        try {
+          const manifest = await loadBackgroundFrameManifest();
+          const shouldAnimateOnDevice = BACKGROUND_ANIMATION_ENABLED && (!LOW_PERFORMANCE_MODE || ENABLE_BACKGROUND_ANIMATION_ON_MOBILE);
+          if (!shouldAnimateOnDevice) {
+            console.log("Background mode:", "mobile static fallback");
+            return;
+          }
+          let framePaths = manifest.frames;
+          if (LOW_PERFORMANCE_MODE && framePaths.length > 1) framePaths = framePaths.filter((_, index) => index % 2 === 0);
+          if (!framePaths.length) {
+            console.log("Background mode:", "static (no frame sequence found)");
+            return;
+          }
+          const textures = await preloadBackgroundFrames(framePaths);
+          startBackgroundFrameAnimation(textures, LOW_PERFORMANCE_MODE ? BACKGROUND_ANIMATION_MOBILE_FPS : manifest.fps);
+        } catch (error) {
+          stopBackgroundFrameAnimation();
+          console.warn("Using static main background; frame manifest unavailable", error);
+        }
+      }, 500);
+    }
+    initMainBackgroundFrames();
+
+    function requestImageTexture(path, cache, pending, states, label, onLoad, onFail) {
+      const cached = cache.get(path);
+      if (cached) {
+        onLoad(cached);
+        return;
+      }
+      if (cached === null) {
+        onFail?.();
+        return;
+      }
+
+      const waiting = pending.get(path);
+      if (waiting) {
+        waiting.resolve.push(onLoad);
+        waiting.reject.push(onFail);
+        return;
+      }
+
+      pending.set(path, { resolve: [onLoad], reject: [onFail] });
+      textureLoader.load(withAssetVersion(path), (texture) => {
+        texture.colorSpace = THREE.SRGBColorSpace;
+        cache.set(path, texture);
+        states?.set(path, 'loaded');
+        persistentTextures.add(texture);
+        refreshImageAssetStatus();
+        const queue = pending.get(path);
+        pending.delete(path);
+        queue?.resolve.forEach((cb) => cb(texture));
+      }, undefined, () => {
+        cache.set(path, null);
+        states?.set(path, 'missing');
+        refreshImageAssetStatus();
+        console.warn(`${label} 圖片缺少或載入失敗：${path}`);
+        const queue = pending.get(path);
+        pending.delete(path);
+        queue?.reject.forEach((cb) => cb?.());
+      });
+    }
+
+    function createResizedTexture(texture, path, maxLongEdge) {
+      const image = texture.image;
+      if (!image || !image.width || !image.height) return texture;
+      const longEdge = Math.max(image.width, image.height);
+      if (longEdge <= maxLongEdge) return texture;
+      const cacheKey = `${path}|${maxLongEdge}`;
+      const cached = resizedDeityTextureCache.get(cacheKey);
+      if (cached) return cached;
+
+      const scale = maxLongEdge / longEdge;
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.max(1, Math.round(image.width * scale));
+      canvas.height = Math.max(1, Math.round(image.height * scale));
+      const ctx = canvas.getContext('2d', { alpha: true });
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+      const resized = new THREE.CanvasTexture(canvas);
+      resized.colorSpace = THREE.SRGBColorSpace;
+      resized.needsUpdate = true;
+      persistentTextures.add(resized);
+      resizedDeityTextureCache.set(cacheKey, resized);
+      return resized;
+    }
+
+    function requestDeityTexture(name, onLoad, onFail, options = {}) {
+      const path = DEITY_IMAGES[name];
+      if (!path) {
+        onFail?.();
+        return;
+      }
+      requestImageTexture(path, deityTextureCache, deityTexturePending, deityImageStates, `佛像 ${name}`, (texture) => {
+        if (options.main) {
+          onLoad(texture);
+          return;
+        }
+        onLoad(createResizedTexture(texture, path, options.maxTextureEdge || SIDE_SHRINE_TEXTURE_MAX_EDGE));
+      }, onFail);
+    }
+
+    function createGoldSilhouetteFallback(name, options={}) {
+      const group = new THREE.Group();
+      const main = !!options.main;
+      const height = options.height || (main ? 5.6 : 0.86);
+      const scale = height / 2.6;
+      const goldMat = new THREE.MeshBasicMaterial({
+        color: main ? 0xffd778 : 0xffd58a,
+        transparent: true,
+        opacity: main ? 0.88 : 0.82,
+        side: THREE.DoubleSide,
+        depthWrite: false,
+        toneMapped: false
+      });
+      const body = new THREE.Mesh(new THREE.CircleGeometry(0.42 * scale, 64), goldMat);
+      body.scale.set(0.86, 1.28, 1);
+      body.position.y = -0.25 * scale;
+      const head = new THREE.Mesh(new THREE.CircleGeometry(0.18 * scale, 48), goldMat.clone());
+      head.position.y = 0.72 * scale;
+      const aura = new THREE.Mesh(new THREE.RingGeometry(0.27 * scale, 0.34 * scale, 64), goldMat.clone());
+      aura.position.set(0, 0.72 * scale, -0.03);
+      group.add(aura, body, head);
+      console.warn(`佛像 PNG 缺少，使用簡單金色剪影 fallback：${name}`);
+      return group;
+    }
+
+    function createLotusImageSeat(main=false) {
+      const group = new THREE.Group();
+      const radius = main ? 1.45 : 0.28;
+      const base = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.78, radius, main ? 0.24 : 0.055, main ? 72 : 32), mat.brightGold);
+      base.position.y = 0;
+      group.add(base);
+      const petals = main ? 20 : 10;
+      for (let i = 0; i < petals; i++) {
+        const angle = (Math.PI * 2 * i) / petals;
+        const petal = new THREE.Mesh(new THREE.SphereGeometry(main ? 0.15 : 0.035, main ? 24 : 12, main ? 14 : 8), mat.gold);
+        petal.scale.set(1.85, 0.72, 0.62);
+        petal.position.set(Math.cos(angle) * radius * 0.7, main ? 0.16 : 0.04, Math.sin(angle) * radius * 0.7);
+        petal.rotation.y = -angle;
+        group.add(petal);
+      }
+      return group;
+    }
+
+    function addImageDeityStatue(name, position, rotationY=0, options={}) {
+      const main = !!options.main;
+      const height = options.height || (main ? 5.75 : 0.86);
+      const maxWidth = options.maxWidth || (main ? 4.9 : 2.8);
+      const holder = new THREE.Group();
+      holder.name = `${name}_image_statue`;
+      holder.position.copy(position);
+      holder.rotation.y = rotationY || 0;
+      scene.add(holder);
+
+      const haloRadius = main ? 2.02 : Math.min(0.32, height * 0.34) * (options.haloScale || 1);
+      const halo = new THREE.Mesh(
+        new THREE.TorusGeometry(haloRadius, main ? 0.075 : 0.018, main ? 24 : 10, main ? 128 : 48),
+        mat.glow
+      );
+      halo.position.set(0, main ? 0.78 : 0.12, -0.08);
+      halo.renderOrder = main ? 8 : 4;
+      holder.add(halo);
+
+      const aura = new THREE.Mesh(
+        new THREE.CircleGeometry(main ? 2.55 : 0.48, main ? 96 : 32),
+        new THREE.MeshBasicMaterial({
+          color: 0xffd981,
+          transparent: true,
+          opacity: main ? 0.12 : 0.08,
+          side: THREE.DoubleSide,
+          depthWrite: false,
+          toneMapped: false
+        })
+      );
+      aura.position.set(0, main ? 0.56 : 0.08, -0.12);
+      aura.renderOrder = main ? 6 : 3;
+      holder.add(aura);
+
+      const seat = createLotusImageSeat(main);
+      seat.position.y = -height * 0.52 - (main ? 0.08 : 0.015);
+      holder.add(seat);
+
+      function attachPlane(texture) {
+        const ratio = texture.image && texture.image.height ? texture.image.width / texture.image.height : 0.72;
+        const maxHeight = options.maxHeight || height;
+        const widthFromHeight = maxHeight * ratio;
+        const width = Math.min(widthFromHeight, maxWidth);
+        const planeHeight = Math.min(width / ratio, maxHeight);
+        const material = new THREE.MeshBasicMaterial({
+          map: texture,
+          transparent: true,
+          alphaTest: main ? 0.03 : 0.08,
+          side: THREE.DoubleSide,
+          depthWrite: false,
+          depthTest: true,
+          toneMapped: false
+        });
+        const plane = new THREE.Mesh(new THREE.PlaneGeometry(width, planeHeight), material);
+        plane.userData.isDeityPlane = true;
+        plane.position.set(0, 0, main ? 0.08 : 0.05);
+        plane.renderOrder = main ? 32 : 22;
+        holder.add(plane);
+      }
+      holder.userData.attachPlane = attachPlane;
+      holder.userData.height = height;
+      holder.userData.maxWidth = maxWidth;
+
+      requestDeityTexture(name, (texture) => {
+        if (main) {
+          currentMainBuddhaImagePath = DEITY_IMAGES[name];
+          console.info(`主佛圖片使用：${DEITY_IMAGES[name]}`);
+        }
+        attachPlane(texture);
+      }, () => {
+        holder.add(createGoldSilhouetteFallback(name, { main, height }));
+      }, { main, maxTextureEdge: SIDE_SHRINE_TEXTURE_MAX_EDGE });
+
+      const label = main
+        ? makeTextSprite(options.labelText || name, { scale: 1.38, fontSize: 74 })
+        : createSponsorLabelSprite(options.labelText || SPONSOR_LABEL_STYLE.text, {
+          scale: options.labelScale || 1,
+          fontSize: options.labelFontSize || SPONSOR_LABEL_STYLE.fontSize
+        });
+      label.userData.labelScale = options.labelScale || 1;
+      label.position.y = -height * 0.56 - (main ? 0.38 : 0.08);
+      if (!main && typeof options.labelYOffset === 'number') {
+        label.position.y = options.labelYOffset;
+      }
+      label.position.z = 0.08;
+      holder.add(label);
+      holder.userData.labelSprite = label;
+      if (options.offeringId) {
+        sponsorLabelSprites.set(options.offeringId, { holder, label });
+        sponsorLabelMap.set(options.offeringId, label);
+      }
+      return holder;
+    }
+
+    function updateSponsorName(id, sponsorName) {
+      const offering = shrineOfferings.find((entry) => entry.id === id);
+      if (!offering) {
+        console.warn(`Sponsor offering not found: ${id}`);
+        return false;
+      }
+      offering.sponsorName = sponsorName || "善信供養";
+      const entry = sponsorLabelSprites.get(id);
+      if (!entry) return true;
+      const oldLabel = entry.holder.userData.labelSprite || entry.label;
+      const newLabel = createSponsorLabelSprite(offering.sponsorName, {
+        scale: oldLabel.userData?.labelScale || SHRINE_LAYOUT_TUNING.labelScale,
+        fontSize: SPONSOR_LABEL_STYLE.fontSize
+      });
+      newLabel.position.copy(oldLabel.position);
+      entry.holder.remove(oldLabel);
+      oldLabel.material.map?.dispose?.();
+      oldLabel.material.dispose?.();
+      entry.holder.add(newLabel);
+      entry.holder.userData.labelSprite = newLabel;
+      sponsorLabelMap.set(id, newLabel);
+      sponsorLabelSprites.set(id, { holder: entry.holder, label: newLabel });
+      offering.labelSprite = newLabel;
+      return true;
+    }
+
+    function normalizeShrineOffering(entry) {
+      if (!entry || typeof entry !== 'object' || !entry.id) return null;
+      return {
+        id: String(entry.id),
+        sponsorName: String(entry.sponsorName || SPONSOR_LABEL_STYLE.text).trim() || SPONSOR_LABEL_STYLE.text,
+        wishText: String(entry.wishText || ''),
+        startDate: entry.startDate || null,
+        endDate: entry.endDate || null
+      };
+    }
+
+    function applyShrineOfferings(data) {
+      if (!Array.isArray(data)) return false;
+      let applied = 0;
+      data.forEach((raw) => {
+        const incoming = normalizeShrineOffering(raw);
+        if (!incoming) return;
+        const offering = shrineOfferings.find((entry) => entry.id === incoming.id);
+        if (!offering) return;
+        offering.wishText = incoming.wishText;
+        offering.startDate = incoming.startDate;
+        offering.endDate = incoming.endDate;
+        updateSponsorName(incoming.id, incoming.sponsorName);
+        applied++;
+      });
+      return applied > 0;
+    }
+
+    function exportShrineOfferings() {
+      return shrineOfferings.map(({ id, side, row, col, zone, deity, sponsorName, wishText, startDate, endDate }) => ({
+        id,
+        side,
+        row,
+        col,
+        zone,
+        deity,
+        sponsorName,
+        wishText: wishText || '',
+        startDate: startDate || null,
+        endDate: endDate || null
+      }));
+    }
+
+    function importShrineOfferings(data) {
+      const applied = applyShrineOfferings(data);
+      if (applied) {
+        try {
+          localStorage.setItem(SPONSOR_STORAGE_KEY, JSON.stringify(exportShrineOfferings()));
+        } catch (error) {
+          console.warn('Unable to save sponsor data to localStorage', error);
+        }
+      }
+      return applied;
+    }
+
+    async function loadShrineOfferingData() {
+      let loadedStaticData = false;
+      try {
+        const response = await fetch('assets/data/shrine_offerings.json', { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        applyShrineOfferings(data);
+        loadedStaticData = true;
+        console.log("Loaded sponsor data from static JSON");
+      } catch (error) {
+      }
+
+      try {
+        const localData = localStorage.getItem(SPONSOR_STORAGE_KEY);
+        if (localData) {
+          applyShrineOfferings(JSON.parse(localData));
+        }
+      } catch (error) {
+        console.warn('Unable to load sponsor data from localStorage', error);
+      }
+      console.log(loadedStaticData ? "Applied local/static sponsor data" : "Using local/static sponsor data");
+    }
+
+    window.applyShrineOfferings = applyShrineOfferings;
+    window.exportShrineOfferings = exportShrineOfferings;
+    window.importShrineOfferings = importShrineOfferings;
+
+    function setMainDeity(deityName) {
+      const imagePath = DEITY_IMAGES[deityName];
+      if (!imagePath) {
+        console.warn(`Main deity image does not exist in mapping: ${deityName}`);
+        if (mainDeityMessageEl) mainDeityMessageEl.textContent = `找不到 ${deityName} 的圖片，維持目前主尊。`;
+        return false;
+      }
+      requestDeityTexture(deityName, (texture) => {
+        if (!mainDeityHolder?.userData?.attachPlane) return;
+        const oldPlanes = mainDeityHolder.children.filter((child) => child.userData?.isDeityPlane);
+        oldPlanes.forEach((plane) => {
+          mainDeityHolder.remove(plane);
+          plane.geometry?.dispose?.();
+          plane.material?.dispose?.();
+        });
+        mainDeityHolder.userData.attachPlane(texture);
+        currentMainBuddhaImagePath = imagePath;
+        currentMainDeityName = deityName;
+        if (mainDeityCurrentEl) mainDeityCurrentEl.textContent = `目前主尊：${deityName}`;
+        if (mainDeityMessageEl) mainDeityMessageEl.textContent = '主尊已切換，光環、蓮座與供品保持不變。';
+        refreshImageAssetStatus();
+        console.info(`Main deity switched to: ${deityName}`);
+      }, () => {
+        console.warn(`Main deity image failed to load, keeping current deity: ${deityName}`);
+        if (mainDeitySelect) mainDeitySelect.value = currentMainDeityName;
+        if (mainDeityMessageEl) mainDeityMessageEl.textContent = `圖片載入失敗，維持目前主尊：${currentMainDeityName}`;
+      });
+      return true;
+    }
+
+    window.updateSponsorName = updateSponsorName;
+    window.setMainDeity = setMainDeity;
+
+    let sponsorBroadcastChannel = null;
+    try {
+      sponsorBroadcastChannel = new BroadcastChannel(SPONSOR_DATA_CHANNEL);
+      sponsorBroadcastChannel.addEventListener('message', (event) => {
+        if (event.data?.type === 'shrine-offerings-updated' && Array.isArray(event.data.offerings)) {
+          applyShrineOfferings(event.data.offerings);
+        }
+      });
+    } catch (error) {
+    }
+
+    window.addEventListener('storage', (event) => {
+      if (event.key === SPONSOR_STORAGE_KEY && event.newValue) {
+        try {
+          applyShrineOfferings(JSON.parse(event.newValue));
+        } catch (error) {
+        }
+      }
+    });
+
+    mainDeitySelect?.addEventListener('change', () => {
+      const requested = mainDeitySelect.value;
+      if (mainDeityMessageEl) mainDeityMessageEl.textContent = `正在切換為：${requested}`;
+      if (!setMainDeity(requested)) {
+        mainDeitySelect.value = currentMainDeityName;
+      }
+    });
+
+    refreshImageAssetStatus();
+
+    function requestOfferingTexture(type, onLoad, onFail) {
+      const imagePath = OFFERING_IMAGES[type];
+      if (!imagePath) {
+        onFail();
+        return;
+      }
+      requestImageTexture(imagePath, offeringTextureCache, offeringTexturePending, offeringImageStates, `供品 ${type}`, onLoad, onFail);
+    }
+
+    function requestSymbolTexture(type, onLoad, onFail) {
+      const imagePath = SYMBOL_IMAGES[type];
+      if (!imagePath) {
+        onFail?.();
+        return;
+      }
+      requestImageTexture(imagePath, symbolTextureCache, symbolTexturePending, symbolImageStates, `八吉祥 ${type}`, onLoad, onFail);
+    }
+
+    function createOfferingSprite(texture, size=0.76, y=0.62) {
+      texture.colorSpace = THREE.SRGBColorSpace;
+      const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: texture,
+        transparent: true,
+        alphaTest: 0.05,
+        depthWrite: false,
+        depthTest: true,
+        toneMapped: false
+      }));
+      sprite.position.y = y;
+      sprite.scale.set(size, size, 1);
+      sprite.renderOrder = 60;
+      return sprite;
+    }
+
+    Object.keys(DEITY_IMAGES).forEach((name) => requestDeityTexture(name, () => {}, () => {}));
+    Object.keys(OFFERING_IMAGES).forEach((type) => requestOfferingTexture(type, () => {}, () => {}));
+    Object.keys(SYMBOL_IMAGES).forEach((type) => requestSymbolTexture(type, () => {}, () => {}));
+
+    // ---------- Buddha music player ----------
+    const MUSIC_MANIFEST_PATH = 'assets/audio/buddha-music/music_manifest.json';
+    const MUSIC_STORAGE_KEYS = {
+      selected: 'selectedMusicId',
+      volume: 'musicVolume',
+      loop: 'musicLoop',
+      muted: 'musicMuted'
+    };
+    let musicManifest = [];
+    let currentMusicIndex = 0;
+    let musicWasPlaying = false;
+    const buddhaAudio = new Audio();
+    buddhaAudio.preload = LOW_PERFORMANCE_MODE ? 'none' : 'metadata';
+    buddhaAudio.volume = Number(localStorage.getItem(MUSIC_STORAGE_KEYS.volume) || 0.18);
+    buddhaAudio.muted = localStorage.getItem(MUSIC_STORAGE_KEYS.muted) === 'true';
+
+    async function loadMusicManifest() {
+      try {
+        const response = await fetch(MUSIC_MANIFEST_PATH, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        return Array.isArray(data) ? data.filter((item) => item?.file && item?.id) : [];
+      } catch (error) {
+        console.warn('Unable to load Buddha music manifest', error);
+        return [];
+      }
+    }
+
+    function setMusicMessage(text) {
+      musicMessage.textContent = text;
+    }
+
+    function updateMusicUi() {
+      const current = musicManifest[currentMusicIndex];
+      musicPlayPause.textContent = buddhaAudio.paused ? '播放' : '暫停';
+      musicMute.textContent = buddhaAudio.muted ? '取消靜音' : '靜音';
+      musicNowPlaying.textContent = current ? `目前曲目：${current.title || current.id}` : '尚未加入佛樂';
+      musicSelect.disabled = musicManifest.length === 0;
+      [musicPlayPause, musicPrevious, musicNext, musicMute, musicLoop, musicVolume].forEach((control) => {
+        control.disabled = musicManifest.length === 0;
+      });
+    }
+
+    function loadMusicByIndex(index, keepPlayback = false) {
+      if (!musicManifest.length) return;
+      currentMusicIndex = (index + musicManifest.length) % musicManifest.length;
+      const current = musicManifest[currentMusicIndex];
+      if (!LOW_PERFORMANCE_MODE || keepPlayback) {
+        buddhaAudio.src = current.file;
+      } else {
+        buddhaAudio.removeAttribute('src');
+        buddhaAudio.load();
+      }
+      buddhaAudio.loop = musicLoop.checked;
+      musicSelect.value = current.id;
+      localStorage.setItem(MUSIC_STORAGE_KEYS.selected, current.id);
+      updateMusicUi();
+      if (keepPlayback) {
+        playSelectedMusic();
+      }
+    }
+
+    async function playSelectedMusic() {
+      if (!musicManifest.length) {
+        setMusicMessage('尚未加入佛樂');
+        return;
+      }
+      if (!buddhaAudio.src) {
+        const current = musicManifest[currentMusicIndex];
+        if (current) buddhaAudio.src = current.file;
+      }
+      try {
+        await buddhaAudio.play();
+        musicWasPlaying = true;
+        setMusicMessage('佛樂播放中。');
+      } catch (error) {
+        musicWasPlaying = false;
+        setMusicMessage('瀏覽器需要使用者互動後才能播放音訊，請再按一次播放。');
+      }
+      updateMusicUi();
+    }
+
+    function pauseMusic() {
+      buddhaAudio.pause();
+      musicWasPlaying = false;
+      setMusicMessage('佛樂已暫停。');
+      updateMusicUi();
+    }
+
+    function nextMusic() {
+      loadMusicByIndex(currentMusicIndex + 1, musicWasPlaying && !buddhaAudio.paused);
+    }
+
+    function previousMusic() {
+      loadMusicByIndex(currentMusicIndex - 1, musicWasPlaying && !buddhaAudio.paused);
+    }
+
+    function setMusicVolume(value) {
+      const volume = THREE.MathUtils.clamp(Number(value), 0, 1);
+      buddhaAudio.volume = volume;
+      musicVolume.value = String(volume);
+      localStorage.setItem(MUSIC_STORAGE_KEYS.volume, String(volume));
+    }
+
+    async function initBuddhaMusicPlayer() {
+      musicManifest = await loadMusicManifest();
+      musicSelect.innerHTML = '';
+      if (!musicManifest.length) {
+        const option = document.createElement('option');
+        option.textContent = '尚未加入佛樂';
+        musicSelect.appendChild(option);
+        setMusicMessage('尚未加入佛樂');
+        updateMusicUi();
+        return;
+      }
+      musicManifest.forEach((track) => {
+        const option = document.createElement('option');
+        option.value = track.id;
+        option.textContent = track.title || track.originalFilename || track.id;
+        musicSelect.appendChild(option);
+      });
+      const savedId = localStorage.getItem(MUSIC_STORAGE_KEYS.selected);
+      const savedIndex = musicManifest.findIndex((track) => track.id === savedId);
+      currentMusicIndex = savedIndex >= 0 ? savedIndex : 0;
+      musicLoop.checked = localStorage.getItem(MUSIC_STORAGE_KEYS.loop) === 'true';
+      musicVolume.value = String(buddhaAudio.volume);
+      loadMusicByIndex(currentMusicIndex, false);
+      setMusicMessage('請按播放開始佛樂。');
+    }
+
+    musicSelect.addEventListener('change', () => {
+      const index = musicManifest.findIndex((track) => track.id === musicSelect.value);
+      if (index >= 0) {
+        loadMusicByIndex(index, musicWasPlaying && !buddhaAudio.paused);
+      }
+    });
+    musicPlayPause.addEventListener('click', () => buddhaAudio.paused ? playSelectedMusic() : pauseMusic());
+    musicPrevious.addEventListener('click', previousMusic);
+    musicNext.addEventListener('click', nextMusic);
+    musicVolume.addEventListener('input', () => setMusicVolume(musicVolume.value));
+    musicLoop.addEventListener('change', () => {
+      buddhaAudio.loop = musicLoop.checked;
+      localStorage.setItem(MUSIC_STORAGE_KEYS.loop, String(musicLoop.checked));
+    });
+    musicMute.addEventListener('click', () => {
+      buddhaAudio.muted = !buddhaAudio.muted;
+      localStorage.setItem(MUSIC_STORAGE_KEYS.muted, String(buddhaAudio.muted));
+      updateMusicUi();
+    });
+    buddhaAudio.addEventListener('ended', () => {
+      if (!musicLoop.checked) {
+        musicWasPlaying = true;
+        nextMusic();
+      }
+    });
+    buddhaAudio.addEventListener('play', updateMusicUi);
+    buddhaAudio.addEventListener('pause', updateMusicUi);
+    window.loadMusicManifest = loadMusicManifest;
+    window.initBuddhaMusicPlayer = initBuddhaMusicPlayer;
+    window.playSelectedMusic = playSelectedMusic;
+    window.pauseMusic = pauseMusic;
+    window.nextMusic = nextMusic;
+    window.previousMusic = previousMusic;
+    window.setMusicVolume = setMusicVolume;
+    initBuddhaMusicPlayer();
+
+
+    // ---------- Main altar ----------
+    box('mainBackGoldPanel', [11.4, 9.0, 0.22], [0, 5.3, -25.45], mat.goldWall, true, true);
+    box('mainBackRedPanel', [9.6, 8.0, 0.24], [0, 5.25, -25.28], mat.wall, true, true);
+    mainAltarBackgroundPlane = plane('mainBackImageallBackground', MAIN_ALTAR_BACKGROUND_PLANE.width, MAIN_ALTAR_BACKGROUND_PLANE.height, [0, 5.25, -25.08], [0, 0, 0], mainAltarBackgroundMat, 7);
+    box('mainBackCarvedTopRail', [10.2, 0.34, 0.20], [0, 9.36, -24.96], mat.brightGold, true, true);
+    box('mainBackCarvedBottomRail', [10.2, 0.28, 0.20], [0, 1.21, -24.96], mat.oldGold, true, true);
+    for (const x of [-4.95, 4.95]) {
+      box('mainBackCarvedSideRail', [0.34, 8.15, 0.20], [x, 5.25, -24.96], mat.brightGold, true, true);
+      box('mainBackDeepWoodColumn', [0.54, 8.7, 0.46], [x * 1.08, 5.25, -24.90], mat.darkWood, true, true);
+    }
+
+    // Decorative circular mandala
+    const mandalaGroup = new THREE.Group();
+    mandalaGroup.position.set(0, 5.86, -25.03);
+    for (let i = 0; i < 6; i++) {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(1.1 + i*0.42, 0.035, 16, 128), i % 2 === 0 ? mat.glow : mat.brightGold);
+      ring.position.z = 0.04 + i * 0.006;
+      mandalaGroup.add(ring);
+    }
+    const throneHalo = new THREE.Mesh(new THREE.TorusGeometry(3.05, 0.10, 22, 160), mat.brightGold);
+    throneHalo.scale.set(0.82, 1.18, 1);
+    throneHalo.position.z = 0.01;
+    mandalaGroup.add(throneHalo);
+    scene.add(mandalaGroup);
+
+    box('mainAltarBase', [9.2, 0.95, 4.0], [0, 0.48, -22.9], mat.wood, true, true);
+    box('mainAltarGoldTop', [9.8, 0.28, 4.5], [0, 1.09, -22.9], mat.brightGold, true, true);
+    box('mainAltarFrontGold', [9.5, 1.25, 0.2], [0, 0.76, -20.7], mat.goldWall, true, true);
+    for (let x = -3.6; x <= 3.61; x += 1.8) {
+      box('mainAltarCarvedPanel', [1.32, 0.70, 0.08], [x, 0.76, -20.55], mat.darkWood, true, true);
+      box('mainAltarPanelGoldInlay', [1.05, 0.46, 0.06], [x, 0.76, -20.49], mat.oldGold, true, true);
+    }
+    box('centralOfferingTableBase', [9.6, 0.46, 3.2], [0, 1.02, -19.85], mat.wood, true, true);
+    box('centralOfferingTableTop', [10.0, 0.14, 3.5], [0, 1.32, -19.85], mat.brightGold, true, true);
+    box('centralOfferingTableFront', [9.8, 0.66, 0.18], [0, 1.08, -18.22], mat.goldWall, true, true);
+    for (let x = -4.0; x <= 4.01; x += 2.0) {
+      box('offeringTableFrontCarving', [1.35, 0.32, 0.06], [x, 1.08, -18.09], mat.oldGold, true, true);
+    }
+    for (let dx of [-3.8, -1.3, 1.3, 3.8]) {
+      for (let dz of [-1.05, 1.05]) {
+        box('centralOfferingTableLeg', [0.24, 1.02, 0.24], [dx, 0.55, -19.85 + dz], mat.wood, true, true);
+      }
+    }
+
+    const main = addImageDeityStatue("釋迦牟尼佛", new THREE.Vector3(0, 4.78, -24.25), 0, {
+      main: true,
+      height: 6.85,
+      maxWidth: 5.8
+    });
+    mainDeityHolder = main;
+
+    // lamps and offerings
+    function createAltarGlowBalls({ ballsPerSide = 4, color = "#ffd982", intensity = 1.5 } = {}) {
+      const group = new THREE.Group();
+      group.name = 'altarGlowBallsOnly';
+      const baseColor = new THREE.Color(color);
+      const ballMaterial = cloneMaterial(mat.glow, {
+        color: baseColor,
+        emissive: baseColor,
+        emissiveIntensity: intensity
+      });
+      const auraMaterial = new THREE.MeshBasicMaterial({
+        color: baseColor,
+        transparent: true,
+        opacity: 0.22,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      });
+      const spacing = 0.46;
+      const startX = 1.95;
+      const z = -18.78;
+      for (let side of [-1, 1]) {
+        for (let i = 0; i < ballsPerSide; i++) {
+          const x = side * (startX + i * spacing);
+          const ball = new THREE.Mesh(new THREE.SphereGeometry(0.15, 28, 20), ballMaterial);
+          ball.name = 'altarWarmGlowBall';
+          ball.position.set(x, 1.67, z);
+          const aura = new THREE.Mesh(new THREE.SphereGeometry(0.32, 28, 20), auraMaterial);
+          aura.name = 'altarWarmGlowBallAura';
+          aura.position.copy(ball.position);
+          const light = new THREE.PointLight(baseColor, 4.2, 3.0, 1.7);
+          light.name = 'altarWarmGlowBallLight';
+          light.position.set(x, 1.78, z);
+          group.add(aura, ball, light);
+        }
+      }
+      scene.add(group);
+      console.log(`Created altar glow balls: ${ballsPerSide * 2}`);
+      return group;
+    }
+
+    createAltarGlowBalls({ ballsPerSide: 4, color: "#ffd982", intensity: 1.45 });
+
+    const OFFERING_TEXT = {
+      lamp: "供燈功德：增長智慧，辨別是非，滅除愚痴。",
+      incense: "供香功德：罪障消除，福報優厚，所求如願。",
+      water: "供水功德：心意調柔，健康無病，證悟空性。",
+      flower: "供花功德：容貌美麗，身體芳香，聲名遠播。",
+      fruit: "供果功德：福德資糧增長，所求豐足，善緣成熟。",
+      torma: "供食子功德：摧毀我執，遣除違緣，消除病魔。",
+      mandala: "供曼扎功德：快速積福，領受加持，證悟自心。",
+      eightAuspicious: "八吉祥功德：具足吉祥緣起，增長福慧資糧，遣除違緣障礙。"
+    };
+
+    const offeringSlotByType = {
+      lamp: new THREE.Vector3(-3.6, 1.65, -19.15),
+      flower: new THREE.Vector3(-2.4, 1.65, -19.15),
+      water: new THREE.Vector3(-1.2, 1.65, -19.15),
+      incense: new THREE.Vector3(0, 1.65, -19.15),
+      fruit: new THREE.Vector3(1.2, 1.65, -19.15),
+      torma: new THREE.Vector3(2.35, 1.65, -19.15),
+      mandala: new THREE.Vector3(3.65, 1.65, -19.15)
+    };
+    const symbolSlots = [-3.7, -2.65, -1.6, -0.55, 0.55, 1.6, 2.65, 3.7]
+      .map((x) => new THREE.Vector3(x, 1.42, -18.45));
+    const offeringSlots = [...Object.values(offeringSlotByType), ...symbolSlots];
+
+    const offeringsGroup = new THREE.Group();
+    offeringsGroup.name = 'offeringsGroup';
+    scene.add(offeringsGroup);
+    console.log("Main deity z:", mainDeityHolder.position.z);
+    console.log("Offering z positions:", offeringSlots.map((slot) => Number(slot.z.toFixed(2))));
+
+    const activeOfferings = [];
+    const smokeTexture = createSmokeTexture();
+    persistentTextures.add(smokeTexture);
+
+    function setOfferingMessage(message) {
+      offeringMessage.textContent = message;
+    }
+
+    function updateOfferingStatus() {
+      offeringStatus.textContent = `目前供品：${activeOfferings.length} / ${offeringSlots.length}`;
+    }
+
+    function cloneMaterial(source, overrides={}) {
+      const material = source.clone();
+      Object.assign(material, overrides);
+      return material;
+    }
+
+    function createSmokeTexture() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 128;
+      canvas.height = 128;
+      const ctx = canvas.getContext('2d');
+      const gradient = ctx.createRadialGradient(64, 64, 10, 64, 64, 58);
+      gradient.addColorStop(0, 'rgba(255,255,255,0.36)');
+      gradient.addColorStop(0.45, 'rgba(235,235,235,0.18)');
+      gradient.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 128, 128);
+      const texture = new THREE.CanvasTexture(canvas);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      return texture;
+    }
+
+    function disposeMaterial(material) {
+      if (!material) return;
+      if (Array.isArray(material)) {
+        material.forEach(disposeMaterial);
+        return;
+      }
+      ['map', 'alphaMap', 'emissiveMap'].forEach((key) => {
+        const texture = material[key];
+        if (texture && !persistentTextures.has(texture)) {
+          texture.dispose();
+        }
+      });
+      material.dispose();
+    }
+
+    function disposeObject3D(root) {
+      root.traverse((child) => {
+        if (child.userData.cleanup) {
+          child.userData.cleanup();
+        }
+        if (child.geometry) {
+          child.geometry.dispose();
+        }
+        if (child.material) {
+          disposeMaterial(child.material);
+        }
+      });
+    }
+
+    function makeOfferingBase(radius=0.24, height=0.08, material=mat.brightGold) {
+      const base = new THREE.Mesh(new THREE.CylinderGeometry(radius * 0.82, radius, height, 28), cloneMaterial(material));
+      base.position.y = height * 0.5;
+      return base;
+    }
+
+    function attachOfferingArtwork(group, type, spriteScale, spriteY, fallbackBuilder) {
+      requestOfferingTexture(type, (texture) => {
+        const sprite = createOfferingSprite(texture, spriteScale * 1.42, spriteY);
+        sprite.position.z = 0.18;
+        sprite.renderOrder = 60;
+        group.add(sprite);
+      }, () => {
+        const fallback = fallbackBuilder?.();
+        if (fallback) group.add(fallback);
+      });
+    }
+
+    function createLampOffering() {
+      const group = new THREE.Group();
+      const base = makeOfferingBase(0.25, 0.09, mat.brightGold);
+      const tray = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.19, 0.10, 24), cloneMaterial(mat.gold, { emissiveIntensity: 0.42 }));
+      tray.position.y = 0.12;
+      const light = new THREE.PointLight(0xffd57c, 8.5, 3.6, 1.5);
+      light.position.set(0, 0.64, 0);
+      const glowDisc = new THREE.Mesh(
+        new THREE.CircleGeometry(0.18, 32),
+        new THREE.MeshBasicMaterial({ color: 0xffd97b, transparent: true, opacity: 0.28, side: THREE.DoubleSide, depthWrite: false, toneMapped: false })
+      );
+      glowDisc.position.set(0, 0.60, -0.02);
+      group.add(base, tray, glowDisc, light);
+      attachOfferingArtwork(group, 'lamp', 0.98, 0.62, () => {
+        const flame = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 12), new THREE.MeshStandardMaterial({
+          color: 0xfff0bf,
+          emissive: 0xffc453,
+          emissiveIntensity: 1.55,
+          roughness: 0.24,
+          metalness: 0.05
+        }));
+        flame.position.y = 0.38;
+        return flame;
+      });
+      group.userData.update = (time) => {
+        const pulse = 0.92 + Math.sin(time * 6.2 + group.id) * 0.05;
+        glowDisc.scale.setScalar(0.94 + Math.sin(time * 4.4 + group.id) * 0.08);
+        light.intensity = 8.5 + Math.sin(time * 7.2 + group.id) * 1.3;
+        group.children.forEach((child) => {
+          if (child.isSprite) {
+            child.scale.set(0.98 * pulse, 0.98 * pulse, 1);
+          }
+        });
+      };
+      return group;
+    }
+
+    function createIncenseOffering() {
+      const group = new THREE.Group();
+      const burner = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.22, 0.14, 28), cloneMaterial(mat.oldGold));
+      burner.position.y = 0.07;
+      const ash = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.03, 18), cloneMaterial(mat.darkWood, { color: 0x4d4037 }));
+      ash.position.y = 0.15;
+      group.add(burner, ash);
+      attachOfferingArtwork(group, 'incense', 0.92, 0.72, null);
+
+      const smokeSprites = [];
+      [-0.06, 0, 0.06].forEach((x, index) => {
+        const sprite = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: smokeTexture,
+          transparent: true,
+          opacity: 0.2,
+          depthWrite: false,
+          toneMapped: false
+        }));
+        sprite.userData.baseX = x;
+        sprite.userData.baseY = 0.66 + index * 0.04;
+        sprite.userData.baseZ = 0.02 * (index - 1);
+        sprite.position.set(x, 0.66, 0.02 * (index - 1));
+        sprite.scale.set(0.22, 0.34, 1);
+        smokeSprites.push(sprite);
+        group.add(sprite);
+      });
+
+      group.userData.update = (time) => {
+        smokeSprites.forEach((sprite, index) => {
+          sprite.position.y = sprite.userData.baseY + 0.08 * Math.sin(time * 1.4 + index);
+          sprite.position.x = sprite.userData.baseX + Math.sin(time * 0.9 + index) * 0.03;
+          sprite.position.z = sprite.userData.baseZ + Math.cos(time * 0.7 + index) * 0.02;
+          sprite.material.opacity = 0.14 + 0.05 * (1 + Math.sin(time * 1.6 + index));
+        });
+      };
+      return group;
+    }
+
+    function createWaterOffering() {
+      const group = new THREE.Group();
+      const bowl = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.2, 0.12, 28), cloneMaterial(mat.glass, {
+        opacity: 0.42,
+        emissiveIntensity: 0.18
+      }));
+      bowl.position.y = 0.07;
+      const water = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.15, 0.04, 24), new THREE.MeshStandardMaterial({
+        color: 0x89d7ff,
+        transparent: true,
+        opacity: 0.72,
+        roughness: 0.12,
+        metalness: 0.04,
+        emissive: 0x1b8fcb,
+        emissiveIntensity: 0.22
+      }));
+      water.position.y = 0.14;
+      group.add(bowl, water);
+      attachOfferingArtwork(group, 'water', 0.82, 0.62, null);
+      return group;
+    }
+
+    function createFlowerOffering() {
+      const group = new THREE.Group();
+      const vase = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.16, 0.3, 24), cloneMaterial(mat.glass, {
+        color: 0xfbe5b0,
+        opacity: 0.32
+      }));
+      vase.position.y = 0.15;
+      group.add(vase);
+      attachOfferingArtwork(group, 'flower', 0.96, 0.72, null);
+      return group;
+    }
+
+    function createFruitOffering() {
+      const group = new THREE.Group();
+      const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.28, 0.06, 28), cloneMaterial(mat.brightGold));
+      plate.position.y = 0.03;
+      group.add(plate);
+      attachOfferingArtwork(group, 'fruit', 0.92, 0.66, null);
+      return group;
+    }
+
+    function createTormaOffering() {
+      const group = new THREE.Group();
+      const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.27, 0.06, 28), cloneMaterial(mat.brightGold));
+      plate.position.y = 0.03;
+      group.add(plate);
+      attachOfferingArtwork(group, 'torma', 0.88, 0.66, null);
+      return group;
+    }
+
+    function createMandalaOffering() {
+      const group = new THREE.Group();
+      const plate = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.32, 0.06, 32), cloneMaterial(mat.brightGold));
+      plate.position.y = 0.03;
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.2, 0.03, 12, 42), cloneMaterial(mat.gold));
+      ring.position.y = 0.09;
+      ring.rotation.x = Math.PI / 2;
+      const jewel = new THREE.Mesh(new THREE.SphereGeometry(0.04, 14, 10), cloneMaterial(mat.glow));
+      jewel.position.y = 0.42;
+      group.add(plate, ring, jewel);
+      attachOfferingArtwork(group, 'mandala', 1.04, 0.72, () => {
+        const fallback = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.22, 18), cloneMaterial(mat.brightGold));
+        fallback.position.y = 0.24;
+        return fallback;
+      });
+      group.userData.update = (time) => {
+        jewel.position.y = 0.40 + Math.sin(time * 2.6 + group.id) * 0.018;
+      };
+      return group;
+    }
+
+    function buildOffering(type) {
+      if (type === 'lamp') return createLampOffering();
+      if (type === 'incense') return createIncenseOffering();
+      if (type === 'water') return createWaterOffering();
+      if (type === 'flower') return createFlowerOffering();
+      if (type === 'fruit') return createFruitOffering();
+      if (type === 'torma') {
+        const group = createTormaOffering();
+        group.userData.targetScale = 0.85;
+        return group;
+      }
+      if (type === 'mandala') {
+        const group = createMandalaOffering();
+        group.userData.targetScale = 0.80;
+        return group;
+      }
+      return null;
+    }
+
+    function createSymbolOffering(type) {
+      const group = new THREE.Group();
+      const base = makeOfferingBase(0.12, 0.04, mat.brightGold);
+      group.add(base);
+      requestSymbolTexture(type, (texture) => {
+        const sprite = createOfferingSprite(texture, 0.86, 0.38);
+        sprite.position.z = 0.22;
+        sprite.renderOrder = 65;
+        group.add(sprite);
+      }, () => {
+        const fallback = new THREE.Mesh(new THREE.RingGeometry(0.10, 0.16, 24), cloneMaterial(mat.brightGold));
+        fallback.position.y = 0.28;
+        group.add(fallback);
+      });
+      group.userData.targetScale = 0.78;
+      return group;
+    }
+
+    function addOfferingAppearance(group) {
+      const innerUpdate = group.userData.update;
+      const targetScale = group.userData.targetScale || 1;
+      group.userData.spawnTime = clock.elapsedTime;
+      group.userData.anchorY = group.position.y;
+      group.scale.setScalar(0.55 * targetScale);
+      group.userData.update = (time, delta) => {
+        const intro = THREE.MathUtils.clamp((time - group.userData.spawnTime) / 0.3, 0, 1);
+        const eased = 1 - Math.pow(1 - intro, 3);
+        group.scale.setScalar((0.55 + eased * 0.45) * targetScale);
+        group.position.y = group.userData.anchorY + (1 - eased) * 0.12;
+        innerUpdate?.(time, delta);
+      };
+      return group;
+    }
+
+    function clearOfferings() {
+      while (offeringsGroup.children.length) {
+        const child = offeringsGroup.children[offeringsGroup.children.length - 1];
+        offeringsGroup.remove(child);
+        disposeObject3D(child);
+      }
+      activeOfferings.length = 0;
+      updateOfferingStatus();
+      setOfferingMessage('供桌已清空，歡迎再次發心供養。');
+    }
+
+    function addOffering(type) {
+      if (activeOfferings.some((entry) => entry.type === type)) {
+        setOfferingMessage('此供品已安置在供桌上，可先清空供品再重新排列。');
+        return;
+      }
+
+      const offering = buildOffering(type);
+      if (!offering) return;
+      offering.position.copy(offeringSlotByType[type] || offeringSlots[activeOfferings.length]);
+      addOfferingAppearance(offering);
+      offeringsGroup.add(offering);
+      activeOfferings.push({ type, object: offering });
+      updateOfferingStatus();
+      setOfferingMessage(OFFERING_TEXT[type]);
+    }
+
+    function addEightAuspiciousSymbols() {
+      if (activeOfferings.some((entry) => entry.type && entry.type.startsWith('eightAuspicious'))) {
+        setOfferingMessage('八吉祥已安置在供桌前緣。');
+        return;
+      }
+      Object.keys(SYMBOL_IMAGES).forEach((type, index) => {
+        const symbol = createSymbolOffering(type);
+        symbol.position.copy(symbolSlots[index]);
+        addOfferingAppearance(symbol);
+        offeringsGroup.add(symbol);
+        activeOfferings.push({ type: `eightAuspicious:${type}`, object: symbol });
+      });
+      updateOfferingStatus();
+      setOfferingMessage(OFFERING_TEXT.eightAuspicious);
+    }
+
+    offeringPanel.querySelectorAll('button[data-offering]').forEach((button) => {
+      button.addEventListener('click', () => addOffering(button.dataset.offering));
+    });
+    offeringPanel.querySelector('[data-action="eight-auspicious"]').addEventListener('click', addEightAuspiciousSymbols);
+
+    function openDedication() {
+      dedicationModal.classList.add('open');
+      dedicationModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeDedication() {
+      dedicationModal.classList.remove('open');
+      dedicationModal.setAttribute('aria-hidden', 'true');
+    }
+
+    offeringPanel.querySelector('[data-action="clear-offerings"]').addEventListener('click', clearOfferings);
+    offeringPanel.querySelector('[data-action="dedicate-merit"]').addEventListener('click', openDedication);
+    dedicationModal.querySelector('[data-action="close-dedication"]').addEventListener('click', closeDedication);
+    dedicationModal.addEventListener('click', (event) => {
+      if (event.target === dedicationModal) {
+        closeDedication();
+      }
+    });
+    updateOfferingStatus();
+
+    // ---------- Side shelves ----------
+    function getAisleFacingX(side) {
+      return side * (11.23 - SHRINE_LAYOUT_TUNING.statueForwardOffset);
+    }
+
+    function createLowerCabinets(side) {
+      const xCabinet = side * 12.12;
+      const zCenter = -1.85;
+      const zMin = -20.45;
+      const zMax = 16.75;
+      const cabinetHeight = 2.72;
+      const cabinetY = cabinetHeight / 2;
+      const cabinetDepth = 1.18;
+      const cabinetLength = zMax - zMin;
+      box('sideLowerCabinetBody', [cabinetDepth, cabinetHeight, cabinetLength], [xCabinet, cabinetY, zCenter], mat.darkWood, true, true);
+      box('sideLowerCabinetFace', [0.10, cabinetHeight * 0.86, cabinetLength - 0.42], [side * 11.50, cabinetY, zCenter], mat.wood, true, true);
+      box('sideLowerCabinetGoldTop', [1.34, 0.12, cabinetLength], [xCabinet, cabinetHeight + 0.08, zCenter], mat.brightGold, true, true);
+      box('sideLowerCabinetToe', [1.20, 0.10, cabinetLength], [xCabinet, 0.14, zCenter], mat.goldWall, true, true);
+
+      const doorCount = 20;
+      const doorStep = cabinetLength / doorCount;
+      for (let i = 0; i < doorCount; i++) {
+        const z = zMin + doorStep * (i + 0.5);
+        box('sideLowerCabinetDoor', [0.08, 1.92, doorStep * 0.84], [side * 11.43, 1.36, z], mat.wood, true, true);
+        box('sideLowerCabinetDoorCarvedInset', [0.085, 1.26, doorStep * 0.52], [side * 11.36, 1.36, z], mat.darkWood, true, true);
+        box('sideLowerCabinetDoorGoldMotif', [0.09, 0.54, doorStep * 0.28], [side * 11.31, 1.36, z], mat.oldGold, true, true);
+        box('sideLowerCabinetDoorTrim', [0.09, 1.70, 0.025], [side * 11.38, 1.36, z - doorStep * 0.36], mat.goldWall, true, true);
+        box('sideLowerCabinetHandle', [0.10, 0.055, 0.16], [side * 11.32, 1.58, z], mat.brightGold, true, true);
+      }
+    }
+
+    function makeOfferingId(sideName, zoneIndex, row, col) {
+      return `${sideName}-zone-${String(zoneIndex + 1).padStart(2, '0')}-row-${String(row + 1).padStart(2, '0')}-col-${String(col + 1).padStart(2, '0')}`;
+    }
+
+    function createShelves(side) {
+      const sideName = side < 0 ? 'left' : 'right';
+      const zones = SHRINE_ZONES[sideName];
+      const rows = SHRINE_LAYOUT_TUNING.rows;
+      const cols = zones.reduce((sum, zone) => sum + zone.cols, 0);
+      const xBack = side * 13.1;
+      const xShelf = side * 12.10;
+      const xStatue = getAisleFacingX(side);
+      const facing = side < 0 ? Math.PI / 2 : -Math.PI / 2;
+      const zCenter = -1.85;
+      const zMin = -20.45;
+      const zMax = 16.75;
+      const cabinetTopY = 2.85;
+      const shelfBoardYs = [cabinetTopY, 4.45, 6.05, 7.65];
+      const shelfRows = shelfBoardYs.slice(0, -1).map((y, index) => ({
+        bottomY: y + 0.18,
+        topY: shelfBoardYs[index + 1] - 0.18
+      }));
+      const stepZ = (zMax - zMin) / cols;
+      if (cols !== SHRINE_LAYOUT_TUNING.columnsPerSide) {
+        console.warn(`${sideName} shrine columns: ${cols}, expected ${SHRINE_LAYOUT_TUNING.columnsPerSide}`);
+      }
+
+      box('sideGoldBackPanel', [0.42, 9.55, 39.0], [xBack, 4.85, zCenter], mat.goldWall, false, true);
+      box('sideRedBackPanel', [0.22, 9.05, 38.2], [side * 12.86, 4.77, zCenter], mat.wall, false, true);
+      box('sideOuterCarvedTopRail', [1.45, 0.34, 39.2], [side * 12.32, 8.58, zCenter], mat.darkWood, true, true);
+      box('sideOuterGoldCrownRail', [1.60, 0.18, 39.6], [side * 12.22, 8.82, zCenter], mat.brightGold, true, true);
+      box('sideOuterCarvedBottomRail', [1.50, 0.22, 39.2], [side * 12.25, 2.82, zCenter], mat.darkWood, true, true);
+      createLowerCabinets(side);
+
+      for (let y of shelfBoardYs) {
+        box('sideShelfBoardGold', [1.95, 0.15, 38.45], [xShelf, y, zCenter], mat.oldGold, true, true);
+        box('sideShelfBoardWood', [1.74, 0.10, 37.95], [xShelf, y + 0.11, zCenter], mat.darkWood, true, true);
+      }
+      if (SHOW_VERTICAL_ZONE_DIVIDERS) {
+        let zoneDividerCol = 0;
+        zones.slice(0, -1).forEach((zone) => {
+          zoneDividerCol += zone.cols;
+          const z = zMin + zoneDividerCol * stepZ;
+          const divider = box('sideZoneDividerThinBackLine', [0.035, 4.65, 0.018], [side * 12.78, 5.28, z], mat.goldWall, false, true);
+          divider.name = 'sideZoneDividerThinBackLine';
+        });
+      } else {
+        console.info('Removed vertical decorative strips / dividers');
+      }
+
+      let colStart = 0;
+      zones.forEach((zone, zoneIndex) => {
+        const zoneCenterZ = zMin + stepZ * (colStart + zone.cols / 2);
+        const title = makeTextSprite(zone.title, { scale: SHRINE_LAYOUT_TUNING.zoneTitleScale, fontSize: 78, variant: 'zone' });
+        title.position.set(side * 11.18, 8.22, zoneCenterZ);
+        title.renderOrder = 80;
+        title.material.depthTest = false;
+        title.material.depthWrite = false;
+        scene.add(title);
+
+        for (let localCol = 0; localCol < zone.cols; localCol++) {
+          const col = colStart + localCol;
+          const z = zMin + stepZ * (col + 0.5);
+          for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+            const row = shelfRows[rowIndex];
+            const rowCenterY = (row.bottomY + row.topY) / 2;
+            const rowHeight = row.topY - row.bottomY;
+            const cellWidth = stepZ;
+            const cellHeight = rowHeight;
+            const safeWidth = cellWidth * 0.62;
+            const safeHeight = cellHeight * 0.72;
+            const panel = new THREE.Mesh(new THREE.PlaneGeometry(cellWidth * 0.72, cellHeight * 0.68), mat.glass);
+            panel.position.set(side * 12.68, rowCenterY, z);
+            panel.rotation.y = facing;
+            scene.add(panel);
+
+            const statueHeight = Math.min(cellHeight * SHRINE_LAYOUT_TUNING.statueHeightRatio, safeHeight);
+            const maxLabelWidth = cellWidth * 0.95;
+            const labelScale = Math.min(SHRINE_LAYOUT_TUNING.labelScale, maxLabelWidth / SPONSOR_LABEL_STYLE.widthScale);
+            const labelVisualHeight = SPONSOR_LABEL_STYLE.heightScale * labelScale;
+            const centerY = row.bottomY + labelVisualHeight + 0.12 + statueHeight / 2;
+            const labelYOffset = -(statueHeight / 2 + labelVisualHeight * 0.68 + 0.08);
+            const id = makeOfferingId(sideName, zoneIndex, rowIndex, col);
+            const offeringData = {
+              id,
+              side: sideName,
+              row: rowIndex,
+              col,
+              zone: zone.title,
+              deity: zone.deity,
+              sponsorName: "善信供養",
+              wishText: "",
+              startDate: null,
+              endDate: null,
+              labelSprite: null
+            };
+            const holder = addImageDeityStatue(
+              zone.deity,
+              new THREE.Vector3(xStatue, centerY, z),
+              facing,
+              {
+                height: statueHeight,
+                maxHeight: safeHeight * 0.82,
+                maxWidth: Math.min(safeWidth, cellWidth * SHRINE_LAYOUT_TUNING.statueMaxWidthRatio),
+                labelText: "善信供養",
+                offeringId: id,
+                labelScale,
+                labelYOffset,
+                haloScale: SHRINE_LAYOUT_TUNING.haloScale
+              }
+            );
+            offeringData.labelSprite = holder.userData.labelSprite;
+            shrineOfferings.push(offeringData);
+            totalShelfStatues++;
+          }
+        }
+        colStart += zone.cols;
+      });
+
+      if (LOW_PERFORMANCE_MODE) return;
+
+      for (let i = 0; i < 5; i++) {
+        const z = zMin + stepZ * (i * 4 + 2);
+        const localLight = new THREE.PointLight(0xffc875, 13, 7.6, 1.75);
+        localLight.position.set(side * 11.48, 5.55, z);
+        scene.add(localLight);
+      }
+    }
+    createShelves(-1);
+    createShelves(1);
+    refreshImageAssetStatus();
+    console.log("Performance mode", {
+      IS_MOBILE,
+      LOW_PERFORMANCE_MODE,
+      pixelRatio: rendererPixelRatio,
+      sideShrineCount: totalShelfStatues,
+      targetFPS: TARGET_FPS
+    });
+    loadShrineOfferingData();
+    console.info(`Created side shrine statues: ${totalShelfStatues}`);
+
+    // Hanging lamps along center
+    for (let z of [-18, -12, -6, 0, 6, 12, 17]) {
+      const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.017, 0.017, 1.0, 10), mat.brightGold);
+      cord.position.set(0, 9.65, z);
+      scene.add(cord);
+
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(0.32, 0.036, 12, 48), mat.brightGold);
+      ring.position.set(0, 9.04, z);
+      ring.rotation.x = Math.PI / 2;
+      scene.add(ring);
+
+      const lamp = new THREE.Mesh(new THREE.SphereGeometry(0.24, 32, 18), mat.glow);
+      lamp.position.set(0, 8.92, z);
+      scene.add(lamp);
+
+      const light = new THREE.PointLight(0xffd184, 62, 11.6, 1.38);
+      light.position.set(0, 8.72, z);
+      scene.add(light);
+    }
+
+    // Decorative golden floor lines
+    const lineMat = new THREE.LineBasicMaterial({ color: 0xffd276, transparent: true, opacity: 0.58 });
+    for (let x of [-6.5, -3.15, 3.15, 6.5]) {
+      const points = [new THREE.Vector3(x, 0.055, -22.3), new THREE.Vector3(x, 0.055, 17.5)];
+      const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(points), lineMat);
+      scene.add(line);
+    }
+
+    // ---------- Camera navigation ----------
+    const navigationUp = new THREE.Vector3(0, 1, 0);
+    const moveDirection = new THREE.Vector3();
+    const moveSide = new THREE.Vector3();
+    const moveOffset = new THREE.Vector3();
+    const rigClampDelta = new THREE.Vector3();
+
+    function clampVectorToBounds(vector, bounds) {
+      vector.x = THREE.MathUtils.clamp(vector.x, bounds.minX, bounds.maxX);
+      vector.y = THREE.MathUtils.clamp(vector.y, bounds.minY, bounds.maxY);
+      vector.z = THREE.MathUtils.clamp(vector.z, bounds.minZ, bounds.maxZ);
+      return vector;
+    }
+
+    function makeClampedView(pos, target) {
+      return {
+        pos: clampVectorToBounds(pos.clone(), HALL_BOUNDS),
+        target: clampVectorToBounds(target.clone(), TARGET_BOUNDS)
+      };
+    }
+
+    const views = {
+      reset: makeClampedView(new THREE.Vector3(0, 4.8, 17.8), new THREE.Vector3(0, 3.2, -10.0)),
+      panorama: makeClampedView(new THREE.Vector3(0, 7.0, 14.2), new THREE.Vector3(0, 4.5, -20.8)),
+      front: makeClampedView(new THREE.Vector3(0, 4.2, -15.2), new THREE.Vector3(0, 4.5, -24.2)),
+      left: makeClampedView(new THREE.Vector3(-2.8, 4.6, -9.2), new THREE.Vector3(-10.45, 4.3, -9.2)),
+      right: makeClampedView(new THREE.Vector3(2.8, 4.6, -9.2), new THREE.Vector3(10.45, 4.3, -9.2)),
+      center: makeClampedView(new THREE.Vector3(0, 2.8, 4.5), new THREE.Vector3(0, 3.8, -18.5))
+    };
+
+    let transition = null;
+
+    function clampCameraInsideHall() {
+      rigClampDelta.set(
+        THREE.MathUtils.clamp(camera.position.x, HALL_BOUNDS.minX, HALL_BOUNDS.maxX) - camera.position.x,
+        0,
+        THREE.MathUtils.clamp(camera.position.z, HALL_BOUNDS.minZ, HALL_BOUNDS.maxZ) - camera.position.z
+      );
+
+      if (rigClampDelta.x !== 0 || rigClampDelta.z !== 0) {
+        camera.position.add(rigClampDelta);
+        controls.target.add(rigClampDelta);
+      }
+
+      camera.position.y = THREE.MathUtils.clamp(camera.position.y, HALL_BOUNDS.minY, HALL_BOUNDS.maxY);
+      clampVectorToBounds(controls.target, TARGET_BOUNDS);
+    }
+
+    function flyToView(name) {
+      const view = views[name] || views.reset;
+      transition = {
+        t: 0,
+        duration: 0.95,
+        fromPos: camera.position.clone(),
+        fromTarget: controls.target.clone(),
+        toPos: view.pos.clone(),
+        toTarget: view.target.clone()
+      };
+    }
+
+    document.querySelectorAll('button[data-view]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        flyToView(btn.dataset.view);
+        setPanelOpen('toolbar', false);
+      });
+    });
+
+    function easeInOutCubic(x) {
+      return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+    }
+
+    function moveCameraRig(delta) {
+      if (hallSceneState !== "frontHall") return;
+      const forward = (keys.w || keys.up || mobileMove.forward) ? 1 : 0;
+      const back = (keys.s || keys.down || mobileMove.back) ? 1 : 0;
+      const left = (keys.a || keys.left || mobileMove.left) ? 1 : 0;
+      const right = (keys.d || keys.right || mobileMove.right) ? 1 : 0;
+      if (!forward && !back && !left && !right) return;
+
+      const speed = 5.1;
+      camera.getWorldDirection(moveDirection);
+      moveDirection.y = 0;
+      moveDirection.normalize();
+
+      moveSide.crossVectors(moveDirection, navigationUp).normalize();
+
+      moveOffset.set(0, 0, 0);
+      moveOffset.addScaledVector(moveDirection, (forward - back) * speed * delta);
+      moveOffset.addScaledVector(moveSide, (right - left) * speed * delta);
+
+      if (forward && Math.abs(camera.position.x) < 4.2) {
+        if (!frontHallEntranceHoldStartedAt) frontHallEntranceHoldStartedAt = performance.now();
+        frontHallEntranceApproach += speed * delta;
+      } else if (back) {
+        frontHallEntranceApproach = Math.max(0, frontHallEntranceApproach - speed * delta * 1.4);
+        frontHallEntranceHoldStartedAt = 0;
+      } else if (left || right) {
+        frontHallEntranceApproach = Math.max(0, frontHallEntranceApproach - speed * delta * 0.35);
+        frontHallEntranceHoldStartedAt = 0;
+      } else {
+        frontHallEntranceHoldStartedAt = 0;
+      }
+
+      camera.position.add(moveOffset);
+      controls.target.add(moveOffset);
+      clampCameraInsideHall();
+      checkFrontHallEntranceTrigger();
+    }
+
+    function updateTransition(delta) {
+      if (!transition) return;
+      transition.t += delta;
+      const k = easeInOutCubic(Math.min(1, transition.t / transition.duration));
+      camera.position.lerpVectors(transition.fromPos, transition.toPos, k);
+      controls.target.lerpVectors(transition.fromTarget, transition.toTarget, k);
+      clampCameraInsideHall();
+      if (k >= 1) transition = null;
+    }
+
+    // ---------- Animate ----------
+    let lastRenderTime = 0;
+    function animate(time = 0) {
+      requestAnimationFrame(animate);
+      if (time - lastRenderTime < 1000 / TARGET_FPS) return;
+      lastRenderTime = time;
+      const delta = Math.min(clock.getDelta(), 0.033);
+      const t = clock.elapsedTime;
+
+      if (hallSceneState === "innerShrine") {
+        moveInnerShrineView(delta);
+      } else {
+        moveCameraRig(delta);
+        updateTransition(delta);
+      }
+
+      mandalaGroup.rotation.z = Math.sin(t * 0.12) * 0.025;
+      if (main) main.rotation.y = Math.sin(t * 0.10) * 0.018;
+      updateBackgroundFrameTexture(delta);
+      offeringsGroup.children.forEach((child) => child.userData.update?.(t, delta));
+
+      if (hallSceneState === "frontHall") {
+        controls.update();
+        clampCameraInsideHall();
+        renderer.render(scene, camera);
+      }
+    }
+    animate();
+
+    flyToView('panorama');
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(rendererPixelRatio);
+    });
+  </script>
+</body>
+</html>

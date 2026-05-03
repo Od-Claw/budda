@@ -1,0 +1,112 @@
+[
+  {
+    "deity_name": "釋迦牟尼佛",
+    "output_filename": "shakyamuni.png",
+    "source_filename": null,
+    "source_url": null,
+    "processed": false,
+    "background_removed": false,
+    "text_removed": false,
+    "skipped_reason": "尚未選定來源圖片。",
+    "need_manual_review": true
+  },
+  {
+    "deity_name": "阿彌陀佛",
+    "output_filename": "amitabha.png",
+    "source_filename": null,
+    "source_url": null,
+    "processed": false,
+    "background_removed": false,
+    "text_removed": false,
+    "skipped_reason": "尚未選定來源圖片。",
+    "need_manual_review": true
+  },
+  {
+    "deity_name": "藥師佛",
+    "output_filename": "yaoshi-buddha.png",
+    "source_filename": "yaoshi-buddha.jpg",
+    "source_url": "https://gdp.alicdn.com/imgextra/i3/152211262/O1CN01kyjzqS1LC2nFQPMkg_!!152211262.jpg",
+    "processed": true,
+    "background_removed": true,
+    "text_removed": false,
+    "skipped_reason": "",
+    "need_manual_review": true
+  },
+  {
+    "deity_name": "金剛薩埵",
+    "output_filename": "vajrasattva.png",
+    "source_filename": null,
+    "source_url": null,
+    "processed": false,
+    "background_removed": false,
+    "text_removed": false,
+    "skipped_reason": "尚未選定來源圖片。",
+    "need_manual_review": true
+  },
+  {
+    "deity_name": "蓮花生大士",
+    "output_filename": "padmasambhava.png",
+    "source_filename": "padmasambhava.jpg",
+    "source_url": "https://gdp.alicdn.com/imgextra/i3/152211262/O1CN01kyjzqS1LC2nFQPMkg_!!152211262.jpg",
+    "processed": true,
+    "background_removed": true,
+    "text_removed": false,
+    "skipped_reason": "",
+    "need_manual_review": true
+  },
+  {
+    "deity_name": "文殊菩薩",
+    "output_filename": "manjushri.png",
+    "source_filename": "manjushri.jpg",
+    "source_url": "https://gdp.alicdn.com/imgextra/i3/152211262/O1CN01kyjzqS1LC2nFQPMkg_!!152211262.jpg",
+    "processed": true,
+    "background_removed": true,
+    "text_removed": false,
+    "skipped_reason": "",
+    "need_manual_review": true
+  },
+  {
+    "deity_name": "四臂觀音",
+    "output_filename": "chenrezig-four-arm.png",
+    "source_filename": null,
+    "source_url": null,
+    "processed": false,
+    "background_removed": false,
+    "text_removed": false,
+    "skipped_reason": "尚未選定來源圖片。",
+    "need_manual_review": true
+  },
+  {
+    "deity_name": "綠度母",
+    "output_filename": "green-tara.png",
+    "source_filename": "green-tara.jpg",
+    "source_url": "https://gdp.alicdn.com/imgextra/i3/152211262/O1CN01kyjzqS1LC2nFQPMkg_!!152211262.jpg",
+    "processed": true,
+    "background_removed": true,
+    "text_removed": false,
+    "skipped_reason": "",
+    "need_manual_review": true
+  },
+  {
+    "deity_name": "地藏王菩薩",
+    "output_filename": "ksitigarbha.png",
+    "source_filename": null,
+    "source_url": null,
+    "processed": false,
+    "background_removed": false,
+    "text_removed": false,
+    "skipped_reason": "尚未選定來源圖片。",
+    "need_manual_review": true
+  },
+  {
+    "deity_name": "黃財神",
+    "output_filename": "yellow-jambhala.png",
+    "source_filename": "yellow-jambhala.jpg",
+    "source_url": "https://gdp.alicdn.com/imgextra/i3/152211262/O1CN01kyjzqS1LC2nFQPMkg_!!152211262.jpg",
+    "processed": true,
+    "background_removed": true,
+    "text_removed": false,
+    "skipped_reason": "",
+    "need_manual_review": true
+  }
+]
