@@ -3761,7 +3761,7 @@
     mainDeityHolder = main;
 
     // lamps and offerings
-    function createAltarGlowBalls({ ballsPerSide = 4, color = "#ffd982", intensity = 1.1 } = {}) {
+    function createAltarGlowBalls({ ballsPerSide = 4, color = "#ffd982", intensity = 0.18 } = {}) {
       const group = new THREE.Group();
       group.name = 'altarGlowBallsOnly';
       const baseColor = new THREE.Color(color);
@@ -3773,7 +3773,7 @@
       const auraMaterial = new THREE.MeshBasicMaterial({
         color: baseColor,
         transparent: true,
-        opacity: 0.16,
+        opacity: 0.012,
         depthWrite: false,
         blending: THREE.AdditiveBlending
       });
@@ -3789,7 +3789,7 @@
           const aura = new THREE.Mesh(new THREE.SphereGeometry(0.32, 28, 20), auraMaterial);
           aura.name = 'altarWarmGlowBallAura';
           aura.position.copy(ball.position);
-        const light = new THREE.PointLight(baseColor, 3.7, 3.0, 1.7);
+        const light = new THREE.PointLight(baseColor, 0.24, 1.45, 2.0);
           light.name = 'altarWarmGlowBallLight';
           light.position.set(x, 1.78, z);
           group.add(aura, ball, light);
@@ -3800,7 +3800,7 @@
       return group;
     }
 
-    createAltarGlowBalls({ ballsPerSide: 4, color: "#ffd982", intensity: 1.08 });
+    createAltarGlowBalls({ ballsPerSide: 4, color: "#ffd982", intensity: 0.18 });
 
     const OFFERING_TEXT = {
       lamp: "供燈功德：增長智慧，辨別是非，滅除愚痴。",
