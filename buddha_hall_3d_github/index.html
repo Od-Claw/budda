@@ -25,7 +25,7 @@
     canvas {
       display: block;
       outline: none;
-      filter: brightness(1.34) contrast(1.04) saturate(1.14);
+      filter: brightness(1.13) contrast(1.03) saturate(1.08);
     }
 
     .collapsible-panel {
@@ -1142,7 +1142,7 @@
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.18;
+    renderer.toneMappingExposure = 1.06;
     document.body.appendChild(renderer.domElement);
 
     // ---------- Easier controls ----------
@@ -1914,6 +1914,23 @@
           ctx.stroke();
         }
       }, 3, 3),
+      warmFloor: makeCanvasTexture(768, 768, (ctx, w, h) => {
+        const grd = ctx.createLinearGradient(0, 0, w, h);
+        grd.addColorStop(0, '#d9b77a');
+        grd.addColorStop(0.45, '#b8844a');
+        grd.addColorStop(1, '#f0d9a0');
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, w, h);
+        for (let i = 0; i < 44; i++) {
+          const y = i * h / 44 + Math.sin(i * 1.4) * 8;
+          ctx.strokeStyle = i % 3 === 0 ? 'rgba(120, 65, 24, 0.20)' : 'rgba(255, 244, 196, 0.16)';
+          ctx.lineWidth = 1.5 + (i % 4);
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          for (let x = 0; x <= w; x += 52) ctx.lineTo(x, y + Math.sin(x * 0.016 + i) * 10);
+          ctx.stroke();
+        }
+      }, 3, 3),
       brocade: makeCanvasTexture(1024, 1024, (ctx, w, h) => {
         const grd = ctx.createRadialGradient(w * 0.5, h * 0.32, 30, w * 0.5, h * 0.5, w * 0.78);
         grd.addColorStop(0, '#9b3a19');
@@ -1984,7 +2001,7 @@
     // ---------- Materials ----------
     const makeMat = (params) => new THREE.MeshStandardMaterial(params);
     const mat = {
-      floor: makeMat({ color: 0x5f371d, map: textureSet.wood, roughness: 0.52, metalness: 0.10, emissive: 0x120604, emissiveIntensity: 0.08 }),
+      floor: makeMat({ color: 0xd1ad72, map: textureSet.warmFloor, roughness: 0.84, metalness: 0.03, emissive: 0x33200b, emissiveIntensity: 0.05 }),
       carpet: makeMat({ color: 0x8e1f14, map: textureSet.rug, roughness: 0.82, metalness: 0.03, emissive: 0x250603, emissiveIntensity: 0.12 }),
       wall: makeMat({ color: 0x5d160b, map: textureSet.brocade, roughness: 0.72, metalness: 0.05, emissive: 0x160302, emissiveIntensity: 0.16 }),
       goldWall: makeMat({ color: 0xb47a24, map: textureSet.goldFiligree, roughness: 0.34, metalness: 0.76, emissive: 0x361803, emissiveIntensity: 0.24 }),
@@ -1998,7 +2015,7 @@
       white: makeMat({ color: 0xf1ead6, roughness: 0.56, metalness: 0.04, emissive: 0x5d4c2e, emissiveIntensity: 0.18 }),
       green: makeMat({ color: 0x4cb565, roughness: 0.56, metalness: 0.06, emissive: 0x062c0d, emissiveIntensity: 0.22 }),
       amber: makeMat({ color: 0xe28b29, roughness: 0.45, metalness: 0.18, emissive: 0x452006, emissiveIntensity: 0.28 }),
-      glow: makeMat({ color: 0xffdfa0, roughness: 0.25, metalness: 0.24, emissive: 0xffb640, emissiveIntensity: 1.25 }),
+      glow: makeMat({ color: 0xffd58c, roughness: 0.34, metalness: 0.18, emissive: 0xffad35, emissiveIntensity: 0.82 }),
       glass: makeMat({ color: 0x5a1d10, roughness: 0.50, metalness: 0.12, transparent: true, opacity: 0.36, emissive: 0x2a0803, emissiveIntensity: 0.18 })
     };
 
@@ -2136,20 +2153,20 @@
     }
 
     // ---------- Lighting: warmer temple interior ----------
-    const ambient = new THREE.AmbientLight(0xffd9a1, 1.36);
+    const ambient = new THREE.AmbientLight(0xffd9a1, 1.20);
     scene.add(ambient);
 
-    const hemi = new THREE.HemisphereLight(0xfff0c9, 0x4a1207, 1.48);
+    const hemi = new THREE.HemisphereLight(0xfff0c9, 0x4a1207, 1.26);
     scene.add(hemi);
 
-    const frontKey = new THREE.DirectionalLight(0xffefc4, 1.42);
+    const frontKey = new THREE.DirectionalLight(0xffefc4, 1.20);
     frontKey.position.set(0, 10, 10);
     frontKey.castShadow = true;
     frontKey.shadow.mapSize.width = 2048;
     frontKey.shadow.mapSize.height = 2048;
     scene.add(frontKey);
 
-    const mainSpot = new THREE.SpotLight(0xffe0a0, 360, 48, Math.PI / 6.2, 0.5, 1.0);
+    const mainSpot = new THREE.SpotLight(0xffe0a0, 305, 48, Math.PI / 6.2, 0.5, 1.0);
     mainSpot.position.set(0, 10.1, -12.2);
     mainSpot.target.position.set(0, 4.1, -24.0);
     mainSpot.castShadow = true;
@@ -2157,19 +2174,19 @@
     mainSpot.shadow.mapSize.height = 2048;
     scene.add(mainSpot, mainSpot.target);
 
-    const altarGlow = new THREE.PointLight(0xffca63, 132, 17, 1.18);
+    const altarGlow = new THREE.PointLight(0xffca63, 102, 17, 1.18);
     altarGlow.position.set(0, 4.4, -22.45);
     scene.add(altarGlow);
 
     for (let z = -22; z <= 16; z += 5) {
-      const lampL = new THREE.PointLight(0xffc56b, 84, 10.8, 1.25);
+      const lampL = new THREE.PointLight(0xffc56b, 64, 10.8, 1.25);
       lampL.position.set(-10.7, 5.2, z);
       scene.add(lampL);
-      const lampR = new THREE.PointLight(0xffc56b, 84, 10.8, 1.25);
+      const lampR = new THREE.PointLight(0xffc56b, 64, 10.8, 1.25);
       lampR.position.set(10.7, 5.2, z);
       scene.add(lampR);
 
-      const lampC = new THREE.PointLight(0xffdf9a, 60, 11.2, 1.35);
+      const lampC = new THREE.PointLight(0xffdf9a, 46, 11.2, 1.35);
       lampC.position.set(0, 8.75, z);
       scene.add(lampC);
     }
@@ -3187,7 +3204,7 @@
       const goldMat = new THREE.MeshBasicMaterial({
         color: main ? 0xffd778 : 0xffd58a,
         transparent: true,
-        opacity: main ? 0.88 : 0.82,
+        opacity: main ? 0.82 : 0.76,
         side: THREE.DoubleSide,
         depthWrite: false,
         toneMapped: false
@@ -3246,7 +3263,7 @@
         new THREE.MeshBasicMaterial({
           color: 0xffd981,
           transparent: true,
-          opacity: main ? 0.12 : 0.08,
+          opacity: main ? 0.09 : 0.055,
           side: THREE.DoubleSide,
           depthWrite: false,
           toneMapped: false
@@ -3744,7 +3761,7 @@
     mainDeityHolder = main;
 
     // lamps and offerings
-    function createAltarGlowBalls({ ballsPerSide = 4, color = "#ffd982", intensity = 1.5 } = {}) {
+    function createAltarGlowBalls({ ballsPerSide = 4, color = "#ffd982", intensity = 1.1 } = {}) {
       const group = new THREE.Group();
       group.name = 'altarGlowBallsOnly';
       const baseColor = new THREE.Color(color);
@@ -3756,7 +3773,7 @@
       const auraMaterial = new THREE.MeshBasicMaterial({
         color: baseColor,
         transparent: true,
-        opacity: 0.22,
+        opacity: 0.16,
         depthWrite: false,
         blending: THREE.AdditiveBlending
       });
@@ -3772,7 +3789,7 @@
           const aura = new THREE.Mesh(new THREE.SphereGeometry(0.32, 28, 20), auraMaterial);
           aura.name = 'altarWarmGlowBallAura';
           aura.position.copy(ball.position);
-        const light = new THREE.PointLight(baseColor, 5.0, 3.0, 1.7);
+        const light = new THREE.PointLight(baseColor, 3.7, 3.0, 1.7);
           light.name = 'altarWarmGlowBallLight';
           light.position.set(x, 1.78, z);
           group.add(aura, ball, light);
@@ -3783,7 +3800,7 @@
       return group;
     }
 
-    createAltarGlowBalls({ ballsPerSide: 4, color: "#ffd982", intensity: 1.45 });
+    createAltarGlowBalls({ ballsPerSide: 4, color: "#ffd982", intensity: 1.08 });
 
     const OFFERING_TEXT = {
       lamp: "供燈功德：增長智慧，辨別是非，滅除愚痴。",
@@ -3901,7 +3918,7 @@
       const base = makeOfferingBase(0.25, 0.09, mat.brightGold);
       const tray = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.19, 0.10, 24), cloneMaterial(mat.gold, { emissiveIntensity: 0.42 }));
       tray.position.y = 0.12;
-      const light = new THREE.PointLight(0xffd57c, 10.0, 3.6, 1.5);
+      const light = new THREE.PointLight(0xffd57c, 7.4, 3.6, 1.5);
       light.position.set(0, 0.64, 0);
       const glowDisc = new THREE.Mesh(
         new THREE.CircleGeometry(0.18, 32),
@@ -3913,7 +3930,7 @@
         const flame = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 12), new THREE.MeshStandardMaterial({
           color: 0xfff0bf,
           emissive: 0xffc453,
-          emissiveIntensity: 1.55,
+          emissiveIntensity: 1.12,
           roughness: 0.24,
           metalness: 0.05
         }));
@@ -4319,7 +4336,7 @@
 
       for (let i = 0; i < 5; i++) {
         const z = zMin + stepZ * (i * 4 + 2);
-        const localLight = new THREE.PointLight(0xffd18a, 24, 8.4, 1.65);
+        const localLight = new THREE.PointLight(0xffd18a, 18, 8.4, 1.65);
         localLight.position.set(side * 11.48, 5.55, z);
         scene.add(localLight);
       }
@@ -4352,7 +4369,7 @@
       lamp.position.set(0, 8.92, z);
       scene.add(lamp);
 
-      const light = new THREE.PointLight(0xffdf9a, 82, 12.4, 1.32);
+      const light = new THREE.PointLight(0xffdf9a, 62, 12.4, 1.32);
       light.position.set(0, 8.72, z);
       scene.add(light);
     }
