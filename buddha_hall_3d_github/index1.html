@@ -25,16 +25,6 @@
     canvas {
       display: block;
       outline: none;
-      filter: brightness(1.18) contrast(1.05);
-    }
-
-    body:not(.inner-shrine-active)::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      z-index: 4;
-      background: rgba(255, 220, 160, 0.10);
-      pointer-events: none;
     }
 
     .collapsible-panel {
@@ -690,7 +680,7 @@
       background-size: cover;
       background-position: center center;
       background-repeat: no-repeat;
-      filter: blur(20px) brightness(0.62);
+      filter: blur(18px) brightness(0.55);
       transform: scale(1.08);
       pointer-events: none;
     }
@@ -717,18 +707,6 @@
       z-index: 1;
       pointer-events: none;
       user-select: none;
-      filter: brightness(1.12) contrast(1.04);
-    }
-
-    #innerShrineLayer::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 50% 30%, rgba(255, 210, 120, 0.18), transparent 40%),
-        radial-gradient(circle at 50% 80%, rgba(255, 190, 100, 0.10), transparent 50%);
-      z-index: 2;
     }
 
     #innerShrineCinematicOverlay {
@@ -769,7 +747,7 @@
       background-repeat: no-repeat;
       background-size: 3000% 100%;
       background-position: 0% center;
-      filter: sepia(0.06) saturate(0.96) brightness(1.08) contrast(1.02) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.42));
+      filter: sepia(0.06) saturate(0.96) brightness(0.84) contrast(1.06) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.42));
       mix-blend-mode: multiply;
     }
 
@@ -792,7 +770,7 @@
       width: 100%;
       height: auto;
       display: block;
-      filter: sepia(0.06) saturate(0.96) brightness(1.08) contrast(1.02) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.42));
+      filter: sepia(0.06) saturate(0.96) brightness(0.84) contrast(1.06) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.42));
       mix-blend-mode: multiply;
     }
 
@@ -804,7 +782,7 @@
       background-repeat: no-repeat;
       background-size: 3000% 100%;
       background-position: 0% center;
-      filter: sepia(0.06) saturate(0.96) brightness(1.08) contrast(1.02) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.42));
+      filter: sepia(0.06) saturate(0.96) brightness(0.84) contrast(1.06) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.42));
       mix-blend-mode: multiply;
     }
 
@@ -882,8 +860,8 @@
     }
 
     @keyframes npcMeditateBreath {
-      0%, 100% { filter: sepia(0.06) saturate(0.96) brightness(1.08) contrast(1.02) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.42)); }
-      50% { filter: sepia(0.06) saturate(0.98) brightness(1.12) contrast(1.02) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.42)); }
+      0%, 100% { filter: sepia(0.06) saturate(0.96) brightness(0.84) contrast(1.06) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.42)); }
+      50% { filter: sepia(0.06) saturate(0.98) brightness(0.90) contrast(1.06) drop-shadow(0 10px 16px rgba(0, 0, 0, 0.42)); }
     }
 
     @keyframes shrineBreath {
