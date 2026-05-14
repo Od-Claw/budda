@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>古蹟佛堂</title>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="sceneCanvas"></canvas>
+
+      <header class="topbar">
+        <div>
+          <strong>古蹟佛堂</strong>
+          <span>拖拽旋轉觀看</span>
+        </div>
+        <button id="resetViewBtn" type="button">回到佛前</button>
+      </header>
+
+      <aside id="hintPanel" class="glass-panel">
+        <b>操作提示</b>
+        <span>拖拽旋轉</span>
+        <span>滾輪縮放</span>
+        <span>點擊佛前供桌供佛</span>
+        <span>點擊兩側佛燈點燈</span>
+      </aside>
+
+      <div id="panoramaError" class="panorama-error" aria-hidden="true"></div>
+
+      <section id="offeringPanel" class="glass-panel offering-panel" aria-hidden="true">
+        <div class="panel-title">
+          <strong>供佛</strong>
+          <button id="closeOfferingPanelBtn" type="button" aria-label="關閉供佛面板">×</button>
+        </div>
+        <div id="offeringButtons" class="offering-grid"></div>
+        <button id="clearOfferingsBtn" class="danger subtle" type="button">清除供物</button>
+      </section>
+
+      <section id="lampModal" class="modal" aria-hidden="true">
+        <div class="modal-card">
+          <div class="panel-title">
+            <strong id="lampModalTitle">點燈</strong>
+            <button id="closeLampModalBtn" type="button" aria-label="關閉點燈視窗">×</button>
+          </div>
+          <div id="lampInfo" class="lamp-info"></div>
+          <label id="lampNameLabel" class="field-label">
+            輸入名字
+            <input id="lampNameInput" type="text" maxlength="24" autocomplete="name" />
+          </label>
+          <p id="lampError" class="error-text" role="alert"></p>
+          <div class="modal-actions">
+            <button id="confirmLampBtn" type="button">確認點燈</button>
+            <button id="clearLampsBtn" class="danger subtle" type="button">清除所有點燈</button>
+          </div>
+        </div>
+      </section>
+
+      <div id="tooltip" class="tooltip" aria-hidden="true"></div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
