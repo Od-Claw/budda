@@ -39,14 +39,16 @@ const OFFERING_SLOTS: OfferingSlot[] = [
   { x: 0.0, y: -0.35, z: 1.1 }
 ];
 
+const assetUrl = (path: string): string => `${import.meta.env.BASE_URL}${path}`;
+
 const OFFERING_ARTWORK: Record<OfferingType, { url: string; width: number; height: number; y: number }> = {
-  flower: { url: "/assets/offerings/flower.png", width: 2.35, height: 2.35, y: 1.36 },
-  lotus: { url: "/assets/offerings/lotus.png", width: 2.25, height: 2.25, y: 1.08 },
-  water: { url: "/assets/offerings/water.png", width: 1.7, height: 1.7, y: 1.0 },
-  fruit: { url: "/assets/offerings/fruit.png", width: 2.15, height: 2.15, y: 1.02 },
-  incense: { url: "/assets/offerings/incense.png", width: 2.1, height: 2.1, y: 1.28 },
-  butterLamp: { url: "/assets/offerings/lamp.png", width: 1.9, height: 1.9, y: 1.02 },
-  gold: { url: "/assets/offerings/gold.png", width: 2.15, height: 2.15, y: 1.02 }
+  flower: { url: assetUrl("assets/offerings/flower.png"), width: 2.35, height: 2.35, y: 1.36 },
+  lotus: { url: assetUrl("assets/offerings/lotus.png"), width: 2.25, height: 2.25, y: 1.08 },
+  water: { url: assetUrl("assets/offerings/water.png"), width: 1.7, height: 1.7, y: 1.0 },
+  fruit: { url: assetUrl("assets/offerings/fruit.png"), width: 2.15, height: 2.15, y: 1.02 },
+  incense: { url: assetUrl("assets/offerings/incense.png"), width: 2.1, height: 2.1, y: 1.28 },
+  butterLamp: { url: assetUrl("assets/offerings/lamp.png"), width: 1.9, height: 1.9, y: 1.02 },
+  gold: { url: assetUrl("assets/offerings/gold.png"), width: 2.15, height: 2.15, y: 1.02 }
 };
 
 const textureLoader = new THREE.TextureLoader();
