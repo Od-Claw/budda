@@ -1,7 +1,7 @@
 import "./styles.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { createPanoramaSphere, loadPanoramaTexture, PANORAMA_4K_URL, PANORAMA_8K_URL } from "./panorama";
+import { createPanoramaSphere, loadPanoramaTexture, PANORAMA_4K_IMAGE_URL, PANORAMA_8K_IMAGE_URL } from "./panorama";
 import { ALL_HOTSPOTS, LAMP_HOTSPOTS, OFFERING_HOTSPOT, lonLatToVector3, makeHotspotTexture } from "./hotspots";
 import { clearLampRecords, getLampRecord, loadLampRecords, loadOfferings, OfferingType, setLampRecord } from "./storage";
 import { CandleManager } from "./candles";
@@ -87,7 +87,7 @@ async function init(): Promise<void> {
     const texture = await loadPanoramaTexture(renderer);
     scene.add(createPanoramaSphere(texture, 500));
   } catch (error) {
-    console.error(`Panorama failed: ${PANORAMA_8K_URL} / ${PANORAMA_4K_URL}`, error);
+    console.error(`Panorama failed: ${PANORAMA_8K_IMAGE_URL} / ${PANORAMA_4K_IMAGE_URL}`, error);
     showPanoramaError("全景圖片載入失敗，請確認 public/assets/guji_360_panorama_4096x2048.jpg 是否存在。");
     scene.add(createPanoramaSphere(createFallbackTexture(), 500));
   }

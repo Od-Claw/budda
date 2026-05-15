@@ -147,14 +147,24 @@ export class CandleManager {
     this.yawOffsetDeg = options.yawOffsetDeg ?? 0;
 
     const loader = new THREE.TextureLoader();
-    this.flameSheetTexture = loader.load(FLAME_SHEET_URL);
+    this.flameSheetTexture = loader.load(
+      FLAME_SHEET_URL,
+      undefined,
+      undefined,
+      (error) => console.error("[candles] flame spritesheet failed", FLAME_SHEET_URL, error)
+    );
     this.flameSheetTexture.colorSpace = THREE.SRGBColorSpace;
     this.flameSheetTexture.wrapS = THREE.RepeatWrapping;
     this.flameSheetTexture.wrapT = THREE.ClampToEdgeWrapping;
     this.flameSheetTexture.repeat.set(1 / FLAME_FRAME_COUNT, 1);
     this.flameSheetTexture.needsUpdate = true;
 
-    this.glowTexture = loader.load(GLOW_URL);
+    this.glowTexture = loader.load(
+      GLOW_URL,
+      undefined,
+      undefined,
+      (error) => console.error("[candles] glow texture failed", GLOW_URL, error)
+    );
     this.glowTexture.colorSpace = THREE.SRGBColorSpace;
     this.glowTexture.needsUpdate = true;
   }
@@ -211,9 +221,9 @@ export class CandleManager {
         clickTarget,
         record: recordMap.get(config.id),
         seed: Math.random() * Math.PI * 2,
-        baseFlameScale: main ? new THREE.Vector2(10.5, 17.5) : new THREE.Vector2(7.5, 12.5),
-        baseGlowScale: main ? 34 : 22,
-        baseLightIntensity: main ? 1.5 : 0.9,
+        baseFlameScale: main ? new THREE.Vector2(24, 42) : new THREE.Vector2(16, 28),
+        baseGlowScale: main ? 68 : 44,
+        baseLightIntensity: main ? 1.9 : 1.25,
         sparks: [],
         size
       };
@@ -308,9 +318,9 @@ export class CandleManager {
 
       const glowMat = visual.glow.material as THREE.SpriteMaterial;
       glowMat.opacity =
-        0.18 +
-        Math.sin(time * 4.5 + visual.seed) * 0.07 +
-        Math.sin(time * 9.0 + visual.seed) * 0.03;
+        0.26 +
+        Math.sin(time * 4.5 + visual.seed) * 0.09 +
+        Math.sin(time * 9.0 + visual.seed) * 0.04;
 
       const glowScale = visual.baseGlowScale * (0.92 + Math.sin(time * 5.5 + visual.seed) * 0.08);
       visual.glow.scale.set(glowScale, glowScale, 1);
