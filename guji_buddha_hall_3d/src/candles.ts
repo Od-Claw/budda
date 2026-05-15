@@ -10,81 +10,49 @@ export interface CandleManagerOptions {
   yawOffsetDeg?: number;
 }
 
-interface LampVisual {
+interface SparkVisual {
+  sprite: THREE.Sprite;
+  seed: number;
+  height: number;
+  drift: number;
+  speed: number;
+  baseScale: number;
+}
+
+interface CandleVisual {
+  id: string;
   config: HotspotConfig;
   marker: THREE.Sprite;
   clickTarget: THREE.Sprite;
-  label?: THREE.Sprite;
+  group?: THREE.Group;
   flame?: THREE.Sprite;
+  flameTexture?: THREE.Texture;
   glow?: THREE.Sprite;
+  sparks: SparkVisual[];
   light?: THREE.PointLight;
+  label?: THREE.Sprite;
   record?: LampRecord;
   seed: number;
-  baseFlameWidth: number;
-  baseFlameHeight: number;
-  baseGlowWidth: number;
-  baseGlowHeight: number;
-  baseIntensity: number;
-  baseFlamePosition?: THREE.Vector3;
-  baseGlowPosition?: THREE.Vector3;
+  baseFlameScale: THREE.Vector2;
+  baseGlowScale: number;
+  baseLightIntensity: number;
+  size: "wall" | "main";
 }
+
+const FLAME_SHEET_URL = `${import.meta.env.BASE_URL}assets/buddha_candle_flame_spritesheet_12x256.png`;
+const GLOW_URL = `${import.meta.env.BASE_URL}assets/buddha_candle_gold_glow_256.png`;
+const FLAME_FRAME_COUNT = 12;
 
 function isMainLamp(config: HotspotConfig): boolean {
   return config.size === "main" || config.id.startsWith("main-");
 }
 
-function makeFlameTexture(): THREE.CanvasTexture {
-  const canvas = document.createElement("canvas");
-  canvas.width = 180;
-  canvas.height = 240;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Canvas 2D context unavailable");
-
-  const cx = canvas.width / 2;
-  const cy = canvas.height * 0.56;
-  const outer = ctx.createRadialGradient(cx, cy, 2, cx, cy, 96);
-  outer.addColorStop(0, "rgba(255,255,232,1)");
-  outer.addColorStop(0.18, "rgba(255,218,92,0.98)");
-  outer.addColorStop(0.46, "rgba(255,113,28,0.84)");
-  outer.addColorStop(0.82, "rgba(255,66,10,0.28)");
-  outer.addColorStop(1, "rgba(255,66,10,0)");
-  ctx.fillStyle = outer;
-  ctx.beginPath();
-  ctx.moveTo(cx, 14);
-  ctx.bezierCurveTo(148, 82, 116, 184, cx, 224);
-  ctx.bezierCurveTo(36, 176, 42, 80, cx, 14);
-  ctx.fill();
-
-  const inner = ctx.createRadialGradient(cx, cy + 14, 2, cx, cy + 14, 40);
-  inner.addColorStop(0, "rgba(255,255,250,1)");
-  inner.addColorStop(0.42, "rgba(255,233,132,0.94)");
-  inner.addColorStop(1, "rgba(255,233,132,0)");
-  ctx.fillStyle = inner;
-  ctx.beginPath();
-  ctx.moveTo(cx, 72);
-  ctx.bezierCurveTo(110, 120, 100, 176, cx, 208);
-  ctx.bezierCurveTo(58, 164, 62, 118, cx, 72);
-  ctx.fill();
-
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.needsUpdate = true;
-  return texture;
-}
-
-function makeGlowTexture(): THREE.CanvasTexture {
-  const canvas = document.createElement("canvas");
-  canvas.width = 256;
-  canvas.height = 256;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error("Canvas 2D context unavailable");
-  const glow = ctx.createRadialGradient(128, 128, 5, 128, 128, 118);
-  glow.addColorStop(0, "rgba(255, 233, 145, 0.58)");
-  glow.addColorStop(0.36, "rgba(255, 168, 56, 0.26)");
-  glow.addColorStop(1, "rgba(255, 120, 34, 0)");
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, 256, 256);
-  const texture = new THREE.CanvasTexture(canvas);
+function createFlameFrameTexture(baseTexture: THREE.Texture): THREE.Texture {
+  const texture = baseTexture.clone();
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.ClampToEdgeWrapping;
+  texture.repeat.set(1 / FLAME_FRAME_COUNT, 1);
+  texture.offset.set(0, 0);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.needsUpdate = true;
   return texture;
@@ -101,6 +69,25 @@ function makeClickTargetTexture(): THREE.CanvasTexture {
   ctx.arc(32, 32, 30, 0, Math.PI * 2);
   ctx.fill();
   const texture = new THREE.CanvasTexture(canvas);
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function makeSparkTexture(): THREE.CanvasTexture {
+  const canvas = document.createElement("canvas");
+  canvas.width = 96;
+  canvas.height = 96;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Canvas 2D context unavailable");
+  const glow = ctx.createRadialGradient(48, 48, 1, 48, 48, 42);
+  glow.addColorStop(0, "rgba(255, 255, 220, 1)");
+  glow.addColorStop(0.24, "rgba(255, 216, 96, 0.78)");
+  glow.addColorStop(0.72, "rgba(255, 140, 36, 0.22)");
+  glow.addColorStop(1, "rgba(255, 140, 36, 0)");
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, 96, 96);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
   texture.needsUpdate = true;
   return texture;
 }
@@ -126,7 +113,15 @@ function makeLabelTexture(text: string): THREE.CanvasTexture {
 }
 
 function lampPosition(config: HotspotConfig, radius: number, yawOffsetDeg: number): THREE.Vector3 {
-  return lonLatToVector3(config.lon + yawOffsetDeg, config.lat, radius);
+  const visualLon = config.lon + (config.visualLonOffset ?? 0) + yawOffsetDeg;
+  const visualLat = config.lat + (config.visualLatOffset ?? 0);
+  return lonLatToVector3(visualLon, visualLat, radius);
+}
+
+function candlePosition(config: HotspotConfig, radius: number, yawOffsetDeg: number): THREE.Vector3 {
+  const base = lampPosition(config, radius, yawOffsetDeg);
+  const inward = base.clone().normalize().multiplyScalar(-8);
+  return base.add(inward);
 }
 
 export class CandleManager {
@@ -136,11 +131,12 @@ export class CandleManager {
   private radius: number;
   private debug: boolean;
   private yawOffsetDeg: number;
-  private visuals = new Map<string, LampVisual>();
+  private visuals = new Map<string, CandleVisual>();
   private unlitTexture = makeHotspotTexture("lamp");
   private litTexture = makeHotspotTexture("lampLit");
-  private flameTexture = makeFlameTexture();
-  private glowTexture = makeGlowTexture();
+  private flameSheetTexture: THREE.Texture;
+  private glowTexture: THREE.Texture;
+  private sparkTexture = makeSparkTexture();
   private clickTargetTexture = makeClickTargetTexture();
 
   constructor(options: CandleManagerOptions) {
@@ -149,6 +145,18 @@ export class CandleManager {
     this.radius = options.radius ?? 488;
     this.debug = options.debug ?? false;
     this.yawOffsetDeg = options.yawOffsetDeg ?? 0;
+
+    const loader = new THREE.TextureLoader();
+    this.flameSheetTexture = loader.load(FLAME_SHEET_URL);
+    this.flameSheetTexture.colorSpace = THREE.SRGBColorSpace;
+    this.flameSheetTexture.wrapS = THREE.RepeatWrapping;
+    this.flameSheetTexture.wrapT = THREE.ClampToEdgeWrapping;
+    this.flameSheetTexture.repeat.set(1 / FLAME_FRAME_COUNT, 1);
+    this.flameSheetTexture.needsUpdate = true;
+
+    this.glowTexture = loader.load(GLOW_URL);
+    this.glowTexture.colorSpace = THREE.SRGBColorSpace;
+    this.glowTexture.needsUpdate = true;
   }
 
   create(hotspots: HotspotConfig[], records: LampRecord[]): void {
@@ -160,10 +168,11 @@ export class CandleManager {
 
     hotspots.forEach((config) => {
       const main = isMainLamp(config);
+      const size = main ? "main" : "wall";
       const markerMaterial = new THREE.SpriteMaterial({
         map: recordMap.has(config.id) ? this.litTexture : this.unlitTexture,
         transparent: true,
-        opacity: 0.94,
+        opacity: recordMap.has(config.id) ? 0.08 : 0.82,
         depthWrite: false,
         depthTest: false,
         blending: THREE.AdditiveBlending,
@@ -171,9 +180,9 @@ export class CandleManager {
       });
       const marker = new THREE.Sprite(markerMaterial);
       marker.name = `lampMarker-${config.id}`;
-      marker.position.copy(lampPosition(config, this.radius, this.yawOffsetDeg));
-      marker.scale.set(main ? 20 : 16, main ? 20 : 16, 1);
-      marker.renderOrder = 80;
+      marker.position.copy(candlePosition(config, this.radius, this.yawOffsetDeg));
+      marker.scale.set(main ? 15 : 11, main ? 15 : 11, 1);
+      marker.renderOrder = 90;
       marker.frustumCulled = false;
       marker.userData = { type: "lamp", id: config.id, label: config.label };
       this.scene.add(marker);
@@ -187,25 +196,26 @@ export class CandleManager {
       });
       const clickTarget = new THREE.Sprite(clickMaterial);
       clickTarget.name = `lampClickTarget-${config.id}`;
-      clickTarget.position.copy(marker.position).multiplyScalar(0.998);
-      clickTarget.scale.set(main ? 34 : 26, main ? 34 : 26, 1);
-      clickTarget.renderOrder = 90;
+      clickTarget.position.copy(marker.position);
+      clickTarget.scale.set(main ? 30 : 24, main ? 30 : 24, 1);
+      clickTarget.renderOrder = 120;
       clickTarget.frustumCulled = false;
       clickTarget.userData = { type: "lamp", id: config.id, label: config.label };
       this.scene.add(clickTarget);
       this.clickable.push(clickTarget);
 
-      const visual: LampVisual = {
+      const visual: CandleVisual = {
+        id: config.id,
         config,
         marker,
         clickTarget,
         record: recordMap.get(config.id),
         seed: Math.random() * Math.PI * 2,
-        baseFlameWidth: main ? 28 : 21,
-        baseFlameHeight: main ? 34 : 26,
-        baseGlowWidth: main ? 62 : 45,
-        baseGlowHeight: main ? 74 : 56,
-        baseIntensity: main ? 1.45 : 0.95
+        baseFlameScale: main ? new THREE.Vector2(10.5, 17.5) : new THREE.Vector2(7.5, 12.5),
+        baseGlowScale: main ? 34 : 22,
+        baseLightIntensity: main ? 1.5 : 0.9,
+        sparks: [],
+        size
       };
 
       if (this.debug) {
@@ -224,6 +234,7 @@ export class CandleManager {
     visual.record = record;
     const markerMaterial = visual.marker.material as THREE.SpriteMaterial;
     markerMaterial.map = this.litTexture;
+    markerMaterial.opacity = 0.08;
     markerMaterial.needsUpdate = true;
     if (!visual.flame) this.addFlame(visual);
   }
@@ -237,19 +248,15 @@ export class CandleManager {
       visual.record = undefined;
       const markerMaterial = visual.marker.material as THREE.SpriteMaterial;
       markerMaterial.map = this.unlitTexture;
+      markerMaterial.opacity = 0.82;
       markerMaterial.needsUpdate = true;
-      if (visual.flame) {
-        this.scene.remove(visual.flame);
-        const index = this.clickable.indexOf(visual.flame);
-        if (index >= 0) this.clickable.splice(index, 1);
-      }
-      if (visual.glow) this.scene.remove(visual.glow);
-      if (visual.light) this.scene.remove(visual.light);
+      if (visual.group) this.scene.remove(visual.group);
+      visual.group = undefined;
       visual.flame = undefined;
+      visual.flameTexture = undefined;
       visual.glow = undefined;
       visual.light = undefined;
-      visual.baseFlamePosition = undefined;
-      visual.baseGlowPosition = undefined;
+      visual.sparks = [];
     });
   }
 
@@ -260,54 +267,86 @@ export class CandleManager {
       if (visual.label) visual.label.lookAt(this.camera.position);
 
       if (!visual.record) {
-        const pulse = 1 + Math.sin(time * 2.2 + visual.seed) * 0.1;
-        const base = isMainLamp(visual.config) ? 20 : 16;
+        const pulse = 1 + Math.sin(time * 2.2 + visual.seed) * 0.09;
+        const base = visual.size === "main" ? 15 : 11;
         visual.marker.scale.setScalar(base * pulse);
+        const markerMaterial = visual.marker.material as THREE.SpriteMaterial;
+        markerMaterial.opacity = 0.64 + Math.sin(time * 2.2 + visual.seed) * 0.12;
         return;
       }
 
-      visual.marker.scale.setScalar(isMainLamp(visual.config) ? 18 : 14);
-      const flicker = 0.85 + Math.sin(time * 8 + visual.seed) * 0.12 + Math.sin(time * 17 + visual.seed) * 0.05;
-      const yOffset = Math.sin(time * 6 + visual.seed) * 0.9;
+      const markerMaterial = visual.marker.material as THREE.SpriteMaterial;
+      markerMaterial.opacity = 0.055 + Math.sin(time * 3 + visual.seed) * 0.025;
+      visual.marker.scale.setScalar(visual.size === "main" ? 8 : 6);
 
-      if (visual.flame && visual.baseFlamePosition) {
-        visual.flame.scale.set(
-          visual.baseFlameWidth * flicker,
-          visual.baseFlameHeight * (0.9 + flicker * 0.2),
-          1
+      if (!visual.group || !visual.flame || !visual.flameTexture || !visual.glow || !visual.light) return;
+
+      const fps = 10 + Math.sin(visual.seed) * 2;
+      const frameIndex = Math.floor((time * fps + visual.seed * 3) % FLAME_FRAME_COUNT);
+      visual.flameTexture.offset.x = frameIndex / FLAME_FRAME_COUNT;
+
+      const flicker =
+        0.92 +
+        Math.sin(time * 8.0 + visual.seed) * 0.1 +
+        Math.sin(time * 17.0 + visual.seed * 1.7) * 0.045;
+
+      visual.flame.scale.set(
+        visual.baseFlameScale.x * flicker,
+        visual.baseFlameScale.y * (0.92 + flicker * 0.16),
+        1
+      );
+
+      const flameMat = visual.flame.material as THREE.SpriteMaterial;
+      flameMat.opacity =
+        0.72 +
+        Math.sin(time * 10.0 + visual.seed) * 0.16 +
+        Math.sin(time * 23.0 + visual.seed) * 0.06;
+
+      visual.flame.position.x = Math.sin(time * 5.0 + visual.seed) * 0.25;
+      visual.flame.position.y = Math.sin(time * 6.2 + visual.seed) * 0.45;
+      visual.flame.lookAt(this.camera.position);
+
+      const glowMat = visual.glow.material as THREE.SpriteMaterial;
+      glowMat.opacity =
+        0.18 +
+        Math.sin(time * 4.5 + visual.seed) * 0.07 +
+        Math.sin(time * 9.0 + visual.seed) * 0.03;
+
+      const glowScale = visual.baseGlowScale * (0.92 + Math.sin(time * 5.5 + visual.seed) * 0.08);
+      visual.glow.scale.set(glowScale, glowScale, 1);
+      visual.glow.lookAt(this.camera.position);
+
+      visual.light.intensity = visual.baseLightIntensity * (0.75 + Math.random() * 0.45);
+
+      visual.sparks.forEach((spark, index) => {
+        const phase = (time * spark.speed + spark.seed) % 1;
+        const angle = spark.seed + phase * Math.PI * 2;
+        spark.sprite.position.set(
+          Math.sin(angle) * spark.drift,
+          -3.2 + phase * spark.height,
+          Math.cos(angle * 0.7) * spark.drift * 0.35
         );
-        visual.flame.material.opacity = 0.68 + Math.sin(time * 10 + visual.seed) * 0.18;
-        visual.flame.position.copy(visual.baseFlamePosition);
-        visual.flame.position.y += yOffset;
-        visual.flame.lookAt(this.camera.position);
-      }
-
-      if (visual.glow && visual.baseGlowPosition) {
-        const glowPulse = 0.94 + Math.sin(time * 5 + visual.seed) * 0.06;
-        visual.glow.scale.set(visual.baseGlowWidth * glowPulse, visual.baseGlowHeight * glowPulse, 1);
-        visual.glow.material.opacity = 0.18 + Math.sin(time * 5 + visual.seed) * 0.1;
-        visual.glow.position.copy(visual.baseGlowPosition);
-        visual.glow.position.y += yOffset * 0.25;
-        visual.glow.lookAt(this.camera.position);
-      }
-
-      if (visual.light) {
-        visual.light.intensity = visual.baseIntensity * (0.75 + Math.random() * 0.45);
-      }
+        const sparkMat = spark.sprite.material as THREE.SpriteMaterial;
+        sparkMat.opacity = (1 - phase) * (0.35 + Math.sin(time * 8 + index) * 0.18);
+        const scale = spark.baseScale * (0.75 + (1 - phase) * 0.35);
+        spark.sprite.scale.set(scale, scale, 1);
+        spark.sprite.lookAt(this.camera.position);
+      });
     });
   }
 
-  private addFlame(visual: LampVisual): void {
-    const basePosition = visual.marker.position.clone();
-    const towardCamera = basePosition.clone().normalize().multiplyScalar(-4);
-    const flamePosition = basePosition.clone().add(towardCamera);
-    const glowPosition = basePosition.clone().add(towardCamera.clone().multiplyScalar(0.85));
-    visual.baseFlamePosition = flamePosition.clone();
-    visual.baseGlowPosition = glowPosition.clone();
+  private addFlame(visual: CandleVisual): void {
+    const group = new THREE.Group();
+    group.name = `candleVisual-${visual.config.id}`;
+    group.position.copy(candlePosition(visual.config, this.radius, this.yawOffsetDeg));
+    group.renderOrder = 100;
+    this.scene.add(group);
 
+    const flameTexture = createFlameFrameTexture(this.flameSheetTexture);
     const flameMaterial = new THREE.SpriteMaterial({
-      map: this.flameTexture,
+      map: flameTexture,
       transparent: true,
+      opacity: 0.9,
       depthWrite: false,
       depthTest: false,
       blending: THREE.AdditiveBlending,
@@ -315,16 +354,17 @@ export class CandleManager {
     });
     const flame = new THREE.Sprite(flameMaterial);
     flame.name = `litFlame-${visual.config.id}`;
-    flame.position.copy(flamePosition);
-    flame.scale.set(visual.baseFlameWidth, visual.baseFlameHeight, 1);
-    flame.renderOrder = 100;
+    flame.scale.set(visual.baseFlameScale.x, visual.baseFlameScale.y, 1);
+    flame.renderOrder = 110;
     flame.frustumCulled = false;
-    flame.userData = { type: "lamp", id: visual.config.id, label: visual.config.label };
+    flame.userData = { type: "decor", id: `${visual.config.id}-flame` };
+    flame.raycast = () => undefined;
+    group.add(flame);
 
     const glowMaterial = new THREE.SpriteMaterial({
       map: this.glowTexture,
       transparent: true,
-      opacity: isMainLamp(visual.config) ? 0.28 : 0.22,
+      opacity: 0.25,
       depthWrite: false,
       depthTest: false,
       blending: THREE.AdditiveBlending,
@@ -332,22 +372,52 @@ export class CandleManager {
     });
     const glow = new THREE.Sprite(glowMaterial);
     glow.name = `lampGlow-${visual.config.id}`;
-    glow.position.copy(glowPosition);
-    glow.scale.set(visual.baseGlowWidth, visual.baseGlowHeight, 1);
-    glow.renderOrder = 98;
+    glow.position.set(0, 0, -0.02);
+    glow.scale.set(visual.baseGlowScale, visual.baseGlowScale, 1);
+    glow.renderOrder = 100;
     glow.frustumCulled = false;
     glow.userData = { type: "decor", id: `${visual.config.id}-glow` };
     glow.raycast = () => undefined;
+    group.add(glow);
 
-    const distance = isMainLamp(visual.config) ? 62 : 42;
-    const light = new THREE.PointLight(0xffb84a, visual.baseIntensity, distance, 2);
+    const sparkCount = visual.size === "main" ? 7 : 5;
+    const sparks: SparkVisual[] = [];
+    for (let index = 0; index < sparkCount; index += 1) {
+      const material = new THREE.SpriteMaterial({
+        map: this.sparkTexture,
+        transparent: true,
+        opacity: 0.4,
+        depthWrite: false,
+        depthTest: false,
+        blending: THREE.AdditiveBlending,
+        toneMapped: false
+      });
+      const sprite = new THREE.Sprite(material);
+      sprite.name = `candleSpark-${visual.config.id}-${index}`;
+      sprite.renderOrder = 112;
+      sprite.frustumCulled = false;
+      sprite.userData = { type: "decor", kind: "spark" };
+      sprite.raycast = () => undefined;
+      group.add(sprite);
+      sparks.push({
+        sprite,
+        seed: Math.random() * 99,
+        height: visual.size === "main" ? 8.5 : 6.2,
+        drift: visual.size === "main" ? 1.25 : 0.85,
+        speed: 0.28 + Math.random() * 0.18,
+        baseScale: 1.2 + Math.random() * 1.2
+      });
+    }
+
+    const light = new THREE.PointLight(0xffb84a, visual.baseLightIntensity, visual.size === "main" ? 65 : 45, 2);
     light.name = `lampPointLight-${visual.config.id}`;
-    light.position.copy(flamePosition).multiplyScalar(0.96);
+    group.add(light);
 
-    this.scene.add(glow, flame, light);
-    this.clickable.push(flame);
+    visual.group = group;
     visual.flame = flame;
+    visual.flameTexture = flameTexture;
     visual.glow = glow;
+    visual.sparks = sparks;
     visual.light = light;
   }
 
@@ -362,10 +432,10 @@ export class CandleManager {
     });
     const label = new THREE.Sprite(material);
     label.name = `lampDebugLabel-${config.id}`;
-  label.position.copy(lampPosition(config, this.radius - 7, this.yawOffsetDeg));
+    label.position.copy(candlePosition(config, this.radius, this.yawOffsetDeg));
     label.position.y += 11;
     label.scale.set(74, 18, 1);
-    label.renderOrder = 120;
+    label.renderOrder = 130;
     label.frustumCulled = false;
     label.raycast = () => undefined;
     label.userData = { type: "decor", kind: "lamp-debug-label" };

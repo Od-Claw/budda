@@ -9,6 +9,8 @@ export interface HotspotConfig {
   lon: number;
   lat: number;
   size?: "wall" | "main";
+  visualLonOffset?: number;
+  visualLatOffset?: number;
 }
 
 export const OFFERING_HOTSPOT: HotspotConfig = {
@@ -20,8 +22,8 @@ export const OFFERING_HOTSPOT: HotspotConfig = {
 };
 
 export const LAMP_HOTSPOTS: HotspotConfig[] = [
-  { id: "front-small-left", label: "大佛左側小佛燈", type: "lamp", lon: -21, lat: 23, size: "wall" },
-  { id: "front-small-right", label: "大佛右側小佛燈", type: "lamp", lon: 19, lat: 23, size: "wall" },
+  { id: "front-small-left", label: "大佛左側小佛燈", type: "lamp", lon: -22, lat: 13, size: "wall" },
+  { id: "front-small-right", label: "大佛右側小佛燈", type: "lamp", lon: 20, lat: 13, size: "wall" },
   { id: "main-left-1", label: "大佛左燈一", type: "lamp", lon: -18, lat: -18, size: "main" },
   { id: "main-left-2", label: "大佛左燈二", type: "lamp", lon: -26, lat: -22, size: "main" },
   { id: "main-right-1", label: "大佛右燈一", type: "lamp", lon: 18, lat: -18, size: "main" },
