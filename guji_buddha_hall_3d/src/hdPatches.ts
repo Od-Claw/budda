@@ -18,6 +18,8 @@ type HdPatchConfig = {
 
 export type HdPatchesOptions = {
   debug?: boolean;
+  opacity?: number;
+  yawOffsetDeg?: number;
 };
 
 const BASE = import.meta.env.BASE_URL;
@@ -30,6 +32,24 @@ const HD_PATCHES: HdPatchConfig[] = [
   { id: "ceiling", url: `${BASE}assets/patches/guji_patch_ceiling_4096x2048.jpg`, lonMin: -180, lonMax: 180, latMin: 35, latMax: 82, radius: 495, segmentsX: 240, segmentsY: 80, featherPx: 180, rotationY: -Math.PI / 2, yawOffsetDeg: 0, enabled: true },
   { id: "floor", url: `${BASE}assets/patches/guji_patch_floor_4096x2048.jpg`, lonMin: -180, lonMax: 180, latMin: -82, latMax: -28, radius: 495, segmentsX: 240, segmentsY: 80, featherPx: 180, rotationY: -Math.PI / 2, yawOffsetDeg: 0, enabled: true },
 ];
+
+function readNumberParam(key: string, fallback: number): number {
+  const value = Number(new URLSearchParams(window.location.search).get(key));
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function getPatchOpacity(options: HdPatchesOptions): number {
+  const value = options.opacity ?? readNumberParam("hdPatchOpacity", 0.82);
+  return THREE.MathUtils.clamp(value, 0.15, 1);
+}
+
+function getGlobalYawOffset(options: HdPatchesOptions): number {
+  return options.yawOffsetDeg ?? readNumberParam("hdYaw", 0);
+}
+
+function isTextureDebugEnabled(): boolean {
+  return new URLSearchParams(window.location.search).get("textureDebug") === "1";
+}
 
 function sphericalPosition(lonDeg: number, latDeg: number, radius: number): THREE.Vector3 {
   const lon = THREE.MathUtils.degToRad(lonDeg);
@@ -148,6 +168,11 @@ export async function createHdPatches(scene: THREE.Scene, renderer: THREE.WebGLR
   scene.add(group);
 
   const loaded: string[] = [];
+  const opacity = getPatchOpacity(options);
+  const globalYawOffsetDeg = getGlobalYawOffset(options);
+  const textureDebug = isTextureDebugEnabled();
+  const debugRows: Array<Record<string, unknown>> = [];
+
   for (const config of HD_PATCHES) {
     if (!config.enabled) continue;
     try {
@@ -165,19 +190,49 @@ export async function createHdPatches(scene: THREE.Scene, renderer: THREE.WebGLR
       if (options.debug) {
         material.opacity = 0.78;
         material.color = new THREE.Color(0xfff4d0);
+      } else {
+        material.opacity = opacity;
       }
       const mesh = new THREE.Mesh(geometry, material);
       mesh.name = `hd-patch-${config.id}`;
-      mesh.rotation.y = config.rotationY + THREE.MathUtils.degToRad(config.yawOffsetDeg);
+      const appliedYawOffsetDeg = config.yawOffsetDeg + globalYawOffsetDeg;
+      const appliedRotationY = config.rotationY + THREE.MathUtils.degToRad(appliedYawOffsetDeg);
+      mesh.rotation.y = appliedRotationY;
       mesh.renderOrder = -850;
       group.add(mesh);
-      if (options.debug) group.add(createDebugBoundary(config));
+      if (options.debug) {
+        const boundary = createDebugBoundary(config);
+        boundary.rotation.y = appliedRotationY;
+        group.add(boundary);
+      }
       loaded.push(config.id);
-      console.info("[hd-patch] loaded", { id: config.id, url: config.url, width: img.naturalWidth, height: img.naturalHeight, lonMin: config.lonMin, lonMax: config.lonMax, latMin: config.latMin, latMax: config.latMax });
+      const row = {
+        id: config.id,
+        url: config.url,
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+        lonMin: config.lonMin,
+        lonMax: config.lonMax,
+        latMin: config.latMin,
+        latMax: config.latMax,
+        opacity: material.opacity,
+        yawOffsetDeg: appliedYawOffsetDeg,
+        rotationY: appliedRotationY
+      };
+      debugRows.push(row);
+      console.info("[hd-patch] loaded", row);
     } catch (error) {
       console.warn("[hd-patch] skipped", config.id, config.url, error);
     }
   }
-  console.info("[hd-patches] complete", { loaded });
+  if (textureDebug) {
+    console.table(debugRows);
+  }
+  console.info("[hd-patches] complete", {
+    loaded,
+    opacity,
+    globalYawOffsetDeg,
+    textureDebug
+  });
   return group;
 }
