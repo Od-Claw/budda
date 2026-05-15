@@ -140,6 +140,7 @@ Cubemap query parameters:
 ?cubeQuality=8k
 ?cubeQuality=auto
 ?cubeSource=generated
+?cubeSource=generated4k
 ?cubeDebug=1
 ```
 
@@ -152,6 +153,7 @@ The current 8K panorama, old patches, and prior cubemap attempts cannot create r
 ```bash
 npm run generate:cubemap
 npm run validate:cubemap
+npm run upscale:cubemap
 ```
 
 The generator requires `OPENAI_API_KEY`. If the key is missing it stops with:
@@ -171,13 +173,31 @@ public/assets/cubemap/generated/pz.jpg
 public/assets/cubemap/generated/nz.jpg
 ```
 
+By default the generator requests `2880x2880`, which fits the current Image API square-face limit. The optional upscaler resizes those reviewed generated faces to `4096x4096` using Lanczos3 and writes them here:
+
+```text
+public/assets/cubemap/generated_4k/px.jpg
+public/assets/cubemap/generated_4k/nx.jpg
+public/assets/cubemap/generated_4k/py.jpg
+public/assets/cubemap/generated_4k/ny.jpg
+public/assets/cubemap/generated_4k/pz.jpg
+public/assets/cubemap/generated_4k/nz.jpg
+```
+
+Validate the upscaled faces with:
+
+```bash
+CUBEMAP_VALIDATE_DIR=generated_4k npm run validate:cubemap
+```
+
 Preview generated candidates with:
 
 ```text
 ?env=cubemap&cubeSource=generated&cubeDebug=1
+?env=cubemap&cubeSource=generated4k&cubeDebug=1
 ```
 
-Important: AI-generated cubemap faces may still fail to align perfectly because each face is generated independently. Do not deploy generated assets as the official `public/assets/cubemap/4k` set until all six faces are manually reviewed for consistent geometry, light direction, scale, and style. The most reliable production-quality solution remains a cubemap exported from one coherent Blender / Unreal / 3D scene.
+Important: AI-generated cubemap faces may still fail to align perfectly because each face is generated independently. Upscaling from 2880 to 4096 does not create perfect new geometry; it only prepares a larger review candidate. Do not deploy generated or generated_4k assets as the official `public/assets/cubemap/4k` set until all six faces are manually reviewed for consistent geometry, light direction, scale, and style. The most reliable production-quality solution remains a cubemap exported from one coherent Blender / Unreal / 3D scene.
 
 ## HD spherical patches
 

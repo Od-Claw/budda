@@ -1,11 +1,11 @@
 import * as THREE from "three";
 
 export type CubemapQuality = "4k" | "8k" | "auto";
-export type CubemapSource = "quality" | "generated";
+export type CubemapSource = "quality" | "generated" | "generated4k";
 
 export type CubemapSkyboxResult = {
   group: THREE.Group;
-  quality: "4k" | "8k" | "generated";
+  quality: "4k" | "8k" | "generated" | "generated4k";
   urls: string[];
 };
 
@@ -47,12 +47,16 @@ function resolveQuality(renderer: THREE.WebGLRenderer, optionsQuality?: CubemapQ
 
 function getRequestedSource(): CubemapSource {
   const source = new URLSearchParams(window.location.search).get("cubeSource");
+  if (source === "generated4k") return "generated4k";
   return source === "generated" ? "generated" : "quality";
 }
 
 function getFaceUrls(quality: "4k" | "8k", source: CubemapSource = "quality"): string[] {
   if (source === "generated") {
     return FACE_NAMES.map((name) => `${import.meta.env.BASE_URL}assets/cubemap/generated/${name}.jpg`);
+  }
+  if (source === "generated4k") {
+    return FACE_NAMES.map((name) => `${import.meta.env.BASE_URL}assets/cubemap/generated_4k/${name}.jpg`);
   }
   return FACE_NAMES.map((name) => `${import.meta.env.BASE_URL}assets/cubemap/${quality}/${name}.jpg`);
 }
@@ -176,8 +180,8 @@ export async function createCubemapSkybox(
 
   try {
     faceTextures =
-      source === "generated"
-        ? await loadFaceTextures(renderer, "4k", "generated")
+      source === "generated" || source === "generated4k"
+        ? await loadFaceTextures(renderer, "4k", source)
         : await loadFaceTextures(renderer, quality, "quality");
   } catch (error) {
     if (source === "generated" || quality !== "8k") throw error;
@@ -222,7 +226,7 @@ export async function createCubemapSkybox(
 
   const urls = faceTextures.map((face) => face.url);
   console.info("[cubemap] loaded", {
-    quality: source === "generated" ? "generated" : quality,
+    quality: source === "generated" || source === "generated4k" ? source : quality,
     source,
     urls,
     maxTextureSize: renderer.capabilities.maxTextureSize,
@@ -230,5 +234,5 @@ export async function createCubemapSkybox(
     debug
   });
 
-  return { group, quality: source === "generated" ? "generated" : quality, urls };
+  return { group, quality: source === "generated" || source === "generated4k" ? source : quality, urls };
 }

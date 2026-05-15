@@ -8,6 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "generate:cubemap": "tsx scripts/generate-cubemap-assets.ts",
+    "upscale:cubemap": "tsx scripts/upscale-cubemap-assets.ts",
     "validate:cubemap": "tsx scripts/validate-cubemap-assets.ts"
   },
   "dependencies": {
@@ -15,6 +16,7 @@
   },
   "devDependencies": {
     "@types/three": "^0.165.0",
+    "sharp": "^0.34.5",
     "tsx": "^4.22.0",
     "typescript": "^5.4.5",
     "vite": "^5.3.1"

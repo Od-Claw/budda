@@ -9,17 +9,17 @@ type CubemapFace = {
 
 const OUTPUT_DIR = join(process.cwd(), "public", "assets", "cubemap", "generated");
 const MODEL = process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2";
-const IMAGE_SIZE = process.env.CUBEMAP_IMAGE_SIZE ?? "2048x2048";
+const IMAGE_SIZE = process.env.CUBEMAP_IMAGE_SIZE ?? "2880x2880";
 const IMAGE_QUALITY = process.env.CUBEMAP_IMAGE_QUALITY ?? "high";
 const OUTPUT_FORMAT = "jpeg";
 const OUTPUT_COMPRESSION = Number(process.env.CUBEMAP_IMAGE_COMPRESSION ?? "95");
 const MIN_IMAGE_SIZE = 2048;
 
 const BASE_PROMPT = [
-  "戶外古蹟佛堂，森林環繞，古老石牆，藤蔓，花草，暖金色陽光，神聖、電影感、酷感。",
+  "場景：戶外古蹟佛堂，森林環繞，古老石牆，藤蔓，花草，暖金色陽光，神聖、電影感、酷感。",
   "中央有金色大佛，佛前有紅布金紋供桌，左右牆有多層小佛龕，小佛像前可以點燈。",
   "石牆細節、佛像雕刻、植物、花草都要清晰。無文字、無 UI、無水印、無人物。",
-  "photorealistic, cinematic, sacred ancient buddhist temple ruins, ultra detailed stone texture, golden buddha, warm candle light, forest canopy, high dynamic range, sharp details, no text, no watermark, no people.",
+  "風格：photorealistic, cinematic, sacred ancient buddhist temple ruins, ultra detailed stone texture, golden buddha, warm candle light, forest canopy, high dynamic range, sharp details, no text, no watermark, no people.",
   "The six images are intended as one cubemap from the same fixed camera position. Keep one coherent temple, one consistent warm sunlight direction, one consistent scale, matching stone texture, matching foliage, and matching sacred atmosphere."
 ].join("\n");
 

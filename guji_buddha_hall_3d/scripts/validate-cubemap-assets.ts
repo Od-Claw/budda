@@ -7,9 +7,18 @@ type ImageInfo = {
   format: "jpeg" | "png";
 };
 
-const GENERATED_DIR = join(process.cwd(), "public", "assets", "cubemap", "generated");
+type ValidateDir = "generated" | "generated_4k";
+
+const validateDir = getValidateDir();
+const GENERATED_DIR = join(process.cwd(), "public", "assets", "cubemap", validateDir);
 const FACE_FILES = ["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"] as const;
-const MIN_SIZE = 2048;
+const MIN_SIZE = validateDir === "generated_4k" ? 4096 : 2048;
+
+function getValidateDir(): ValidateDir {
+  const value = process.env.CUBEMAP_VALIDATE_DIR;
+  if (value === "generated" || value === "generated_4k") return value;
+  return "generated";
+}
 
 function readPngDimensions(buffer: Buffer): ImageInfo | null {
   const pngSignature = "89504e470d0a1a0a";
@@ -88,6 +97,12 @@ async function inspectImage(file: string): Promise<{ file: string; bytes: number
 async function main(): Promise<void> {
   const results = [];
   let allOk = true;
+
+  console.info("[cubemap-validate] directory", {
+    dir: validateDir,
+    path: GENERATED_DIR,
+    expectedMinimum: `${MIN_SIZE}x${MIN_SIZE}`
+  });
 
   for (const file of FACE_FILES) {
     try {
