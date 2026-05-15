@@ -9,6 +9,7 @@ import { OfferingManager } from "./offerings";
 import { AppUI } from "./ui";
 import { createFireflies, FireflySystem, updateFireflies } from "./fireflies";
 import { createFrontDetailPatch } from "./frontDetailPatch";
+import { createHdPatches } from "./hdPatches";
 
 const canvas = document.getElementById("sceneCanvas") as HTMLCanvasElement;
 const scene = new THREE.Scene();
@@ -21,6 +22,8 @@ const PANORAMA_YAW_OFFSET_DEG = 0;
 const LAMP_DEBUG = new URLSearchParams(window.location.search).get("lampDebug") === "1";
 const DISABLE_DETAIL_PATCH = new URLSearchParams(window.location.search).get("detailPatch") === "0";
 const PATCH_DEBUG = new URLSearchParams(window.location.search).get("patchDebug") === "1";
+const DISABLE_HD_PATCHES = new URLSearchParams(window.location.search).get("hdPatches") === "0";
+const HD_PATCH_DEBUG = new URLSearchParams(window.location.search).get("hdPatchDebug") === "1";
 
 const camera = new THREE.PerspectiveCamera(INITIAL_FOV, window.innerWidth / window.innerHeight, 0.1, 2000);
 camera.position.set(0, 0, 0.1);
@@ -90,7 +93,13 @@ async function init(): Promise<void> {
   try {
     const texture = await loadPanoramaTexture(renderer);
     scene.add(createPanoramaSphere(texture, 500));
-    if (!DISABLE_DETAIL_PATCH) {
+    if (!DISABLE_HD_PATCHES) {
+      try {
+        await createHdPatches(scene, renderer, { debug: HD_PATCH_DEBUG });
+      } catch (error) {
+        console.warn("[hd-patches] skipped", error);
+      }
+    } else if (!DISABLE_DETAIL_PATCH) {
       try {
         await createFrontDetailPatch(scene, renderer, {
           lonMin: -55,

@@ -93,3 +93,34 @@ src/hotspots.ts
 ```text
 http://localhost:5173/?lampDebug=1
 ```
+
+## HD spherical patches
+
+The 8K panorama is still a single 360-degree equirectangular image, so its pixels are spread across the full sphere. True close-up clarity needs native high-detail local patch images, not just an upscaled panorama.
+
+Place optional high-detail spherical patch assets here:
+
+```text
+public/assets/patches/guji_patch_front_8192x4096.jpg
+public/assets/patches/guji_patch_left_4096x4096.jpg
+public/assets/patches/guji_patch_right_4096x4096.jpg
+public/assets/patches/guji_patch_back_4096x4096.jpg
+public/assets/patches/guji_patch_ceiling_4096x2048.jpg
+public/assets/patches/guji_patch_floor_4096x2048.jpg
+```
+
+If a patch file is missing, the app logs a warning and skips only that patch. Use these query parameters for comparison:
+
+```text
+?quality=8k&hdPatchDebug=1
+?quality=8k&hdPatches=0
+```
+
+Patch source guidance:
+- `front`: central Buddha, side small Buddhas, altar, old stone wall, no text or UI, 8192x4096.
+- `left-wall` / `right-wall`: side stone walls and small shrine niches, 4096x4096.
+- `back`: rear historic environment, stone wall, plants, light, 4096x4096.
+- `ceiling`: canopy, sky glow, leaves, 4096x2048.
+- `floor`: stone floor, plants, foreground ground detail, 4096x2048.
+
+If these images are only cropped and enlarged from the current blurry panorama, clarity will remain limited. For a real improvement, replace them with natively high-detail regenerated, AI detail-upscaled, or inpainted patch images using the same filenames.

@@ -252,8 +252,8 @@ export class CandleManager {
         seed: Math.random() * Math.PI * 2,
         baseLightIntensity: main ? 2.8 : 1.8,
         baseLightDistance: main ? 95 : 65,
-        targetFlamePixels: (main ? 82 : 52) * getFlameScaleMultiplier(),
-        targetGlowPixels: (main ? 160 : 105) * getFlameScaleMultiplier(),
+        targetFlamePixels: (main ? 70 : 45) * getFlameScaleMultiplier(),
+        targetGlowPixels: (main ? 130 : 85) * getFlameScaleMultiplier(),
         sparks: [],
         size
       };
@@ -338,7 +338,7 @@ export class CandleManager {
         worldPos,
         visual.targetFlamePixels
       );
-      const flameWidth = flameHeight * 0.38;
+      const flameWidth = flameHeight * 0.34;
       const glowHeight = worldHeightForScreenPixels(this.camera, this.renderer, worldPos, visual.targetGlowPixels);
 
       visual.flame.scale.set(
