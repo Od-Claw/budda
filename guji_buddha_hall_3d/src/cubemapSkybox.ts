@@ -1,10 +1,11 @@
 import * as THREE from "three";
 
 export type CubemapQuality = "4k" | "8k" | "auto";
+export type CubemapSource = "quality" | "generated";
 
 export type CubemapSkyboxResult = {
   group: THREE.Group;
-  quality: "4k" | "8k";
+  quality: "4k" | "8k" | "generated";
   urls: string[];
 };
 
@@ -44,7 +45,15 @@ function resolveQuality(renderer: THREE.WebGLRenderer, optionsQuality?: CubemapQ
   return getAutoQuality(renderer);
 }
 
-function getFaceUrls(quality: "4k" | "8k"): string[] {
+function getRequestedSource(): CubemapSource {
+  const source = new URLSearchParams(window.location.search).get("cubeSource");
+  return source === "generated" ? "generated" : "quality";
+}
+
+function getFaceUrls(quality: "4k" | "8k", source: CubemapSource = "quality"): string[] {
+  if (source === "generated") {
+    return FACE_NAMES.map((name) => `${import.meta.env.BASE_URL}assets/cubemap/generated/${name}.jpg`);
+  }
   return FACE_NAMES.map((name) => `${import.meta.env.BASE_URL}assets/cubemap/${quality}/${name}.jpg`);
 }
 
@@ -59,10 +68,11 @@ function configureTexture(texture: THREE.Texture, renderer: THREE.WebGLRenderer)
 
 async function loadFaceTextures(
   renderer: THREE.WebGLRenderer,
-  quality: "4k" | "8k"
+  quality: "4k" | "8k",
+  source: CubemapSource = "quality"
 ): Promise<Array<{ name: CubemapFaceName; url: string; texture: THREE.Texture }>> {
   const loader = new THREE.TextureLoader();
-  const urls = getFaceUrls(quality);
+  const urls = getFaceUrls(quality, source);
 
   return Promise.all(
     FACE_NAMES.map(async (name, index) => {
@@ -157,19 +167,23 @@ export async function createCubemapSkybox(
   } = {}
 ): Promise<CubemapSkyboxResult> {
   const debug = new URLSearchParams(window.location.search).get("cubeDebug") === "1";
+  const source = getRequestedSource();
   const size = options.size ?? 1000;
   const selectedQuality = resolveQuality(renderer, options.quality);
 
-  let quality = selectedQuality;
+  let quality: "4k" | "8k" = selectedQuality;
   let faceTextures: Array<{ name: CubemapFaceName; url: string; texture: THREE.Texture }>;
 
   try {
-    faceTextures = await loadFaceTextures(renderer, quality);
+    faceTextures =
+      source === "generated"
+        ? await loadFaceTextures(renderer, "4k", "generated")
+        : await loadFaceTextures(renderer, quality, "quality");
   } catch (error) {
-    if (quality !== "8k") throw error;
+    if (source === "generated" || quality !== "8k") throw error;
     console.warn("[cubemap] 8k failed, fallback to 4k", error);
     quality = "4k";
-    faceTextures = await loadFaceTextures(renderer, quality);
+    faceTextures = await loadFaceTextures(renderer, quality, "quality");
   }
 
   const textureByName = new Map(faceTextures.map((face) => [face.name, face]));
@@ -208,12 +222,13 @@ export async function createCubemapSkybox(
 
   const urls = faceTextures.map((face) => face.url);
   console.info("[cubemap] loaded", {
-    quality,
+    quality: source === "generated" ? "generated" : quality,
+    source,
     urls,
     maxTextureSize: renderer.capabilities.maxTextureSize,
     deviceMemory: (navigator as Navigator & { deviceMemory?: number }).deviceMemory,
     debug
   });
 
-  return { group, quality, urls };
+  return { group, quality: source === "generated" ? "generated" : quality, urls };
 }

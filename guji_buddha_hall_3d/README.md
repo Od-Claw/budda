@@ -139,10 +139,45 @@ Cubemap query parameters:
 ?cubeQuality=4k
 ?cubeQuality=8k
 ?cubeQuality=auto
+?cubeSource=generated
 ?cubeDebug=1
 ```
 
 For true clarity, cubemap images must come from one coherent source: the same Blender / Unreal / 3D scene, the same camera position, six 90-degree FOV faces, matching light direction, and continuous edges. Do not use six unrelated AI images, cropped blurry panorama enlargements, or images with inconsistent perspective, text, watermark, or UI.
+
+## Generated cubemap asset pipeline
+
+The current 8K panorama, old patches, and prior cubemap attempts cannot create real detail if their source image was already blurry. The generated cubemap pipeline is for creating new native-detail candidate faces in a separate review folder:
+
+```bash
+npm run generate:cubemap
+npm run validate:cubemap
+```
+
+The generator requires `OPENAI_API_KEY`. If the key is missing it stops with:
+
+```text
+Missing OPENAI_API_KEY. Cannot generate images.
+```
+
+Generated files are written here and are not copied into the stable 4K cubemap automatically:
+
+```text
+public/assets/cubemap/generated/px.jpg
+public/assets/cubemap/generated/nx.jpg
+public/assets/cubemap/generated/py.jpg
+public/assets/cubemap/generated/ny.jpg
+public/assets/cubemap/generated/pz.jpg
+public/assets/cubemap/generated/nz.jpg
+```
+
+Preview generated candidates with:
+
+```text
+?env=cubemap&cubeSource=generated&cubeDebug=1
+```
+
+Important: AI-generated cubemap faces may still fail to align perfectly because each face is generated independently. Do not deploy generated assets as the official `public/assets/cubemap/4k` set until all six faces are manually reviewed for consistent geometry, light direction, scale, and style. The most reliable production-quality solution remains a cubemap exported from one coherent Blender / Unreal / 3D scene.
 
 ## HD spherical patches
 
