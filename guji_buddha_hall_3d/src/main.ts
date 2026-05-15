@@ -18,9 +18,10 @@ const INITIAL_FOV = 72;
 const MIN_FOV = 56;
 const MAX_FOV = 88;
 const PANORAMA_YAW_OFFSET_DEG = 0;
-const LAMP_DEBUG = new URLSearchParams(window.location.search).get("lampDebug") === "1";
-const DISABLE_HD_PATCHES = new URLSearchParams(window.location.search).get("hdPatches") === "0";
-const HD_PATCH_DEBUG = new URLSearchParams(window.location.search).get("hdPatchDebug") === "1";
+const params = new URLSearchParams(window.location.search);
+const LAMP_DEBUG = params.get("lampDebug") === "1";
+const ENABLE_HD_PATCHES = params.get("hdPatches") === "1";
+const HD_PATCH_DEBUG = params.get("hdPatchDebug") === "1";
 
 const camera = new THREE.PerspectiveCamera(INITIAL_FOV, window.innerWidth / window.innerHeight, 0.1, 2000);
 camera.position.set(0, 0, 0.1);
@@ -90,7 +91,7 @@ async function init(): Promise<void> {
   try {
     const texture = await loadPanoramaTexture(renderer);
     scene.add(createPanoramaSphere(texture, 500));
-    if (!DISABLE_HD_PATCHES) {
+    if (ENABLE_HD_PATCHES) {
       try {
         await createHdPatches(scene, renderer, {
           debug: HD_PATCH_DEBUG

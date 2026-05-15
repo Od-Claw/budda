@@ -96,6 +96,21 @@ http://localhost:5173/?lampDebug=1
 
 ## HD spherical patches
 
+Stable builds do not load HD patches by default. The multi-patch layer is currently experimental because the patch images are not exported from one consistent 3D scene/camera rig; perspective, scale, lighting, and content can drift between patches.
+
+Use the normal stable view without patches:
+
+```text
+https://od-claw.github.io/budda/guji_buddha_hall_3d/?quality=8k
+```
+
+Enable the experimental multi-patch layer manually:
+
+```text
+?quality=8k&hdPatches=1
+?quality=8k&hdPatches=1&hdPatchDebug=1
+```
+
 The 8K panorama is still a single 360-degree equirectangular image, so its pixels are spread across the full sphere. True close-up clarity needs native high-detail local patch images, not just an upscaled panorama.
 
 Place optional high-detail spherical patch assets here:
@@ -112,17 +127,16 @@ public/assets/patches/guji_patch_floor_4096x2048.jpg
 If a patch file is missing, the app logs a warning and skips only that patch. Use these query parameters for comparison:
 
 ```text
-?quality=8k&hdPatchDebug=1
-?quality=8k&hdPatchDebug=1&textureDebug=1
-?quality=8k&hdPatchOpacity=0.4
-?quality=8k&hdYaw=5
-?quality=8k&hdPatches=0
+?quality=8k&hdPatches=1&hdPatchDebug=1
+?quality=8k&hdPatches=1&hdPatchDebug=1&textureDebug=1
+?quality=8k&hdPatches=1&hdPatchOpacity=0.4
+?quality=8k&hdPatches=1&hdYaw=5
 ```
 
 Offering placement can be calibrated without changing code:
 
 ```text
-?offeringDebug=1&offX=0.5&offY=0.755&offD=50&offScale=0.78
+?offeringDebug=1&offX=0.5&offY=0.705&offD=48&offScale=0.62
 ```
 
 In offering debug mode, use Arrow keys for screen position, PageUp/PageDown for distance, and `[` / `]` for scale. The console prints a tuned URL that can be copied back into the defaults.
@@ -135,3 +149,9 @@ Patch source guidance:
 - `floor`: stone floor, plants, foreground ground detail, 4096x2048.
 
 If these images are only cropped and enlarged from the current blurry panorama, clarity will remain limited. For a real improvement, replace them with natively high-detail regenerated, AI detail-upscaled, or inpainted patch images using the same filenames.
+
+For a production-quality high-resolution result, prefer one of these source workflows instead of mixing unrelated patch images:
+
+- Render a cubemap or equirectangular panorama from Blender, Unreal, or another coherent 3D scene.
+- Generate a true native high-detail 16K equirectangular panorama.
+- Export all spherical patches from the same 3D scene with matching projection, lighting, and camera origin.
