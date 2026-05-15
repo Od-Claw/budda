@@ -49,7 +49,7 @@ function getFlameScaleMultiplier(): number {
   const params = new URLSearchParams(window.location.search);
   const value = Number(params.get("flameScale") ?? "1");
   if (!Number.isFinite(value)) return 1;
-  return THREE.MathUtils.clamp(value, 0.6, 2.2);
+  return THREE.MathUtils.clamp(value, 0.35, 1.8);
 }
 
 function worldHeightForScreenPixels(
@@ -252,8 +252,8 @@ export class CandleManager {
         seed: Math.random() * Math.PI * 2,
         baseLightIntensity: main ? 2.8 : 1.8,
         baseLightDistance: main ? 95 : 65,
-        targetFlamePixels: (main ? 150 : 105) * getFlameScaleMultiplier(),
-        targetGlowPixels: (main ? 270 : 190) * getFlameScaleMultiplier(),
+        targetFlamePixels: (main ? 82 : 52) * getFlameScaleMultiplier(),
+        targetGlowPixels: (main ? 160 : 105) * getFlameScaleMultiplier(),
         sparks: [],
         size
       };
@@ -338,7 +338,7 @@ export class CandleManager {
         worldPos,
         visual.targetFlamePixels
       );
-      const flameWidth = flameHeight * 0.52;
+      const flameWidth = flameHeight * 0.38;
       const glowHeight = worldHeightForScreenPixels(this.camera, this.renderer, worldPos, visual.targetGlowPixels);
 
       visual.flame.scale.set(
@@ -354,14 +354,16 @@ export class CandleManager {
         Math.sin(time * 23.0 + visual.seed) * 0.05;
 
       visual.flame.position.x = Math.sin(time * 5.0 + visual.seed) * flameWidth * 0.018;
-      visual.flame.position.y = Math.sin(time * 6.2 + visual.seed) * flameHeight * 0.018;
+      visual.flame.position.y =
+        Math.sin(time * 6.2 + visual.seed) * flameHeight * 0.018 -
+        (visual.size === "wall" ? flameHeight * 0.1 : 0);
       visual.flame.lookAt(this.camera.position);
 
       const glowMat = visual.glow.material as THREE.SpriteMaterial;
       glowMat.opacity =
-        0.34 +
-        Math.sin(time * 4.5 + visual.seed) * 0.1 +
-        Math.sin(time * 9.0 + visual.seed) * 0.05;
+        0.22 +
+        Math.sin(time * 4.5 + visual.seed) * 0.07 +
+        Math.sin(time * 9.0 + visual.seed) * 0.035;
 
       const glowScale = glowHeight * (0.92 + Math.sin(time * 5.5 + visual.seed) * 0.08);
       visual.glow.scale.set(glowScale, glowScale, 1);

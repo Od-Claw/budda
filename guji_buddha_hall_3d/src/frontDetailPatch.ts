@@ -101,7 +101,7 @@ function createPatchGeometry(options: ResolvedFrontDetailPatchOptions): THREE.Bu
 
     for (let x = 0; x <= options.segmentsX; x += 1) {
       const u = x / options.segmentsX;
-      const lon = THREE.MathUtils.lerp(options.lonMin, options.lonMax, u) + options.yawOffsetDeg;
+      const lon = THREE.MathUtils.lerp(options.lonMin, options.lonMax, u);
       const position = sphericalPosition(lon, lat, options.radius);
       positions.push(position.x, position.y, position.z);
       uvs.push(u, 1 - v);
@@ -154,7 +154,7 @@ export async function createFrontDetailPatch(
 
   const patch = new THREE.Mesh(geometry, material);
   patch.name = "front-detail-patch";
-  patch.rotation.y = resolvedOptions.rotationY;
+  patch.rotation.y = resolvedOptions.rotationY + THREE.MathUtils.degToRad(resolvedOptions.yawOffsetDeg);
   patch.renderOrder = -900;
   scene.add(patch);
 
@@ -162,6 +162,8 @@ export async function createFrontDetailPatch(
     url: FRONT_PATCH_URL,
     width: image.naturalWidth,
     height: image.naturalHeight,
+    rotationY: resolvedOptions.rotationY,
+    yawOffsetDeg: resolvedOptions.yawOffsetDeg,
     options: resolvedOptions
   });
 
