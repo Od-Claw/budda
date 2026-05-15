@@ -24,19 +24,31 @@ interface OfferingVisual {
   flameSprites: THREE.Sprite[];
 }
 
-const OFFERING_ROOT_POSITION = new THREE.Vector3(0, -18.2, -52);
+type OfferingPlacementConfig = {
+  screenX: number;
+  screenY: number;
+  distance: number;
+  scale: number;
+};
+
+const DEFAULT_OFFERING_PLACEMENT: OfferingPlacementConfig = {
+  screenX: 0.5,
+  screenY: 0.755,
+  distance: 50,
+  scale: 0.78
+};
 
 const OFFERING_SLOTS: OfferingSlot[] = [
-  { x: -3.6, y: 0.0, z: 0.0 },
-  { x: -2.4, y: 0.0, z: -0.2 },
-  { x: -1.2, y: 0.0, z: 0.15 },
-  { x: 0.0, y: 0.0, z: -0.25 },
-  { x: 1.2, y: 0.0, z: 0.15 },
-  { x: 2.4, y: 0.0, z: -0.2 },
-  { x: 3.6, y: 0.0, z: 0.0 },
-  { x: -1.8, y: -0.35, z: 0.9 },
-  { x: 1.8, y: -0.35, z: 0.9 },
-  { x: 0.0, y: -0.35, z: 1.1 }
+  { x: -2.8, y: 0.0, z: 0.0 },
+  { x: -1.8, y: 0.0, z: -0.15 },
+  { x: -0.9, y: 0.0, z: 0.12 },
+  { x: 0.0, y: 0.0, z: -0.18 },
+  { x: 0.9, y: 0.0, z: 0.12 },
+  { x: 1.8, y: 0.0, z: -0.15 },
+  { x: 2.8, y: 0.0, z: 0.0 },
+  { x: -1.4, y: -0.25, z: 0.65 },
+  { x: 1.4, y: -0.25, z: 0.65 },
+  { x: 0.0, y: -0.25, z: 0.85 }
 ];
 
 const assetUrl = (path: string): string => `${import.meta.env.BASE_URL}${path}`;
@@ -193,19 +205,48 @@ function disposeObject(object: THREE.Object3D): void {
   });
 }
 
+function getOfferingPlacementFromUrl(): OfferingPlacementConfig {
+  const params = new URLSearchParams(window.location.search);
+  const read = (key: string, fallback: number) => {
+    const value = Number(params.get(key));
+    return Number.isFinite(value) ? value : fallback;
+  };
+
+  return {
+    screenX: read("offX", DEFAULT_OFFERING_PLACEMENT.screenX),
+    screenY: read("offY", DEFAULT_OFFERING_PLACEMENT.screenY),
+    distance: read("offD", DEFAULT_OFFERING_PLACEMENT.distance),
+    scale: read("offScale", DEFAULT_OFFERING_PLACEMENT.scale)
+  };
+}
+
+function screenPointToWorldAtDistance(
+  camera: THREE.Camera,
+  screenX: number,
+  screenY: number,
+  distance: number
+): THREE.Vector3 {
+  const ndc = new THREE.Vector3(screenX * 2 - 1, -(screenY * 2 - 1), 0.5);
+  ndc.unproject(camera);
+  const direction = ndc.sub(camera.position).normalize();
+  return camera.position.clone().add(direction.multiplyScalar(distance));
+}
+
 export class OfferingManager {
   readonly root: THREE.Group;
   private records: OfferingRecord[] = [];
   private visuals: OfferingVisual[] = [];
   private camera?: THREE.Camera;
+  private placement = getOfferingPlacementFromUrl();
+  private offeringDebug = new URLSearchParams(window.location.search).get("offeringDebug") === "1";
   private loggedScreenPosition = false;
 
   constructor(scene: THREE.Scene, camera?: THREE.Camera) {
     this.camera = camera;
     this.root = new THREE.Group();
     this.root.name = "offerings-root";
-    this.root.position.copy(OFFERING_ROOT_POSITION);
-    this.root.scale.setScalar(0.95);
+    this.applyPlacement();
+    this.installDebugControls();
     scene.add(this.root);
   }
 
@@ -265,6 +306,12 @@ export class OfferingManager {
     });
   }
 
+  recalibratePlacement(): void {
+    this.applyPlacement();
+    this.faceCamera();
+    this.logPlacement();
+  }
+
   private rebuild(animatedRecordId?: string): void {
     this.root.children.forEach(disposeObject);
     this.root.clear();
@@ -299,8 +346,59 @@ export class OfferingManager {
     this.root.lookAt(this.camera.position.x, this.root.position.y, this.camera.position.z);
   }
 
+  private applyPlacement(): void {
+    if (this.camera) {
+      this.root.position.copy(
+        screenPointToWorldAtDistance(
+          this.camera,
+          this.placement.screenX,
+          this.placement.screenY,
+          this.placement.distance
+        )
+      );
+    }
+    this.root.scale.setScalar(this.placement.scale);
+  }
+
+  private installDebugControls(): void {
+    if (!this.offeringDebug || !this.camera) return;
+    this.logPlacement();
+    window.addEventListener("keydown", (event) => {
+      let handled = true;
+      if (event.key === "ArrowLeft") this.placement.screenX -= 0.005;
+      else if (event.key === "ArrowRight") this.placement.screenX += 0.005;
+      else if (event.key === "ArrowUp") this.placement.screenY -= 0.005;
+      else if (event.key === "ArrowDown") this.placement.screenY += 0.005;
+      else if (event.key === "PageUp") this.placement.distance += 1;
+      else if (event.key === "PageDown") this.placement.distance -= 1;
+      else if (event.key === "[") this.placement.scale -= 0.03;
+      else if (event.key === "]") this.placement.scale += 0.03;
+      else handled = false;
+
+      if (!handled) return;
+      event.preventDefault();
+      this.placement.screenX = THREE.MathUtils.clamp(this.placement.screenX, 0.05, 0.95);
+      this.placement.screenY = THREE.MathUtils.clamp(this.placement.screenY, 0.05, 0.95);
+      this.placement.distance = Math.max(5, this.placement.distance);
+      this.placement.scale = Math.max(0.1, this.placement.scale);
+      this.recalibratePlacement();
+      console.info(
+        "[offerings] tuned url",
+        `?offX=${this.placement.screenX.toFixed(3)}&offY=${this.placement.screenY.toFixed(3)}&offD=${this.placement.distance.toFixed(1)}&offScale=${this.placement.scale.toFixed(2)}`
+      );
+    });
+  }
+
+  private logPlacement(): void {
+    if (!this.offeringDebug) return;
+    console.info("[offerings] placement", {
+      ...this.placement,
+      rootPosition: this.root.position.clone()
+    });
+  }
+
   private logScreenPositionOnce(): void {
-    if (this.loggedScreenPosition || !this.camera || this.records.length === 0) return;
+    if (!this.offeringDebug || this.loggedScreenPosition || !this.camera || this.records.length === 0) return;
     const world = new THREE.Vector3();
     this.root.getWorldPosition(world);
     world.project(this.camera);

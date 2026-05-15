@@ -113,8 +113,19 @@ If a patch file is missing, the app logs a warning and skips only that patch. Us
 
 ```text
 ?quality=8k&hdPatchDebug=1
+?quality=8k&hdPatchDebug=1&textureDebug=1
+?quality=8k&hdPatchOpacity=0.4
+?quality=8k&hdYaw=5
 ?quality=8k&hdPatches=0
 ```
+
+Offering placement can be calibrated without changing code:
+
+```text
+?offeringDebug=1&offX=0.5&offY=0.755&offD=50&offScale=0.78
+```
+
+In offering debug mode, use Arrow keys for screen position, PageUp/PageDown for distance, and `[` / `]` for scale. The console prints a tuned URL that can be copied back into the defaults.
 
 Patch source guidance:
 - `front`: central Buddha, side small Buddhas, altar, old stone wall, no text or UI, 8192x4096.

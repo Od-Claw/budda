@@ -5,6 +5,24 @@ export const PANORAMA_4K_IMAGE_URL = `${import.meta.env.BASE_URL}assets/guji_360
 
 type QualityMode = "8k" | "4k" | "auto";
 
+export type PanoramaDebugInfo = {
+  primaryUrl: string;
+  loadedUrl: string;
+  maxTextureSize: number;
+  deviceMemory: number;
+  use8k: boolean;
+  qualityMode: QualityMode;
+  imageWidth?: number;
+  imageHeight?: number;
+  fallback: boolean;
+};
+
+let lastPanoramaDebugInfo: PanoramaDebugInfo | null = null;
+
+export function getPanoramaDebugInfo(): PanoramaDebugInfo | null {
+  return lastPanoramaDebugInfo;
+}
+
 function getQualityMode(): QualityMode {
   const params = new URLSearchParams(window.location.search);
   const value = params.get("quality");
@@ -38,6 +56,14 @@ async function loadTexture(url: string, renderer: THREE.WebGLRenderer): Promise<
   return texture;
 }
 
+function getTextureImageSize(texture: THREE.Texture): { width?: number; height?: number } {
+  const image = texture.image as { naturalWidth?: number; naturalHeight?: number; width?: number; height?: number } | undefined;
+  return {
+    width: image?.naturalWidth ?? image?.width,
+    height: image?.naturalHeight ?? image?.height
+  };
+}
+
 export async function loadPanoramaTexture(renderer: THREE.WebGLRenderer): Promise<THREE.Texture> {
   const maxTextureSize = renderer.capabilities.maxTextureSize;
   const deviceMemory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? 8;
@@ -54,11 +80,37 @@ export async function loadPanoramaTexture(renderer: THREE.WebGLRenderer): Promis
   });
 
   try {
-    return await loadTexture(primaryUrl, renderer);
+    const texture = await loadTexture(primaryUrl, renderer);
+    const size = getTextureImageSize(texture);
+    lastPanoramaDebugInfo = {
+      primaryUrl,
+      loadedUrl: primaryUrl,
+      maxTextureSize,
+      deviceMemory,
+      use8k,
+      qualityMode,
+      imageWidth: size.width,
+      imageHeight: size.height,
+      fallback: false
+    };
+    return texture;
   } catch (error) {
     if (!use8k) throw error;
     console.warn("[panorama] primary failed, fallback to 4K", error);
-    return loadTexture(PANORAMA_4K_IMAGE_URL, renderer);
+    const texture = await loadTexture(PANORAMA_4K_IMAGE_URL, renderer);
+    const size = getTextureImageSize(texture);
+    lastPanoramaDebugInfo = {
+      primaryUrl,
+      loadedUrl: PANORAMA_4K_IMAGE_URL,
+      maxTextureSize,
+      deviceMemory,
+      use8k: false,
+      qualityMode,
+      imageWidth: size.width,
+      imageHeight: size.height,
+      fallback: true
+    };
+    return texture;
   }
 }
 
