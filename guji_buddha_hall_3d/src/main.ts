@@ -1,7 +1,7 @@
 import "./styles.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { createPanoramaSphere, loadPanoramaTexture, PANORAMA_IMAGE_URL } from "./panorama";
+import { createPanoramaSphere, loadPanoramaTexture, PANORAMA_4K_URL, PANORAMA_8K_URL } from "./panorama";
 import { ALL_HOTSPOTS, LAMP_HOTSPOTS, OFFERING_HOTSPOT, lonLatToVector3, makeHotspotTexture } from "./hotspots";
 import { clearLampRecords, getLampRecord, loadLampRecords, loadOfferings, OfferingType, setLampRecord } from "./storage";
 import { CandleManager } from "./candles";
@@ -13,9 +13,9 @@ const canvas = document.getElementById("sceneCanvas") as HTMLCanvasElement;
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x050403);
 
-const INITIAL_FOV = 60;
-const MIN_FOV = 42;
-const MAX_FOV = 76;
+const INITIAL_FOV = 72;
+const MIN_FOV = 56;
+const MAX_FOV = 88;
 const PANORAMA_YAW_OFFSET_DEG = 0;
 const LAMP_DEBUG = new URLSearchParams(window.location.search).get("lampDebug") === "1";
 
@@ -84,11 +84,10 @@ init();
 
 async function init(): Promise<void> {
   try {
-    const texture = await loadPanoramaTexture(PANORAMA_IMAGE_URL);
-    texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    const texture = await loadPanoramaTexture(renderer);
     scene.add(createPanoramaSphere(texture, 500));
   } catch (error) {
-    console.error(`Panorama failed: ${PANORAMA_IMAGE_URL}`, error);
+    console.error(`Panorama failed: ${PANORAMA_8K_URL} / ${PANORAMA_4K_URL}`, error);
     showPanoramaError("全景圖片載入失敗，請確認 public/assets/guji_360_panorama_4096x2048.jpg 是否存在。");
     scene.add(createPanoramaSphere(createFallbackTexture(), 500));
   }
