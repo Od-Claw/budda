@@ -9,6 +9,7 @@ import { OfferingManager } from "./offerings";
 import { AppUI } from "./ui";
 import { createFireflies, FireflySystem, updateFireflies } from "./fireflies";
 import { createHdPatches } from "./hdPatches";
+import { createCubemapSkybox } from "./cubemapSkybox";
 
 const canvas = document.getElementById("sceneCanvas") as HTMLCanvasElement;
 const scene = new THREE.Scene();
@@ -22,6 +23,7 @@ const params = new URLSearchParams(window.location.search);
 const LAMP_DEBUG = params.get("lampDebug") === "1";
 const ENABLE_HD_PATCHES = params.get("hdPatches") === "1";
 const HD_PATCH_DEBUG = params.get("hdPatchDebug") === "1";
+const ENV_MODE = params.get("env") ?? "cubemap";
 
 const camera = new THREE.PerspectiveCamera(INITIAL_FOV, window.innerWidth / window.innerHeight, 0.1, 2000);
 camera.position.set(0, 0, 0.1);
@@ -89,8 +91,28 @@ init();
 
 async function init(): Promise<void> {
   try {
-    const texture = await loadPanoramaTexture(renderer);
-    scene.add(createPanoramaSphere(texture, 500));
+    let environmentLoaded = false;
+
+    if (ENV_MODE !== "equirect") {
+      try {
+        await createCubemapSkybox(scene, renderer, {
+          quality: "auto",
+          size: 1000,
+          rotationY: 0
+        });
+        environmentLoaded = true;
+        console.info("[environment] cubemap loaded");
+      } catch (error) {
+        console.warn("[environment] cubemap failed, fallback to equirect", error);
+      }
+    }
+
+    if (!environmentLoaded) {
+      const texture = await loadPanoramaTexture(renderer);
+      scene.add(createPanoramaSphere(texture, 500));
+      console.info("[environment] equirectangular panorama loaded");
+    }
+
     if (ENABLE_HD_PATCHES) {
       try {
         await createHdPatches(scene, renderer, {

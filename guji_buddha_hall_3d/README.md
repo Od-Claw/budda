@@ -94,6 +94,56 @@ src/hotspots.ts
 http://localhost:5173/?lampDebug=1
 ```
 
+## Cubemap environment
+
+The stable environment pipeline now prefers a cubemap skybox. If cubemap files are missing, the app automatically falls back to the existing equirectangular panorama.
+
+Cubemap assets should be placed here:
+
+```text
+public/assets/cubemap/4k/px.jpg
+public/assets/cubemap/4k/nx.jpg
+public/assets/cubemap/4k/py.jpg
+public/assets/cubemap/4k/ny.jpg
+public/assets/cubemap/4k/pz.jpg
+public/assets/cubemap/4k/nz.jpg
+```
+
+Optional 8K cubemap assets use the same face names:
+
+```text
+public/assets/cubemap/8k/px.jpg
+public/assets/cubemap/8k/nx.jpg
+public/assets/cubemap/8k/py.jpg
+public/assets/cubemap/8k/ny.jpg
+public/assets/cubemap/8k/pz.jpg
+public/assets/cubemap/8k/nz.jpg
+```
+
+Face mapping:
+
+```text
+px.jpg = right wall, +X
+nx.jpg = left wall, -X
+py.jpg = tree canopy / top, +Y
+ny.jpg = stone floor / bottom, -Y
+pz.jpg = rear historic environment, +Z
+nz.jpg = front Buddha, -Z
+```
+
+Cubemap query parameters:
+
+```text
+?env=cubemap
+?env=equirect
+?cubeQuality=4k
+?cubeQuality=8k
+?cubeQuality=auto
+?cubeDebug=1
+```
+
+For true clarity, cubemap images must come from one coherent source: the same Blender / Unreal / 3D scene, the same camera position, six 90-degree FOV faces, matching light direction, and continuous edges. Do not use six unrelated AI images, cropped blurry panorama enlargements, or images with inconsistent perspective, text, watermark, or UI.
+
 ## HD spherical patches
 
 Stable builds do not load HD patches by default. The multi-patch layer is currently experimental because the patch images are not exported from one consistent 3D scene/camera rig; perspective, scale, lighting, and content can drift between patches.
