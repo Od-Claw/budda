@@ -13,6 +13,7 @@ export interface FrontDetailPatchOptions {
   segmentsY?: number;
   rotationY?: number;
   yawOffsetDeg?: number;
+  debug?: boolean;
 }
 
 type ResolvedFrontDetailPatchOptions = Required<FrontDetailPatchOptions>;
@@ -23,11 +24,12 @@ const DEFAULT_OPTIONS: ResolvedFrontDetailPatchOptions = {
   latMin: -38,
   latMax: 42,
   radius: 496,
-  featherPx: 260,
-  segmentsX: 160,
-  segmentsY: 96,
+  featherPx: 220,
+  segmentsX: 180,
+  segmentsY: 110,
   rotationY: -Math.PI / 2,
-  yawOffsetDeg: 0
+  yawOffsetDeg: 0,
+  debug: false
 };
 
 function sphericalPosition(lonDeg: number, latDeg: number, radius: number): THREE.Vector3 {
@@ -127,6 +129,62 @@ function createPatchGeometry(options: ResolvedFrontDetailPatchOptions): THREE.Bu
   return geometry;
 }
 
+function createDebugBoundary(options: ResolvedFrontDetailPatchOptions): THREE.LineSegments {
+  const positions: number[] = [];
+  const pushSegment = (a: THREE.Vector3, b: THREE.Vector3) => {
+    positions.push(a.x, a.y, a.z, b.x, b.y, b.z);
+  };
+
+  const samplesX = 72;
+  const samplesY = 48;
+
+  for (let index = 0; index < samplesX; index += 1) {
+    const t0 = index / samplesX;
+    const t1 = (index + 1) / samplesX;
+    const lon0 = THREE.MathUtils.lerp(options.lonMin, options.lonMax, t0);
+    const lon1 = THREE.MathUtils.lerp(options.lonMin, options.lonMax, t1);
+    pushSegment(
+      sphericalPosition(lon0, options.latMin, options.radius - 1),
+      sphericalPosition(lon1, options.latMin, options.radius - 1)
+    );
+    pushSegment(
+      sphericalPosition(lon0, options.latMax, options.radius - 1),
+      sphericalPosition(lon1, options.latMax, options.radius - 1)
+    );
+  }
+
+  for (let index = 0; index < samplesY; index += 1) {
+    const t0 = index / samplesY;
+    const t1 = (index + 1) / samplesY;
+    const lat0 = THREE.MathUtils.lerp(options.latMin, options.latMax, t0);
+    const lat1 = THREE.MathUtils.lerp(options.latMin, options.latMax, t1);
+    pushSegment(
+      sphericalPosition(options.lonMin, lat0, options.radius - 1),
+      sphericalPosition(options.lonMin, lat1, options.radius - 1)
+    );
+    pushSegment(
+      sphericalPosition(options.lonMax, lat0, options.radius - 1),
+      sphericalPosition(options.lonMax, lat1, options.radius - 1)
+    );
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  const material = new THREE.LineBasicMaterial({
+    color: 0x22f5ff,
+    transparent: true,
+    opacity: 0.95,
+    depthTest: false,
+    depthWrite: false,
+    toneMapped: false
+  });
+  const boundary = new THREE.LineSegments(geometry, material);
+  boundary.name = "front-detail-patch-debug-boundary";
+  boundary.renderOrder = -850;
+  boundary.frustumCulled = false;
+  return boundary;
+}
+
 export async function createFrontDetailPatch(
   scene: THREE.Scene,
   renderer: THREE.WebGLRenderer,
@@ -148,24 +206,39 @@ export async function createFrontDetailPatch(
     transparent: true,
     depthWrite: false,
     depthTest: false,
-    side: THREE.FrontSide,
+    side: THREE.DoubleSide,
     blending: THREE.NormalBlending
   });
+
+  if (resolvedOptions.debug) {
+    material.opacity = 0.88;
+    material.color = new THREE.Color(0xfff0cc);
+  }
 
   const patch = new THREE.Mesh(geometry, material);
   patch.name = "front-detail-patch";
   patch.rotation.y = resolvedOptions.rotationY + THREE.MathUtils.degToRad(resolvedOptions.yawOffsetDeg);
   patch.renderOrder = -900;
+  if (resolvedOptions.debug) {
+    patch.add(createDebugBoundary(resolvedOptions));
+  }
   scene.add(patch);
 
   console.info("[front-detail-patch] loaded", {
     url: FRONT_PATCH_URL,
-    width: image.naturalWidth,
-    height: image.naturalHeight,
+    imageWidth: image.naturalWidth,
+    imageHeight: image.naturalHeight,
+    lonMin: resolvedOptions.lonMin,
+    lonMax: resolvedOptions.lonMax,
+    latMin: resolvedOptions.latMin,
+    latMax: resolvedOptions.latMax,
     rotationY: resolvedOptions.rotationY,
     yawOffsetDeg: resolvedOptions.yawOffsetDeg,
-    options: resolvedOptions
+    debug: resolvedOptions.debug
   });
+  console.info(
+    "[front-detail-patch] patch loaded but source detail may be limited; replace the same filename with a native high-detail patch for a real clarity boost."
+  );
 
   return patch;
 }

@@ -20,6 +20,7 @@ const MAX_FOV = 88;
 const PANORAMA_YAW_OFFSET_DEG = 0;
 const LAMP_DEBUG = new URLSearchParams(window.location.search).get("lampDebug") === "1";
 const DISABLE_DETAIL_PATCH = new URLSearchParams(window.location.search).get("detailPatch") === "0";
+const PATCH_DEBUG = new URLSearchParams(window.location.search).get("patchDebug") === "1";
 
 const camera = new THREE.PerspectiveCamera(INITIAL_FOV, window.innerWidth / window.innerHeight, 0.1, 2000);
 camera.position.set(0, 0, 0.1);
@@ -97,11 +98,12 @@ async function init(): Promise<void> {
           latMin: -38,
           latMax: 42,
           radius: 496,
-          featherPx: 260,
-          segmentsX: 160,
-          segmentsY: 96,
+          segmentsX: 180,
+          segmentsY: 110,
+          featherPx: 220,
           rotationY: -Math.PI / 2,
-          yawOffsetDeg: 0
+          yawOffsetDeg: 0,
+          debug: PATCH_DEBUG
         });
       } catch (error) {
         console.warn("[front-detail-patch] skipped", error);
