@@ -1,6 +1,6 @@
 # 古蹟佛堂 3D 全景
 
-Vite + TypeScript + Three.js 專案。使用 2:1 高清環景圖建立可拖拽旋轉觀看的戶外古蹟佛堂，並保留供佛、點燈、螢火蟲、localStorage 紀錄與回到佛前功能。
+Vite + TypeScript + Three.js 的古蹟佛堂全景互動專案，包含拖拽觀看、供佛、點燈、螢火蟲與 localStorage 紀錄。
 
 ## 本機開發
 
@@ -15,30 +15,40 @@ npm run dev
 http://localhost:5173/
 ```
 
-## 正式建置與預覽
+## 建置與預覽
 
 ```bash
 npm run build
 npm run preview
 ```
 
-因為 GitHub Pages 會部署在 project site 子路徑，正式建置使用 Vite `base: "/guji_buddha_hall_3d/"`。
-
-本機 `npm run preview` 後，請用下面路徑測試：
+正式 GitHub Pages 網址：
 
 ```text
-http://localhost:4173/guji_buddha_hall_3d/
+https://od-claw.github.io/budda/guji_buddha_hall_3d/
 ```
+
+因此 production Vite base 必須是：
+
+```text
+/budda/guji_buddha_hall_3d/
+```
+
+本機 preview 請測試：
+
+```text
+http://localhost:4173/budda/guji_buddha_hall_3d/
+```
+
+如果 4173 被占用，Vite 會改用下一個可用 port，路徑仍然要包含 `/budda/guji_buddha_hall_3d/`。
 
 ## 必要素材
 
-請確認此檔案存在，且檔名大小寫完全一致：
+請確認高清環景圖存在：
 
 ```text
 public/assets/guji_360_panorama_4096x2048.jpg
 ```
-
-程式會透過 `import.meta.env.BASE_URL` 組合素材路徑，避免 GitHub Pages 上誤抓 domain root 的 `/assets/...`。
 
 供品素材位於：
 
@@ -46,12 +56,14 @@ public/assets/guji_360_panorama_4096x2048.jpg
 public/assets/offerings/
 ```
 
+程式會透過 `import.meta.env.BASE_URL` 組合 public asset 路徑，避免 GitHub Pages project site 誤抓 domain root 的 `/assets/...`。
+
 ## GitHub Pages 部署
 
-此專案已提供：
+GitHub Actions workflow 位於 repo 根目錄：
 
 ```text
-.github/workflows/deploy.yml
+.github/workflows/deploy-guji.yml
 ```
 
 請到 GitHub repo：
@@ -66,20 +78,18 @@ Settings -> Pages
 GitHub Actions
 ```
 
-不要選 `main/root`，因為這是 Vite 專案，應部署 `npm run build` 產出的 `dist`。
+不要選 `Deploy from a branch`、`main/root` 或 `main/docs`。這是 Vite 專案，必須由 Actions 執行 `npm run build`，再部署 build 出來的 `dist`。
 
-## 調整熱點
+## 調整燈位
 
-燈位與供佛熱點集中在：
+燈位座標集中在：
 
 ```text
 src/hotspots.ts
 ```
 
-修改 `lon` / `lat` 後重新 build 即可。若需要定位輔助，可用：
+一般網址不顯示工程 debug；若要微調燈位，可使用：
 
 ```text
 http://localhost:5173/?lampDebug=1
 ```
-
-一般網址不會顯示 debug 文字。
