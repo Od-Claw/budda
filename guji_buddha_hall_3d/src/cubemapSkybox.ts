@@ -1,11 +1,11 @@
 import * as THREE from "three";
 
 export type CubemapQuality = "4k" | "8k" | "auto";
-export type CubemapSource = "quality" | "generated" | "generated4k";
+export type CubemapSource = "quality" | "generated" | "generated4k" | "candidate";
 
 export type CubemapSkyboxResult = {
   group: THREE.Group;
-  quality: "4k" | "8k" | "generated" | "generated4k";
+  quality: "4k" | "8k" | "generated" | "generated4k" | "candidate";
   urls: string[];
 };
 
@@ -47,16 +47,26 @@ function resolveQuality(renderer: THREE.WebGLRenderer, optionsQuality?: CubemapQ
 
 function getRequestedSource(): CubemapSource {
   const source = new URLSearchParams(window.location.search).get("cubeSource");
+  if (source === "candidate") return "candidate";
   if (source === "generated4k") return "generated4k";
   return source === "generated" ? "generated" : "quality";
 }
 
 function getFaceUrls(quality: "4k" | "8k", source: CubemapSource = "quality"): string[] {
+  const params = new URLSearchParams(window.location.search);
   if (source === "generated") {
     return FACE_NAMES.map((name) => `${import.meta.env.BASE_URL}assets/cubemap/generated/${name}.jpg`);
   }
   if (source === "generated4k") {
     return FACE_NAMES.map((name) => `${import.meta.env.BASE_URL}assets/cubemap/generated_4k/${name}.jpg`);
+  }
+  if (source === "candidate") {
+    const cubeSet = params.get("cubeSet");
+    if (!cubeSet) {
+      console.warn("[cubemap] cubeSource=candidate requires cubeSet. Falling back to 4k cubemap.");
+      return FACE_NAMES.map((name) => `${import.meta.env.BASE_URL}assets/cubemap/4k/${name}.jpg`);
+    }
+    return FACE_NAMES.map((name) => `${import.meta.env.BASE_URL}assets/cubemap/candidates/${encodeURIComponent(cubeSet)}/upscaled_4k/${name}.jpg`);
   }
   return FACE_NAMES.map((name) => `${import.meta.env.BASE_URL}assets/cubemap/${quality}/${name}.jpg`);
 }
@@ -180,11 +190,11 @@ export async function createCubemapSkybox(
 
   try {
     faceTextures =
-      source === "generated" || source === "generated4k"
+      source === "generated" || source === "generated4k" || source === "candidate"
         ? await loadFaceTextures(renderer, "4k", source)
         : await loadFaceTextures(renderer, quality, "quality");
   } catch (error) {
-    if (source === "generated" || quality !== "8k") throw error;
+    if (source === "generated" || source === "generated4k" || source === "candidate" || quality !== "8k") throw error;
     console.warn("[cubemap] 8k failed, fallback to 4k", error);
     quality = "4k";
     faceTextures = await loadFaceTextures(renderer, quality, "quality");
@@ -226,7 +236,7 @@ export async function createCubemapSkybox(
 
   const urls = faceTextures.map((face) => face.url);
   console.info("[cubemap] loaded", {
-    quality: source === "generated" || source === "generated4k" ? source : quality,
+    quality: source === "generated" || source === "generated4k" || source === "candidate" ? source : quality,
     source,
     urls,
     maxTextureSize: renderer.capabilities.maxTextureSize,
@@ -234,5 +244,5 @@ export async function createCubemapSkybox(
     debug
   });
 
-  return { group, quality: source === "generated" || source === "generated4k" ? source : quality, urls };
+  return { group, quality: source === "generated" || source === "generated4k" || source === "candidate" ? source : quality, urls };
 }

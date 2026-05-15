@@ -8,6 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "generate:cubemap": "tsx scripts/generate-cubemap-assets.ts",
+    "make:cubemap-sheet": "tsx scripts/make-cubemap-contact-sheet.ts",
+    "promote:cubemap": "tsx scripts/promote-cubemap-candidate.ts",
     "upscale:cubemap": "tsx scripts/upscale-cubemap-assets.ts",
     "validate:cubemap": "tsx scripts/validate-cubemap-assets.ts"
   },

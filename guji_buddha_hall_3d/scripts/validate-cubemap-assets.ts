@@ -1,4 +1,4 @@
-import { access, readFile, stat } from "node:fs/promises";
+import { access, readFile, readdir, stat } from "node:fs/promises";
 import { join } from "node:path";
 
 type ImageInfo = {
@@ -7,22 +7,23 @@ type ImageInfo = {
   format: "jpeg" | "png";
 };
 
-type ValidateDir = "generated" | "generated_4k";
+type ValidateDir = "generated" | "generated_4k" | "raw" | "upscaled_4k";
 
-const validateDir = getValidateDir();
-const GENERATED_DIR = join(process.cwd(), "public", "assets", "cubemap", validateDir);
 const FACE_FILES = ["px.jpg", "nx.jpg", "py.jpg", "ny.jpg", "pz.jpg", "nz.jpg"] as const;
-const MIN_SIZE = validateDir === "generated_4k" ? 4096 : 2048;
+const CANDIDATES_DIR = join(process.cwd(), "public", "assets", "cubemap", "candidates");
+const LEGACY_DIR = join(process.cwd(), "public", "assets", "cubemap");
+const validateDir = getValidateDir();
+const runId = process.env.CUBEMAP_RUN_ID ?? process.argv[2];
+const MIN_SIZE = validateDir === "generated_4k" || validateDir === "upscaled_4k" ? 4096 : 2048;
 
 function getValidateDir(): ValidateDir {
   const value = process.env.CUBEMAP_VALIDATE_DIR;
-  if (value === "generated" || value === "generated_4k") return value;
-  return "generated";
+  if (value === "generated" || value === "generated_4k" || value === "raw" || value === "upscaled_4k") return value;
+  return process.env.CUBEMAP_RUN_ID || process.argv[2] ? "upscaled_4k" : "generated";
 }
 
 function readPngDimensions(buffer: Buffer): ImageInfo | null {
-  const pngSignature = "89504e470d0a1a0a";
-  if (buffer.subarray(0, 8).toString("hex") !== pngSignature) return null;
+  if (buffer.subarray(0, 8).toString("hex") !== "89504e470d0a1a0a") return null;
   return {
     width: buffer.readUInt32BE(16),
     height: buffer.readUInt32BE(20),
@@ -42,7 +43,6 @@ function readJpegDimensions(buffer: Buffer): ImageInfo | null {
 
     const marker = buffer[offset + 1];
     offset += 2;
-
     if (marker === 0xd9 || marker === 0xda) break;
     if (offset + 2 > buffer.length) break;
 
@@ -69,16 +69,28 @@ function readJpegDimensions(buffer: Buffer): ImageInfo | null {
   return null;
 }
 
-async function inspectImage(file: string): Promise<{ file: string; bytes: number; width: number; height: number; format: string; square: boolean; ok: boolean }> {
-  const filePath = join(GENERATED_DIR, file);
+async function getCandidateRunIds(): Promise<string[]> {
+  if (runId) return [runId];
+  const entries = await readdir(CANDIDATES_DIR, { withFileTypes: true });
+  return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
+}
+
+function getFaceDir(currentRunId?: string): string {
+  if (validateDir === "generated" || validateDir === "generated_4k") {
+    return join(LEGACY_DIR, validateDir);
+  }
+  if (!currentRunId) throw new Error("CUBEMAP_RUN_ID or run id argument is required for raw/upscaled_4k validation.");
+  return join(CANDIDATES_DIR, currentRunId, validateDir);
+}
+
+async function inspectImage(baseDir: string, file: string): Promise<{ file: string; bytes: number; width: number; height: number; format: string; square: boolean; ok: boolean }> {
+  const filePath = join(baseDir, file);
   await access(filePath);
   const fileStat = await stat(filePath);
   const buffer = await readFile(filePath);
   const imageInfo = readJpegDimensions(buffer) ?? readPngDimensions(buffer);
 
-  if (!imageInfo) {
-    throw new Error(`Unsupported or unreadable image format: ${filePath}`);
-  }
+  if (!imageInfo) throw new Error(`Unsupported or unreadable image format: ${filePath}`);
 
   const square = imageInfo.width === imageInfo.height;
   const ok = fileStat.size > 0 && square && imageInfo.width >= MIN_SIZE && imageInfo.height >= MIN_SIZE;
@@ -94,19 +106,21 @@ async function inspectImage(file: string): Promise<{ file: string; bytes: number
   };
 }
 
-async function main(): Promise<void> {
+async function validateOne(currentRunId?: string): Promise<boolean> {
+  const baseDir = getFaceDir(currentRunId);
   const results = [];
   let allOk = true;
 
   console.info("[cubemap-validate] directory", {
+    runId: currentRunId ?? null,
     dir: validateDir,
-    path: GENERATED_DIR,
+    path: baseDir,
     expectedMinimum: `${MIN_SIZE}x${MIN_SIZE}`
   });
 
   for (const file of FACE_FILES) {
     try {
-      const result = await inspectImage(file);
+      const result = await inspectImage(baseDir, file);
       results.push(result);
       if (!result.ok) allOk = false;
     } catch (error) {
@@ -125,6 +139,26 @@ async function main(): Promise<void> {
   }
 
   console.table(results);
+  return allOk;
+}
+
+async function main(): Promise<void> {
+  let allOk = true;
+
+  if (validateDir === "generated" || validateDir === "generated_4k") {
+    allOk = await validateOne();
+  } else {
+    const runIds = await getCandidateRunIds();
+    if (runIds.length === 0) {
+      console.error("No cubemap candidates found.");
+      process.exit(1);
+    }
+
+    for (const currentRunId of runIds) {
+      const ok = await validateOne(currentRunId);
+      if (!ok) allOk = false;
+    }
+  }
 
   if (!allOk) {
     console.error(`Generated cubemap validation failed. Every face must be square and at least ${MIN_SIZE}x${MIN_SIZE}.`);
@@ -132,7 +166,6 @@ async function main(): Promise<void> {
   }
 
   console.info("Generated cubemap assets are ready for manual review.");
-  console.info("Do not automatically copy generated assets into public/assets/cubemap/4k until the six faces are visually consistent.");
 }
 
 main().catch((error) => {

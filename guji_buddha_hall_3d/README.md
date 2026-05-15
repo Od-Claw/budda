@@ -162,32 +162,44 @@ The generator requires `OPENAI_API_KEY`. If the key is missing it stops with:
 Missing OPENAI_API_KEY. Cannot generate images.
 ```
 
-Generated files are written here and are not copied into the stable 4K cubemap automatically:
+The generator now writes reviewed candidates into timestamped run folders instead of overwriting the stable cubemap:
 
 ```text
-public/assets/cubemap/generated/px.jpg
-public/assets/cubemap/generated/nx.jpg
-public/assets/cubemap/generated/py.jpg
-public/assets/cubemap/generated/ny.jpg
-public/assets/cubemap/generated/pz.jpg
-public/assets/cubemap/generated/nz.jpg
+public/assets/cubemap/candidates/run-YYYYMMDD-HHMMSS/raw/px.jpg
+public/assets/cubemap/candidates/run-YYYYMMDD-HHMMSS/raw/nx.jpg
+public/assets/cubemap/candidates/run-YYYYMMDD-HHMMSS/raw/py.jpg
+public/assets/cubemap/candidates/run-YYYYMMDD-HHMMSS/raw/ny.jpg
+public/assets/cubemap/candidates/run-YYYYMMDD-HHMMSS/raw/pz.jpg
+public/assets/cubemap/candidates/run-YYYYMMDD-HHMMSS/raw/nz.jpg
 ```
 
-By default the generator requests `2880x2880`, which fits the current Image API square-face limit. The optional upscaler resizes those reviewed generated faces to `4096x4096` using Lanczos3 and writes them here:
+Use multiple variants when the six faces are not consistent enough:
+
+```powershell
+$env:OPENAI_API_KEY="your key"
+$env:CUBEMAP_VARIANTS="3"
+npm run generate:cubemap
+npm run upscale:cubemap
+```
+
+If `CUBEMAP_RUN_ID` is not set, the generator creates `run-YYYYMMDD-HHMMSS`. With `CUBEMAP_VARIANTS=3`, it creates `run-...-v1`, `run-...-v2`, and `run-...-v3`.
+
+By default the generator requests `2880x2880`, which fits the current Image API square-face limit. The optional upscaler resizes those generated faces to `4096x4096` using Lanczos3 and writes them here:
 
 ```text
-public/assets/cubemap/generated_4k/px.jpg
-public/assets/cubemap/generated_4k/nx.jpg
-public/assets/cubemap/generated_4k/py.jpg
-public/assets/cubemap/generated_4k/ny.jpg
-public/assets/cubemap/generated_4k/pz.jpg
-public/assets/cubemap/generated_4k/nz.jpg
+public/assets/cubemap/candidates/<runId>/upscaled_4k/px.jpg
+public/assets/cubemap/candidates/<runId>/upscaled_4k/nx.jpg
+public/assets/cubemap/candidates/<runId>/upscaled_4k/py.jpg
+public/assets/cubemap/candidates/<runId>/upscaled_4k/ny.jpg
+public/assets/cubemap/candidates/<runId>/upscaled_4k/pz.jpg
+public/assets/cubemap/candidates/<runId>/upscaled_4k/nz.jpg
 ```
 
-Validate the upscaled faces with:
+Validate a candidate with:
 
 ```bash
-CUBEMAP_VALIDATE_DIR=generated_4k npm run validate:cubemap
+CUBEMAP_RUN_ID=<runId> CUBEMAP_VALIDATE_DIR=raw npm run validate:cubemap
+CUBEMAP_RUN_ID=<runId> CUBEMAP_VALIDATE_DIR=upscaled_4k npm run validate:cubemap
 ```
 
 Preview generated candidates with:
@@ -195,9 +207,25 @@ Preview generated candidates with:
 ```text
 ?env=cubemap&cubeSource=generated&cubeDebug=1
 ?env=cubemap&cubeSource=generated4k&cubeDebug=1
+?env=cubemap&cubeSource=candidate&cubeSet=<runId>&cubeDebug=1
 ```
 
-Important: AI-generated cubemap faces may still fail to align perfectly because each face is generated independently. Upscaling from 2880 to 4096 does not create perfect new geometry; it only prepares a larger review candidate. Do not deploy generated or generated_4k assets as the official `public/assets/cubemap/4k` set until all six faces are manually reviewed for consistent geometry, light direction, scale, and style. The most reliable production-quality solution remains a cubemap exported from one coherent Blender / Unreal / 3D scene.
+Open the review gallery:
+
+```text
+http://localhost:4173/budda/guji_buddha_hall_3d/cubemap-review/
+```
+
+After manual review, promote exactly one candidate:
+
+```bash
+npm run promote:cubemap -- <runId>
+npm run build
+git add public/assets/cubemap/4k public/assets/cubemap/backups
+git commit -m "Promote generated cubemap candidate"
+```
+
+Important: AI-generated cubemap faces may still fail to align perfectly because each face is generated independently. Upscaling from 2880 to 4096 does not create perfect new geometry; it only prepares a larger review candidate. Do not deploy generated or generated_4k assets as the official `public/assets/cubemap/4k` set until all six faces are manually reviewed with `docs/cubemap-review-checklist.md`. The most reliable production-quality solution remains a cubemap exported from one coherent Blender / Unreal / 3D scene.
 
 ## HD spherical patches
 

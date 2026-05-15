@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cubemap Review</title>
+    <style>
+      body {
+        margin: 0;
+        background: #0d0905;
+        color: #f5dfac;
+        font-family: "Microsoft JhengHei", system-ui, sans-serif;
+      }
+      main {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 28px 18px 48px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+      }
+      p {
+        color: #d6c08d;
+        line-height: 1.6;
+      }
+      .candidate {
+        margin-top: 28px;
+        padding: 18px;
+        border: 1px solid rgba(255, 211, 120, 0.28);
+        background: rgba(25, 17, 8, 0.72);
+      }
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 14px;
+        color: #ffd67d;
+      }
+      img {
+        width: 100%;
+        height: auto;
+        display: block;
+        border: 1px solid rgba(255, 211, 120, 0.18);
+      }
+      a {
+        color: #ffe08a;
+      }
+      .actions {
+        margin-top: 12px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Cubemap 候選人工驗收</h1>
+      <p>這裡只列出產圖候選。請逐一打開 Three.js 測試連結檢查六面一致性，確認後才用 promote script 覆蓋正式 4K cubemap。</p>
+      <div id="list">載入中...</div>
+    </main>
+    <script>
+      async function main() {
+        const list = document.getElementById("list");
+        const response = await fetch("./manifest.json", { cache: "no-store" });
+        if (!response.ok) {
+          list.textContent = "尚未有候選 manifest。請先執行 npm run generate:cubemap。";
+          return;
+        }
+        const manifest = await response.json();
+        const candidates = manifest.candidates || [];
+        if (!candidates.length) {
+          list.textContent = "目前沒有候選。";
+          return;
+        }
+        list.innerHTML = "";
+        for (const item of candidates) {
+          const section = document.createElement("section");
+          section.className = "candidate";
+          section.innerHTML = `
+            <div class="meta">
+              <strong>${item.runId}</strong>
+              <span>${item.createdAt || ""}</span>
+              <span>${item.model || ""}</span>
+              <span>${item.size || ""}</span>
+            </div>
+            <img src="${item.contactSheet}" alt="${item.runId} contact sheet" />
+            <div class="actions">
+              <a href="${item.testUrl}" target="_blank" rel="noreferrer">Three.js 測試</a>
+            </div>
+          `;
+          list.appendChild(section);
+        }
+      }
+      main().catch((error) => {
+        document.getElementById("list").textContent = String(error);
+      });
+    </script>
+  </body>
+</html>

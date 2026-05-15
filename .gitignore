@@ -1,0 +1,14 @@
+node_modules/
+dist/
+*.log
+
+# Local/generated cubemap working outputs. Keep the folders, but do not commit
+# candidate runs or intermediate generated faces by accident.
+guji_buddha_hall_3d/public/assets/cubemap/candidates/*
+!guji_buddha_hall_3d/public/assets/cubemap/candidates/.gitkeep
+
+guji_buddha_hall_3d/public/assets/cubemap/generated/*
+!guji_buddha_hall_3d/public/assets/cubemap/generated/.gitkeep
+
+guji_buddha_hall_3d/public/assets/cubemap/generated_4k/*
+!guji_buddha_hall_3d/public/assets/cubemap/generated_4k/.gitkeep
