@@ -8,6 +8,7 @@ import { CandleManager } from "./candles";
 import { OfferingManager } from "./offerings";
 import { AppUI } from "./ui";
 import { createFireflies, FireflySystem, updateFireflies } from "./fireflies";
+import { createFrontDetailPatch } from "./frontDetailPatch";
 
 const canvas = document.getElementById("sceneCanvas") as HTMLCanvasElement;
 const scene = new THREE.Scene();
@@ -69,6 +70,7 @@ const ui = new AppUI({
 const candleManager = new CandleManager({
   scene,
   camera,
+  renderer,
   radius: 488,
   debug: LAMP_DEBUG,
   yawOffsetDeg: PANORAMA_YAW_OFFSET_DEG
@@ -86,6 +88,11 @@ async function init(): Promise<void> {
   try {
     const texture = await loadPanoramaTexture(renderer);
     scene.add(createPanoramaSphere(texture, 500));
+    try {
+      await createFrontDetailPatch(scene, renderer);
+    } catch (error) {
+      console.warn("[front-detail-patch] skipped", error);
+    }
   } catch (error) {
     console.error(`Panorama failed: ${PANORAMA_8K_IMAGE_URL} / ${PANORAMA_4K_IMAGE_URL}`, error);
     showPanoramaError("全景圖片載入失敗，請確認 public/assets/guji_360_panorama_4096x2048.jpg 是否存在。");

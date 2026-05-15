@@ -5,6 +5,7 @@ import { LampRecord } from "./storage";
 export interface CandleManagerOptions {
   scene: THREE.Scene;
   camera: THREE.Camera;
+  renderer: THREE.WebGLRenderer;
   radius?: number;
   debug?: boolean;
   yawOffsetDeg?: number;
@@ -33,15 +34,40 @@ interface CandleVisual {
   label?: THREE.Sprite;
   record?: LampRecord;
   seed: number;
-  baseFlameScale: THREE.Vector2;
-  baseGlowScale: number;
   baseLightIntensity: number;
+  baseLightDistance: number;
+  targetFlamePixels: number;
+  targetGlowPixels: number;
   size: "wall" | "main";
 }
 
 const FLAME_SHEET_URL = `${import.meta.env.BASE_URL}assets/buddha_candle_flame_spritesheet_12x256.png`;
 const GLOW_URL = `${import.meta.env.BASE_URL}assets/buddha_candle_gold_glow_256.png`;
 const FLAME_FRAME_COUNT = 12;
+
+function getFlameScaleMultiplier(): number {
+  const params = new URLSearchParams(window.location.search);
+  const value = Number(params.get("flameScale") ?? "1");
+  if (!Number.isFinite(value)) return 1;
+  return THREE.MathUtils.clamp(value, 0.6, 2.2);
+}
+
+function worldHeightForScreenPixels(
+  camera: THREE.Camera,
+  renderer: THREE.WebGLRenderer,
+  worldPosition: THREE.Vector3,
+  targetPixels: number
+): number {
+  if (!(camera instanceof THREE.PerspectiveCamera)) {
+    return targetPixels * 0.1;
+  }
+
+  const distance = camera.position.distanceTo(worldPosition);
+  const fovRad = THREE.MathUtils.degToRad(camera.fov);
+  const viewportHeight = renderer.domElement.clientHeight || window.innerHeight || 1;
+
+  return 2 * distance * Math.tan(fovRad / 2) * (targetPixels / viewportHeight);
+}
 
 function isMainLamp(config: HotspotConfig): boolean {
   return config.size === "main" || config.id.startsWith("main-");
@@ -120,7 +146,8 @@ function lampPosition(config: HotspotConfig, radius: number, yawOffsetDeg: numbe
 
 function candlePosition(config: HotspotConfig, radius: number, yawOffsetDeg: number): THREE.Vector3 {
   const base = lampPosition(config, radius, yawOffsetDeg);
-  const inward = base.clone().normalize().multiplyScalar(-8);
+  const inwardAmount = isMainLamp(config) ? -20 : -16;
+  const inward = base.clone().normalize().multiplyScalar(inwardAmount);
   return base.add(inward);
 }
 
@@ -128,6 +155,7 @@ export class CandleManager {
   readonly clickable: THREE.Object3D[] = [];
   private scene: THREE.Scene;
   private camera: THREE.Camera;
+  private renderer: THREE.WebGLRenderer;
   private radius: number;
   private debug: boolean;
   private yawOffsetDeg: number;
@@ -142,6 +170,7 @@ export class CandleManager {
   constructor(options: CandleManagerOptions) {
     this.scene = options.scene;
     this.camera = options.camera;
+    this.renderer = options.renderer;
     this.radius = options.radius ?? 488;
     this.debug = options.debug ?? false;
     this.yawOffsetDeg = options.yawOffsetDeg ?? 0;
@@ -221,9 +250,10 @@ export class CandleManager {
         clickTarget,
         record: recordMap.get(config.id),
         seed: Math.random() * Math.PI * 2,
-        baseFlameScale: main ? new THREE.Vector2(24, 42) : new THREE.Vector2(16, 28),
-        baseGlowScale: main ? 68 : 44,
-        baseLightIntensity: main ? 1.9 : 1.25,
+        baseLightIntensity: main ? 2.8 : 1.8,
+        baseLightDistance: main ? 95 : 65,
+        targetFlamePixels: (main ? 135 : 92) * getFlameScaleMultiplier(),
+        targetGlowPixels: (main ? 240 : 165) * getFlameScaleMultiplier(),
         sparks: [],
         size
       };
@@ -300,29 +330,40 @@ export class CandleManager {
         Math.sin(time * 8.0 + visual.seed) * 0.1 +
         Math.sin(time * 17.0 + visual.seed * 1.7) * 0.045;
 
+      const worldPos = new THREE.Vector3();
+      visual.group.getWorldPosition(worldPos);
+      const flameHeight = worldHeightForScreenPixels(
+        this.camera,
+        this.renderer,
+        worldPos,
+        visual.targetFlamePixels
+      );
+      const flameWidth = flameHeight * 0.52;
+      const glowHeight = worldHeightForScreenPixels(this.camera, this.renderer, worldPos, visual.targetGlowPixels);
+
       visual.flame.scale.set(
-        visual.baseFlameScale.x * flicker,
-        visual.baseFlameScale.y * (0.92 + flicker * 0.16),
+        flameWidth * flicker,
+        flameHeight * (0.92 + flicker * 0.16),
         1
       );
 
       const flameMat = visual.flame.material as THREE.SpriteMaterial;
       flameMat.opacity =
-        0.72 +
-        Math.sin(time * 10.0 + visual.seed) * 0.16 +
-        Math.sin(time * 23.0 + visual.seed) * 0.06;
+        0.82 +
+        Math.sin(time * 10.0 + visual.seed) * 0.13 +
+        Math.sin(time * 23.0 + visual.seed) * 0.05;
 
-      visual.flame.position.x = Math.sin(time * 5.0 + visual.seed) * 0.25;
-      visual.flame.position.y = Math.sin(time * 6.2 + visual.seed) * 0.45;
+      visual.flame.position.x = Math.sin(time * 5.0 + visual.seed) * flameWidth * 0.018;
+      visual.flame.position.y = Math.sin(time * 6.2 + visual.seed) * flameHeight * 0.018;
       visual.flame.lookAt(this.camera.position);
 
       const glowMat = visual.glow.material as THREE.SpriteMaterial;
       glowMat.opacity =
-        0.26 +
-        Math.sin(time * 4.5 + visual.seed) * 0.09 +
-        Math.sin(time * 9.0 + visual.seed) * 0.04;
+        0.34 +
+        Math.sin(time * 4.5 + visual.seed) * 0.1 +
+        Math.sin(time * 9.0 + visual.seed) * 0.05;
 
-      const glowScale = visual.baseGlowScale * (0.92 + Math.sin(time * 5.5 + visual.seed) * 0.08);
+      const glowScale = glowHeight * (0.92 + Math.sin(time * 5.5 + visual.seed) * 0.08);
       visual.glow.scale.set(glowScale, glowScale, 1);
       visual.glow.lookAt(this.camera.position);
 
@@ -332,13 +373,13 @@ export class CandleManager {
         const phase = (time * spark.speed + spark.seed) % 1;
         const angle = spark.seed + phase * Math.PI * 2;
         spark.sprite.position.set(
-          Math.sin(angle) * spark.drift,
-          -3.2 + phase * spark.height,
-          Math.cos(angle * 0.7) * spark.drift * 0.35
+          Math.sin(angle) * spark.drift * flameWidth * 0.22,
+          -flameHeight * 0.18 + phase * spark.height * flameHeight * 0.22,
+          Math.cos(angle * 0.7) * spark.drift * flameWidth * 0.08
         );
         const sparkMat = spark.sprite.material as THREE.SpriteMaterial;
         sparkMat.opacity = (1 - phase) * (0.35 + Math.sin(time * 8 + index) * 0.18);
-        const scale = spark.baseScale * (0.75 + (1 - phase) * 0.35);
+        const scale = spark.baseScale * flameHeight * 0.04 * (0.75 + (1 - phase) * 0.35);
         spark.sprite.scale.set(scale, scale, 1);
         spark.sprite.lookAt(this.camera.position);
       });
@@ -364,7 +405,7 @@ export class CandleManager {
     });
     const flame = new THREE.Sprite(flameMaterial);
     flame.name = `litFlame-${visual.config.id}`;
-    flame.scale.set(visual.baseFlameScale.x, visual.baseFlameScale.y, 1);
+    flame.scale.set(1, 1, 1);
     flame.renderOrder = 110;
     flame.frustumCulled = false;
     flame.userData = { type: "decor", id: `${visual.config.id}-flame` };
@@ -383,7 +424,7 @@ export class CandleManager {
     const glow = new THREE.Sprite(glowMaterial);
     glow.name = `lampGlow-${visual.config.id}`;
     glow.position.set(0, 0, -0.02);
-    glow.scale.set(visual.baseGlowScale, visual.baseGlowScale, 1);
+    glow.scale.set(1, 1, 1);
     glow.renderOrder = 100;
     glow.frustumCulled = false;
     glow.userData = { type: "decor", id: `${visual.config.id}-glow` };
@@ -419,7 +460,7 @@ export class CandleManager {
       });
     }
 
-    const light = new THREE.PointLight(0xffb84a, visual.baseLightIntensity, visual.size === "main" ? 65 : 45, 2);
+    const light = new THREE.PointLight(0xffb84a, visual.baseLightIntensity, visual.baseLightDistance, 2);
     light.name = `lampPointLight-${visual.config.id}`;
     group.add(light);
 
