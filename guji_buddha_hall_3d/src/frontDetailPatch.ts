@@ -1,14 +1,34 @@
 import * as THREE from "three";
 
 const FRONT_PATCH_URL = `${import.meta.env.BASE_URL}assets/guji_front_detail_patch_8192x4096.jpg`;
-const LON_MIN = -55;
-const LON_MAX = 55;
-const LAT_MIN = -38;
-const LAT_MAX = 42;
-const PATCH_RADIUS = 496;
-const SEGMENTS_X = 128;
-const SEGMENTS_Y = 80;
-const FEATHER_PX = 220;
+
+export interface FrontDetailPatchOptions {
+  lonMin?: number;
+  lonMax?: number;
+  latMin?: number;
+  latMax?: number;
+  radius?: number;
+  featherPx?: number;
+  segmentsX?: number;
+  segmentsY?: number;
+  rotationY?: number;
+  yawOffsetDeg?: number;
+}
+
+type ResolvedFrontDetailPatchOptions = Required<FrontDetailPatchOptions>;
+
+const DEFAULT_OPTIONS: ResolvedFrontDetailPatchOptions = {
+  lonMin: -55,
+  lonMax: 55,
+  latMin: -38,
+  latMax: 42,
+  radius: 496,
+  featherPx: 260,
+  segmentsX: 160,
+  segmentsY: 96,
+  rotationY: -Math.PI / 2,
+  yawOffsetDeg: 0
+};
 
 function sphericalPosition(lonDeg: number, latDeg: number, radius: number): THREE.Vector3 {
   const lon = THREE.MathUtils.degToRad(lonDeg);
@@ -28,7 +48,15 @@ function loadImage(url: string): Promise<HTMLImageElement> {
   });
 }
 
-function createFeatheredTexture(image: HTMLImageElement, renderer: THREE.WebGLRenderer): THREE.CanvasTexture {
+function resolveOptions(options: FrontDetailPatchOptions = {}): ResolvedFrontDetailPatchOptions {
+  return { ...DEFAULT_OPTIONS, ...options };
+}
+
+function createFeatheredTexture(
+  image: HTMLImageElement,
+  renderer: THREE.WebGLRenderer,
+  featherPx: number
+): THREE.CanvasTexture {
   const canvas = document.createElement("canvas");
   canvas.width = image.naturalWidth;
   canvas.height = image.naturalHeight;
@@ -43,7 +71,7 @@ function createFeatheredTexture(image: HTMLImageElement, renderer: THREE.WebGLRe
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
       const edge = Math.min(x, y, width - 1 - x, height - 1 - y);
-      const rawT = THREE.MathUtils.clamp(edge / FEATHER_PX, 0, 1);
+      const rawT = THREE.MathUtils.clamp(edge / featherPx, 0, 1);
       const smoothT = rawT * rawT * (3 - 2 * rawT);
       const index = (y * width + x) * 4 + 3;
       data[index] = Math.round(data[index] * smoothT);
@@ -62,27 +90,27 @@ function createFeatheredTexture(image: HTMLImageElement, renderer: THREE.WebGLRe
   return texture;
 }
 
-function createPatchGeometry(): THREE.BufferGeometry {
+function createPatchGeometry(options: ResolvedFrontDetailPatchOptions): THREE.BufferGeometry {
   const positions: number[] = [];
   const uvs: number[] = [];
   const indices: number[] = [];
 
-  for (let y = 0; y <= SEGMENTS_Y; y += 1) {
-    const v = y / SEGMENTS_Y;
-    const lat = THREE.MathUtils.lerp(LAT_MIN, LAT_MAX, v);
+  for (let y = 0; y <= options.segmentsY; y += 1) {
+    const v = y / options.segmentsY;
+    const lat = THREE.MathUtils.lerp(options.latMin, options.latMax, v);
 
-    for (let x = 0; x <= SEGMENTS_X; x += 1) {
-      const u = x / SEGMENTS_X;
-      const lon = THREE.MathUtils.lerp(LON_MIN, LON_MAX, u);
-      const position = sphericalPosition(lon, lat, PATCH_RADIUS);
+    for (let x = 0; x <= options.segmentsX; x += 1) {
+      const u = x / options.segmentsX;
+      const lon = THREE.MathUtils.lerp(options.lonMin, options.lonMax, u) + options.yawOffsetDeg;
+      const position = sphericalPosition(lon, lat, options.radius);
       positions.push(position.x, position.y, position.z);
       uvs.push(u, 1 - v);
     }
   }
 
-  const row = SEGMENTS_X + 1;
-  for (let y = 0; y < SEGMENTS_Y; y += 1) {
-    for (let x = 0; x < SEGMENTS_X; x += 1) {
+  const row = options.segmentsX + 1;
+  for (let y = 0; y < options.segmentsY; y += 1) {
+    for (let x = 0; x < options.segmentsX; x += 1) {
       const a = y * row + x;
       const b = a + 1;
       const c = a + row;
@@ -101,8 +129,10 @@ function createPatchGeometry(): THREE.BufferGeometry {
 
 export async function createFrontDetailPatch(
   scene: THREE.Scene,
-  renderer: THREE.WebGLRenderer
+  renderer: THREE.WebGLRenderer,
+  options: FrontDetailPatchOptions = {}
 ): Promise<THREE.Mesh | null> {
+  const resolvedOptions = resolveOptions(options);
   let image: HTMLImageElement;
   try {
     image = await loadImage(FRONT_PATCH_URL);
@@ -111,8 +141,8 @@ export async function createFrontDetailPatch(
     return null;
   }
 
-  const texture = createFeatheredTexture(image, renderer);
-  const geometry = createPatchGeometry();
+  const texture = createFeatheredTexture(image, renderer, resolvedOptions.featherPx);
+  const geometry = createPatchGeometry(resolvedOptions);
   const material = new THREE.MeshBasicMaterial({
     map: texture,
     transparent: true,
@@ -124,13 +154,15 @@ export async function createFrontDetailPatch(
 
   const patch = new THREE.Mesh(geometry, material);
   patch.name = "front-detail-patch";
+  patch.rotation.y = resolvedOptions.rotationY;
   patch.renderOrder = -900;
   scene.add(patch);
 
   console.info("[front-detail-patch] loaded", {
     url: FRONT_PATCH_URL,
     width: image.naturalWidth,
-    height: image.naturalHeight
+    height: image.naturalHeight,
+    options: resolvedOptions
   });
 
   return patch;

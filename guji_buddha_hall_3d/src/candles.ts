@@ -146,7 +146,7 @@ function lampPosition(config: HotspotConfig, radius: number, yawOffsetDeg: numbe
 
 function candlePosition(config: HotspotConfig, radius: number, yawOffsetDeg: number): THREE.Vector3 {
   const base = lampPosition(config, radius, yawOffsetDeg);
-  const inwardAmount = isMainLamp(config) ? -20 : -16;
+  const inwardAmount = isMainLamp(config) ? -22 : -16;
   const inward = base.clone().normalize().multiplyScalar(inwardAmount);
   return base.add(inward);
 }
@@ -252,8 +252,8 @@ export class CandleManager {
         seed: Math.random() * Math.PI * 2,
         baseLightIntensity: main ? 2.8 : 1.8,
         baseLightDistance: main ? 95 : 65,
-        targetFlamePixels: (main ? 135 : 92) * getFlameScaleMultiplier(),
-        targetGlowPixels: (main ? 240 : 165) * getFlameScaleMultiplier(),
+        targetFlamePixels: (main ? 150 : 105) * getFlameScaleMultiplier(),
+        targetGlowPixels: (main ? 270 : 190) * getFlameScaleMultiplier(),
         sparks: [],
         size
       };
@@ -349,8 +349,8 @@ export class CandleManager {
 
       const flameMat = visual.flame.material as THREE.SpriteMaterial;
       flameMat.opacity =
-        0.82 +
-        Math.sin(time * 10.0 + visual.seed) * 0.13 +
+        0.84 +
+        Math.sin(time * 10.0 + visual.seed) * 0.12 +
         Math.sin(time * 23.0 + visual.seed) * 0.05;
 
       visual.flame.position.x = Math.sin(time * 5.0 + visual.seed) * flameWidth * 0.018;
