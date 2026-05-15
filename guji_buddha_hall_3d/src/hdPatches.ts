@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-export type HdPatchConfig = {
+type HdPatchConfig = {
   id: string;
   url: string;
   lonMin: number;
@@ -16,160 +16,58 @@ export type HdPatchConfig = {
   enabled: boolean;
 };
 
-export type HdPatchOptions = {
+export type HdPatchesOptions = {
   debug?: boolean;
-  patches?: HdPatchConfig[];
 };
 
-const PATCH_BASE_URL = `${import.meta.env.BASE_URL}assets/patches/`;
+const BASE = import.meta.env.BASE_URL;
 
-export const HD_PATCHES: HdPatchConfig[] = [
-  {
-    id: "front",
-    url: `${PATCH_BASE_URL}guji_patch_front_8192x4096.jpg`,
-    lonMin: -58,
-    lonMax: 58,
-    latMin: -40,
-    latMax: 44,
-    radius: 496,
-    segmentsX: 220,
-    segmentsY: 140,
-    featherPx: 260,
-    rotationY: -Math.PI / 2,
-    yawOffsetDeg: 0,
-    enabled: true
-  },
-  {
-    id: "left-wall",
-    url: `${PATCH_BASE_URL}guji_patch_left_4096x4096.jpg`,
-    lonMin: -150,
-    lonMax: -62,
-    latMin: -34,
-    latMax: 45,
-    radius: 496,
-    segmentsX: 160,
-    segmentsY: 120,
-    featherPx: 220,
-    rotationY: -Math.PI / 2,
-    yawOffsetDeg: 0,
-    enabled: true
-  },
-  {
-    id: "right-wall",
-    url: `${PATCH_BASE_URL}guji_patch_right_4096x4096.jpg`,
-    lonMin: 62,
-    lonMax: 150,
-    latMin: -34,
-    latMax: 45,
-    radius: 496,
-    segmentsX: 160,
-    segmentsY: 120,
-    featherPx: 220,
-    rotationY: -Math.PI / 2,
-    yawOffsetDeg: 0,
-    enabled: true
-  },
-  {
-    id: "back",
-    url: `${PATCH_BASE_URL}guji_patch_back_4096x4096.jpg`,
-    lonMin: 150,
-    lonMax: 210,
-    latMin: -35,
-    latMax: 35,
-    radius: 496,
-    segmentsX: 120,
-    segmentsY: 90,
-    featherPx: 200,
-    rotationY: -Math.PI / 2,
-    yawOffsetDeg: 0,
-    enabled: true
-  },
-  {
-    id: "ceiling",
-    url: `${PATCH_BASE_URL}guji_patch_ceiling_4096x2048.jpg`,
-    lonMin: -180,
-    lonMax: 180,
-    latMin: 35,
-    latMax: 82,
-    radius: 495,
-    segmentsX: 240,
-    segmentsY: 80,
-    featherPx: 180,
-    rotationY: -Math.PI / 2,
-    yawOffsetDeg: 0,
-    enabled: true
-  },
-  {
-    id: "floor",
-    url: `${PATCH_BASE_URL}guji_patch_floor_4096x2048.jpg`,
-    lonMin: -180,
-    lonMax: 180,
-    latMin: -82,
-    latMax: -28,
-    radius: 495,
-    segmentsX: 240,
-    segmentsY: 80,
-    featherPx: 180,
-    rotationY: -Math.PI / 2,
-    yawOffsetDeg: 0,
-    enabled: true
-  }
+const HD_PATCHES: HdPatchConfig[] = [
+  { id: "front", url: `${BASE}assets/patches/guji_patch_front_8192x4096.jpg`, lonMin: -58, lonMax: 58, latMin: -40, latMax: 44, radius: 496, segmentsX: 220, segmentsY: 140, featherPx: 260, rotationY: -Math.PI / 2, yawOffsetDeg: 0, enabled: true },
+  { id: "left-wall", url: `${BASE}assets/patches/guji_patch_left_4096x4096.jpg`, lonMin: -150, lonMax: -62, latMin: -34, latMax: 45, radius: 496, segmentsX: 160, segmentsY: 120, featherPx: 220, rotationY: -Math.PI / 2, yawOffsetDeg: 0, enabled: true },
+  { id: "right-wall", url: `${BASE}assets/patches/guji_patch_right_4096x4096.jpg`, lonMin: 62, lonMax: 150, latMin: -34, latMax: 45, radius: 496, segmentsX: 160, segmentsY: 120, featherPx: 220, rotationY: -Math.PI / 2, yawOffsetDeg: 0, enabled: true },
+  { id: "back", url: `${BASE}assets/patches/guji_patch_back_4096x4096.jpg`, lonMin: 150, lonMax: 210, latMin: -35, latMax: 35, radius: 496, segmentsX: 120, segmentsY: 90, featherPx: 200, rotationY: -Math.PI / 2, yawOffsetDeg: 0, enabled: true },
+  { id: "ceiling", url: `${BASE}assets/patches/guji_patch_ceiling_4096x2048.jpg`, lonMin: -180, lonMax: 180, latMin: 35, latMax: 82, radius: 495, segmentsX: 240, segmentsY: 80, featherPx: 180, rotationY: -Math.PI / 2, yawOffsetDeg: 0, enabled: true },
+  { id: "floor", url: `${BASE}assets/patches/guji_patch_floor_4096x2048.jpg`, lonMin: -180, lonMax: 180, latMin: -82, latMax: -28, radius: 495, segmentsX: 240, segmentsY: 80, featherPx: 180, rotationY: -Math.PI / 2, yawOffsetDeg: 0, enabled: true },
 ];
-
-const DEBUG_COLORS: Record<string, THREE.ColorRepresentation> = {
-  front: 0xfff0cc,
-  "left-wall": 0xcce8ff,
-  "right-wall": 0xffccee,
-  back: 0xccffd6,
-  ceiling: 0xe7ccff,
-  floor: 0xffe1aa
-};
 
 function sphericalPosition(lonDeg: number, latDeg: number, radius: number): THREE.Vector3 {
   const lon = THREE.MathUtils.degToRad(lonDeg);
   const lat = THREE.MathUtils.degToRad(latDeg);
-  const x = radius * Math.sin(lon) * Math.cos(lat);
-  const y = radius * Math.sin(lat);
-  const z = -radius * Math.cos(lon) * Math.cos(lat);
-  return new THREE.Vector3(x, y, z);
+  return new THREE.Vector3(
+    radius * Math.sin(lon) * Math.cos(lat),
+    radius * Math.sin(lat),
+    -radius * Math.cos(lon) * Math.cos(lat),
+  );
 }
 
-function loadImage(url: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-    image.onload = () => resolve(image);
-    image.onerror = () => reject(new Error(`HD patch not found: ${url}`));
-    image.src = url;
-  });
+async function loadImage(url: string): Promise<HTMLImageElement> {
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.src = url;
+  await img.decode();
+  return img;
 }
 
-function createFeatheredTexture(
-  image: HTMLImageElement,
-  renderer: THREE.WebGLRenderer,
-  featherPx: number
-): THREE.CanvasTexture {
+function createFeatheredTexture(img: HTMLImageElement, renderer: THREE.WebGLRenderer, featherPx: number): THREE.CanvasTexture {
   const canvas = document.createElement("canvas");
-  canvas.width = image.naturalWidth;
-  canvas.height = image.naturalHeight;
-  const ctx = canvas.getContext("2d", { willReadFrequently: true });
-  if (!ctx) throw new Error("Canvas 2D context unavailable");
-
-  ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-
-  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  const { data, width, height } = imageData;
-
-  for (let y = 0; y < height; y += 1) {
-    for (let x = 0; x < width; x += 1) {
-      const edge = Math.min(x, y, width - 1 - x, height - 1 - y);
-      const rawT = THREE.MathUtils.clamp(edge / featherPx, 0, 1);
-      const smoothT = rawT * rawT * (3 - 2 * rawT);
-      data[(y * width + x) * 4 + 3] = Math.round(data[(y * width + x) * 4 + 3] * smoothT);
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Cannot create canvas context for HD patch");
+  ctx.drawImage(img, 0, 0);
+  const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  const w = canvas.width;
+  const h = canvas.height;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const edge = Math.min(x, y, w - 1 - x, h - 1 - y);
+      let t = THREE.MathUtils.clamp(edge / featherPx, 0, 1);
+      t = t * t * (3 - 2 * t);
+      data.data[(y * w + x) * 4 + 3] = Math.round(data.data[(y * w + x) * 4 + 3] * t);
     }
   }
-
-  ctx.putImageData(imageData, 0, 0);
-
+  ctx.putImageData(data, 0, 0);
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 16);
@@ -181,26 +79,28 @@ function createFeatheredTexture(
 }
 
 function createPatchGeometry(config: HdPatchConfig): THREE.BufferGeometry {
-  const positions: number[] = [];
+  const lonSpan = config.lonMax - config.lonMin;
+  const vertices: number[] = [];
   const uvs: number[] = [];
   const indices: number[] = [];
 
-  for (let y = 0; y <= config.segmentsY; y += 1) {
+  for (let y = 0; y <= config.segmentsY; y++) {
     const v = y / config.segmentsY;
-    const lat = THREE.MathUtils.lerp(config.latMin, config.latMax, v);
-
-    for (let x = 0; x <= config.segmentsX; x += 1) {
+    const lat = THREE.MathUtils.lerp(config.latMax, config.latMin, v);
+    for (let x = 0; x <= config.segmentsX; x++) {
       const u = x / config.segmentsX;
-      const lon = THREE.MathUtils.lerp(config.lonMin, config.lonMax, u);
-      const position = sphericalPosition(lon, lat, config.radius);
-      positions.push(position.x, position.y, position.z);
+      let lon = config.lonMin + lonSpan * u;
+      if (lon > 180) lon -= 360;
+      if (lon < -180) lon += 360;
+      const p = sphericalPosition(lon, lat, config.radius);
+      vertices.push(p.x, p.y, p.z);
       uvs.push(u, 1 - v);
     }
   }
 
   const row = config.segmentsX + 1;
-  for (let y = 0; y < config.segmentsY; y += 1) {
-    for (let x = 0; x < config.segmentsX; x += 1) {
+  for (let y = 0; y < config.segmentsY; y++) {
+    for (let x = 0; x < config.segmentsX; x++) {
       const a = y * row + x;
       const b = a + 1;
       const c = a + row;
@@ -210,7 +110,7 @@ function createPatchGeometry(config: HdPatchConfig): THREE.BufferGeometry {
   }
 
   const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("position", new THREE.Float32BufferAttribute(vertices, 3));
   geometry.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
   geometry.setIndex(indices);
   geometry.computeVertexNormals();
@@ -218,132 +118,66 @@ function createPatchGeometry(config: HdPatchConfig): THREE.BufferGeometry {
 }
 
 function createDebugBoundary(config: HdPatchConfig): THREE.LineSegments {
-  const positions: number[] = [];
-  const pushSegment = (a: THREE.Vector3, b: THREE.Vector3) => {
-    positions.push(a.x, a.y, a.z, b.x, b.y, b.z);
-  };
+  const pts: THREE.Vector3[] = [];
+  const steps = 64;
+  const add = (a: THREE.Vector3, b: THREE.Vector3) => { pts.push(a, b); };
 
-  const samplesX = 72;
-  const samplesY = 48;
-
-  for (let index = 0; index < samplesX; index += 1) {
-    const t0 = index / samplesX;
-    const t1 = (index + 1) / samplesX;
-    const lon0 = THREE.MathUtils.lerp(config.lonMin, config.lonMax, t0);
-    const lon1 = THREE.MathUtils.lerp(config.lonMin, config.lonMax, t1);
-    pushSegment(sphericalPosition(lon0, config.latMin, config.radius - 1), sphericalPosition(lon1, config.latMin, config.radius - 1));
-    pushSegment(sphericalPosition(lon0, config.latMax, config.radius - 1), sphericalPosition(lon1, config.latMax, config.radius - 1));
-  }
-
-  for (let index = 0; index < samplesY; index += 1) {
-    const t0 = index / samplesY;
-    const t1 = (index + 1) / samplesY;
+  for (let i = 0; i < steps; i++) {
+    const t0 = i / steps;
+    const t1 = (i + 1) / steps;
+    const lon0 = config.lonMin + (config.lonMax - config.lonMin) * t0;
+    const lon1 = config.lonMin + (config.lonMax - config.lonMin) * t1;
+    add(sphericalPosition(lon0 > 180 ? lon0 - 360 : lon0, config.latMin, config.radius - 0.4), sphericalPosition(lon1 > 180 ? lon1 - 360 : lon1, config.latMin, config.radius - 0.4));
+    add(sphericalPosition(lon0 > 180 ? lon0 - 360 : lon0, config.latMax, config.radius - 0.4), sphericalPosition(lon1 > 180 ? lon1 - 360 : lon1, config.latMax, config.radius - 0.4));
     const lat0 = THREE.MathUtils.lerp(config.latMin, config.latMax, t0);
     const lat1 = THREE.MathUtils.lerp(config.latMin, config.latMax, t1);
-    pushSegment(sphericalPosition(config.lonMin, lat0, config.radius - 1), sphericalPosition(config.lonMin, lat1, config.radius - 1));
-    pushSegment(sphericalPosition(config.lonMax, lat0, config.radius - 1), sphericalPosition(config.lonMax, lat1, config.radius - 1));
+    add(sphericalPosition(config.lonMin, lat0, config.radius - 0.4), sphericalPosition(config.lonMin, lat1, config.radius - 0.4));
+    const lonMaxNorm = config.lonMax > 180 ? config.lonMax - 360 : config.lonMax;
+    add(sphericalPosition(lonMaxNorm, lat0, config.radius - 0.4), sphericalPosition(lonMaxNorm, lat1, config.radius - 0.4));
   }
-
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
-  const material = new THREE.LineBasicMaterial({
-    color: 0x20f4ff,
-    transparent: true,
-    opacity: 0.95,
-    depthTest: false,
-    depthWrite: false,
-    toneMapped: false
-  });
-
-  const boundary = new THREE.LineSegments(geometry, material);
-  boundary.name = `hd-patch-boundary-${config.id}`;
-  boundary.renderOrder = -820;
-  boundary.frustumCulled = false;
-  return boundary;
+  const geom = new THREE.BufferGeometry().setFromPoints(pts);
+  const mat = new THREE.LineBasicMaterial({ color: 0x66ffff, transparent: true, opacity: 0.9, depthTest: false, depthWrite: false });
+  const line = new THREE.LineSegments(geom, mat);
+  line.renderOrder = -800;
+  return line;
 }
 
-async function createSinglePatch(
-  scene: THREE.Scene,
-  renderer: THREE.WebGLRenderer,
-  config: HdPatchConfig,
-  debug: boolean
-): Promise<THREE.Mesh | null> {
-  if (!config.enabled) return null;
+export async function createHdPatches(scene: THREE.Scene, renderer: THREE.WebGLRenderer, options: HdPatchesOptions = {}) {
+  const group = new THREE.Group();
+  group.name = "hd-patches";
+  scene.add(group);
 
-  let image: HTMLImageElement;
-  try {
-    image = await loadImage(config.url);
-  } catch (error) {
-    console.warn("[hd-patches] skipped", { id: config.id, url: config.url, error });
-    return null;
+  const loaded: string[] = [];
+  for (const config of HD_PATCHES) {
+    if (!config.enabled) continue;
+    try {
+      const img = await loadImage(config.url);
+      const texture = createFeatheredTexture(img, renderer, config.featherPx);
+      const geometry = createPatchGeometry(config);
+      const material = new THREE.MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+        depthWrite: false,
+        depthTest: false,
+        side: THREE.DoubleSide,
+        blending: THREE.NormalBlending,
+      });
+      if (options.debug) {
+        material.opacity = 0.78;
+        material.color = new THREE.Color(0xfff4d0);
+      }
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.name = `hd-patch-${config.id}`;
+      mesh.rotation.y = config.rotationY + THREE.MathUtils.degToRad(config.yawOffsetDeg);
+      mesh.renderOrder = -850;
+      group.add(mesh);
+      if (options.debug) group.add(createDebugBoundary(config));
+      loaded.push(config.id);
+      console.info("[hd-patch] loaded", { id: config.id, url: config.url, width: img.naturalWidth, height: img.naturalHeight, lonMin: config.lonMin, lonMax: config.lonMax, latMin: config.latMin, latMax: config.latMax });
+    } catch (error) {
+      console.warn("[hd-patch] skipped", config.id, config.url, error);
+    }
   }
-
-  const texture = createFeatheredTexture(image, renderer, config.featherPx);
-  const material = new THREE.MeshBasicMaterial({
-    map: texture,
-    transparent: true,
-    depthWrite: false,
-    depthTest: false,
-    side: THREE.DoubleSide,
-    blending: THREE.NormalBlending
-  });
-
-  if (debug) {
-    material.opacity = 0.75;
-    material.color = new THREE.Color(DEBUG_COLORS[config.id] ?? 0xfff0cc);
-  }
-
-  const mesh = new THREE.Mesh(createPatchGeometry(config), material);
-  mesh.name = `hd-patch-${config.id}`;
-  mesh.rotation.y = config.rotationY + THREE.MathUtils.degToRad(config.yawOffsetDeg);
-  mesh.renderOrder = -850;
-  mesh.frustumCulled = false;
-
-  if (debug) {
-    mesh.add(createDebugBoundary(config));
-  }
-
-  scene.add(mesh);
-
-  console.info("[hd-patches] loaded", {
-    id: config.id,
-    url: config.url,
-    imageWidth: image.naturalWidth,
-    imageHeight: image.naturalHeight,
-    lonMin: config.lonMin,
-    lonMax: config.lonMax,
-    latMin: config.latMin,
-    latMax: config.latMax,
-    rotationY: config.rotationY,
-    yawOffsetDeg: config.yawOffsetDeg,
-    debug
-  });
-
-  return mesh;
-}
-
-export async function createHdPatches(
-  scene: THREE.Scene,
-  renderer: THREE.WebGLRenderer,
-  options: HdPatchOptions = {}
-): Promise<THREE.Mesh[]> {
-  const debug = options.debug ?? false;
-  const patches = options.patches ?? HD_PATCHES;
-  const meshes: THREE.Mesh[] = [];
-
-  for (const patch of patches) {
-    const mesh = await createSinglePatch(scene, renderer, patch, debug);
-    if (mesh) meshes.push(mesh);
-  }
-
-  console.info("[hd-patches] summary", {
-    requested: patches.filter((patch) => patch.enabled).length,
-    loaded: meshes.length,
-    debug
-  });
-  console.info(
-    "[hd-patches] clarity depends on native high-detail patch images; upscaled crops from a blurry panorama will still look limited."
-  );
-
-  return meshes;
+  console.info("[hd-patches] complete", { loaded });
+  return group;
 }
