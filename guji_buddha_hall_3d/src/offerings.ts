@@ -33,9 +33,9 @@ type OfferingPlacementConfig = {
 
 const DEFAULT_OFFERING_PLACEMENT: OfferingPlacementConfig = {
   screenX: 0.5,
-  screenY: 0.705,
-  distance: 48,
-  scale: 0.62
+  screenY: 0.8,
+  distance: 42,
+  scale: 0.78
 };
 
 const OFFERING_SLOTS: OfferingSlot[] = [

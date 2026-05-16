@@ -1,6 +1,7 @@
 node_modules/
 dist/
 *.log
+guji_buddha_hall_3d/test-artifacts/
 
 # Local/generated cubemap working outputs. Keep the folders, but do not commit
 # candidate runs or intermediate generated faces by accident.
