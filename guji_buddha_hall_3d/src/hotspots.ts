@@ -22,23 +22,23 @@ export const OFFERING_HOTSPOT: HotspotConfig = {
 };
 
 export const LAMP_HOTSPOTS: HotspotConfig[] = [
-  { id: "front-left-buddha", label: "左側小佛燈", type: "lamp", lon: -22, lat: 2, size: "wall" },
-  { id: "front-right-buddha", label: "右側小佛燈", type: "lamp", lon: 22, lat: 2, size: "wall" },
-  { id: "front-left-niche", label: "左前佛龕燈", type: "lamp", lon: -45, lat: -8, size: "wall" },
-  { id: "front-right-niche", label: "右前佛龕燈", type: "lamp", lon: 45, lat: -8, size: "wall" },
+  { id: "front-left-buddha", label: "蓮花生大士燈", type: "lamp", lon: -22, lat: 2, size: "wall" },
+  { id: "front-right-buddha", label: "四臂觀音燈", type: "lamp", lon: 22, lat: 2, size: "wall" },
+  { id: "front-left-niche", label: "文殊菩薩燈", type: "lamp", lon: -45, lat: -8, size: "wall" },
+  { id: "front-right-niche", label: "綠度母燈", type: "lamp", lon: 45, lat: -8, size: "wall" },
   { id: "altar-left-front", label: "供桌左前燈", type: "lamp", lon: -12, lat: -24, size: "altar" },
   { id: "altar-center", label: "供桌中央燈", type: "lamp", lon: 0, lat: -25, size: "altar" },
   { id: "altar-right-front", label: "供桌右前燈", type: "lamp", lon: 12, lat: -24, size: "altar" },
-  { id: "left-wall-upper", label: "左牆上層佛燈", type: "lamp", lon: -90, lat: 12, size: "wall" },
-  { id: "left-wall-middle", label: "左牆中層佛燈", type: "lamp", lon: -92, lat: -2, size: "wall" },
-  { id: "left-wall-lower", label: "左牆下層佛燈", type: "lamp", lon: -94, lat: -16, size: "wall" },
-  { id: "left-wall-far", label: "左牆遠端佛燈", type: "lamp", lon: -125, lat: -6, size: "wall" },
-  { id: "right-wall-upper", label: "右牆上層佛燈", type: "lamp", lon: 90, lat: 12, size: "wall" },
-  { id: "right-wall-middle", label: "右牆中層佛燈", type: "lamp", lon: 92, lat: -2, size: "wall" },
-  { id: "right-wall-lower", label: "右牆下層佛燈", type: "lamp", lon: 94, lat: -16, size: "wall" },
-  { id: "right-wall-far", label: "右牆遠端佛燈", type: "lamp", lon: 125, lat: -6, size: "wall" },
-  { id: "back-left-niche", label: "後壁左佛燈", type: "lamp", lon: 160, lat: -5, size: "wall" },
-  { id: "back-right-niche", label: "後壁右佛燈", type: "lamp", lon: -160, lat: -5, size: "wall" }
+  { id: "left-wall-upper", label: "地藏王菩薩燈", type: "lamp", lon: -90, lat: 12, size: "wall" },
+  { id: "left-wall-middle", label: "四臂觀音燈", type: "lamp", lon: -92, lat: -2, size: "wall" },
+  { id: "left-wall-lower", label: "文殊菩薩燈", type: "lamp", lon: -94, lat: -16, size: "wall" },
+  { id: "left-wall-far", label: "蓮花生大士燈", type: "lamp", lon: -125, lat: -6, size: "wall" },
+  { id: "right-wall-upper", label: "綠度母燈", type: "lamp", lon: 90, lat: 12, size: "wall" },
+  { id: "right-wall-middle", label: "蓮花生大士燈", type: "lamp", lon: 92, lat: -2, size: "wall" },
+  { id: "right-wall-lower", label: "地藏王菩薩燈", type: "lamp", lon: 94, lat: -16, size: "wall" },
+  { id: "right-wall-far", label: "文殊菩薩燈", type: "lamp", lon: 125, lat: -6, size: "wall" },
+  { id: "back-left-niche", label: "後壁護法供燈", type: "lamp", lon: 160, lat: -5, size: "wall" },
+  { id: "back-right-niche", label: "後壁上師供燈", type: "lamp", lon: -160, lat: -5, size: "wall" }
 ];
 
 export const ALL_HOTSPOTS: HotspotConfig[] = [OFFERING_HOTSPOT, ...LAMP_HOTSPOTS];
