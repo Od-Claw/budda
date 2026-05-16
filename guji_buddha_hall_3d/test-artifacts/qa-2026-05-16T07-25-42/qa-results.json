@@ -1,0 +1,884 @@
+{
+  "outDir": "D:\\Documents\\GitHub\\budda\\guji_buddha_hall_3d\\test-artifacts\\qa-2026-05-16T07-25-42",
+  "width": 1440,
+  "height": 900,
+  "pages": [
+    {
+      "name": "equirect-8k",
+      "url": "http://localhost:4173/budda/guji_buddha_hall_3d/?env=equirect&quality=8k",
+      "network": [
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/?env=equirect&quality=8k",
+          "status": 200,
+          "type": "Document",
+          "mimeType": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/index-BggOZ058.css",
+          "status": 200,
+          "type": "Stylesheet",
+          "mimeType": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/index-CAMl46vz.js",
+          "status": 200,
+          "type": "Script",
+          "mimeType": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_flame_spritesheet_12x256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_gold_glow_256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/guji_360_panorama_8192x4096_sharp_q95.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/favicon.ico",
+          "status": 404,
+          "type": "Other",
+          "mimeType": "text/plain",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        }
+      ],
+      "consoleLogs": [
+        {
+          "level": "info",
+          "text": "[panorama] loading Object"
+        },
+        {
+          "level": "info",
+          "text": "[environment] equirectangular panorama loaded"
+        },
+        {
+          "level": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://localhost:4173/favicon.ico"
+        }
+      ],
+      "screenshots": {
+        "full": "D:\\Documents\\GitHub\\budda\\guji_buddha_hall_3d\\test-artifacts\\qa-2026-05-16T07-25-42\\equirect_full.png",
+        "buddhaCrop": "D:\\Documents\\GitHub\\budda\\guji_buddha_hall_3d\\test-artifacts\\qa-2026-05-16T07-25-42\\equirect_buddha_crop.png",
+        "leftRightNiche": "D:\\Documents\\GitHub\\budda\\guji_buddha_hall_3d\\test-artifacts\\qa-2026-05-16T07-25-42\\equirect_side_niches.png"
+      },
+      "observations": {
+        "bodyText": "古蹟佛堂\n拖拽旋轉觀看\n回到佛前\n操作提示\n拖拽旋轉\n滾輪縮放\n點擊佛前供桌供佛\n點擊兩側佛燈點燈\n供佛\n×\n鮮花\n蓮花\n水杯\n果盤\n香\n酥油燈\n金色供品\n清除供物"
+      },
+      "imageRequests": [
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_flame_spritesheet_12x256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_gold_glow_256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/guji_360_panorama_8192x4096_sharp_q95.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        }
+      ],
+      "consoleErrors": [
+        {
+          "level": "error",
+          "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://localhost:4173/favicon.ico"
+        }
+      ]
+    },
+    {
+      "name": "cubemap-4k-debug",
+      "url": "http://localhost:4173/budda/guji_buddha_hall_3d/?env=cubemap&cubeQuality=4k&cubeDebug=1",
+      "network": [
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/?env=cubemap&cubeQuality=4k&cubeDebug=1",
+          "status": 200,
+          "type": "Document",
+          "mimeType": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/index-BggOZ058.css",
+          "status": 200,
+          "type": "Stylesheet",
+          "mimeType": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/index-CAMl46vz.js",
+          "status": 200,
+          "type": "Script",
+          "mimeType": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/px.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/nx.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_flame_spritesheet_12x256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_gold_glow_256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/py.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/ny.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/pz.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/nz.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        }
+      ],
+      "consoleLogs": [
+        {
+          "level": "info",
+          "text": "[cubemap] loaded Object"
+        },
+        {
+          "level": "info",
+          "text": "[environment] cubemap loaded"
+        }
+      ],
+      "screenshots": {
+        "front": "D:\\Documents\\GitHub\\budda\\guji_buddha_hall_3d\\test-artifacts\\qa-2026-05-16T07-25-42\\cubemap_front_debug.png",
+        "left": "D:\\Documents\\GitHub\\budda\\guji_buddha_hall_3d\\test-artifacts\\qa-2026-05-16T07-25-42\\cubemap_left_or_right_wall.png",
+        "top": "D:\\Documents\\GitHub\\budda\\guji_buddha_hall_3d\\test-artifacts\\qa-2026-05-16T07-25-42\\cubemap_top.png",
+        "down": "D:\\Documents\\GitHub\\budda\\guji_buddha_hall_3d\\test-artifacts\\qa-2026-05-16T07-25-42\\cubemap_down.png"
+      },
+      "observations": {
+        "bodyText": "古蹟佛堂\n拖拽旋轉觀看\n回到佛前\n操作提示\n拖拽旋轉\n滾輪縮放\n點擊佛前供桌供佛\n點擊兩側佛燈點燈\n供佛\n×\n鮮花\n蓮花\n水杯\n果盤\n香\n酥油燈\n金色供品\n清除供物"
+      },
+      "imageRequests": [
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/px.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/nx.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_flame_spritesheet_12x256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_gold_glow_256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/py.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/ny.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/pz.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/nz.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        }
+      ],
+      "consoleErrors": []
+    },
+    {
+      "name": "offerings-cubemap",
+      "url": "http://localhost:4173/budda/guji_buddha_hall_3d/?env=cubemap&cubeQuality=4k&cubeDebug=1&offeringDebug=1",
+      "network": [
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/?env=cubemap&cubeQuality=4k&cubeDebug=1&offeringDebug=1",
+          "status": 200,
+          "type": "Document",
+          "mimeType": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/index-BggOZ058.css",
+          "status": 200,
+          "type": "Stylesheet",
+          "mimeType": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/index-CAMl46vz.js",
+          "status": 200,
+          "type": "Script",
+          "mimeType": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_flame_spritesheet_12x256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_gold_glow_256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/px.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/nx.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/py.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/ny.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/pz.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/nz.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/flower.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/lotus.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/water.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/fruit.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/incense.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/lamp.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/gold.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        }
+      ],
+      "consoleLogs": [
+        {
+          "level": "info",
+          "text": "[offerings] placement Object"
+        },
+        {
+          "level": "info",
+          "text": "[cubemap] loaded Object"
+        },
+        {
+          "level": "info",
+          "text": "[environment] cubemap loaded"
+        },
+        {
+          "level": "info",
+          "text": "Offering button clicked flower"
+        },
+        {
+          "level": "info",
+          "text": "Offering added flower"
+        },
+        {
+          "level": "info",
+          "text": "Offering button clicked lotus"
+        },
+        {
+          "level": "info",
+          "text": "Offering added lotus"
+        },
+        {
+          "level": "info",
+          "text": "Offering button clicked water"
+        },
+        {
+          "level": "info",
+          "text": "Offering added water"
+        },
+        {
+          "level": "info",
+          "text": "Offering button clicked fruit"
+        },
+        {
+          "level": "info",
+          "text": "Offering added fruit"
+        },
+        {
+          "level": "info",
+          "text": "Offering button clicked incense"
+        },
+        {
+          "level": "info",
+          "text": "Offering added incense"
+        },
+        {
+          "level": "info",
+          "text": "Offering button clicked butterLamp"
+        },
+        {
+          "level": "info",
+          "text": "Offering added butterLamp"
+        },
+        {
+          "level": "info",
+          "text": "Offering button clicked gold"
+        },
+        {
+          "level": "info",
+          "text": "Offering added gold"
+        },
+        {
+          "level": "info",
+          "text": "Offerings root screen position Object"
+        }
+      ],
+      "screenshots": {
+        "offerings": "D:\\Documents\\GitHub\\budda\\guji_buddha_hall_3d\\test-artifacts\\qa-2026-05-16T07-25-42\\offerings_after_add.png"
+      },
+      "observations": {
+        "panelAfterClick": {
+          "className": "glass-panel offering-panel",
+          "aria": "true",
+          "text": "供佛\n×\n鮮花\n蓮花\n水杯\n果盤\n香\n酥油燈\n金色供品\n清除供物"
+        },
+        "offeringState": {
+          "storage": "[{\"id\":\"offering-1778916374308-iqgqgz\",\"type\":\"flower\",\"createdAt\":\"2026-05-16T07:26:14.308Z\",\"slotIndex\":0},{\"id\":\"offering-1778916374309-bajz2u\",\"type\":\"lotus\",\"createdAt\":\"2026-05-16T07:26:14.309Z\",\"slotIndex\":1},{\"id\":\"offering-1778916374310-plod8v\",\"type\":\"water\",\"createdAt\":\"2026-05-16T07:26:14.310Z\",\"slotIndex\":2},{\"id\":\"offering-1778916374310-huyy5v\",\"type\":\"fruit\",\"createdAt\":\"2026-05-16T07:26:14.310Z\",\"slotIndex\":3},{\"id\":\"offering-1778916374311-k35ozp\",\"type\":\"incense\",\"createdAt\":\"2026-05-16T07:26:14.311Z\",\"slotIndex\":4},{\"id\":\"offering-1778916374311-chp93k\",\"type\":\"butterLamp\",\"createdAt\":\"2026-05-16T07:26:14.311Z\",\"slotIndex\":5},{\"id\":\"offering-1778916374312-vdtdb6\",\"type\":\"gold\",\"createdAt\":\"2026-05-16T07:26:14.312Z\",\"slotIndex\":6}]",
+          "panel": "glass-panel offering-panel"
+        }
+      },
+      "imageRequests": [
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_flame_spritesheet_12x256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_gold_glow_256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/px.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/nx.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/py.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/ny.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/pz.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/nz.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/flower.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/lotus.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/water.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/fruit.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/incense.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/lamp.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/gold.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        }
+      ],
+      "consoleErrors": []
+    },
+    {
+      "name": "lamp-cubemap",
+      "url": "http://localhost:4173/budda/guji_buddha_hall_3d/?env=cubemap&cubeQuality=4k&cubeDebug=1&flameScale=1",
+      "network": [
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/?env=cubemap&cubeQuality=4k&cubeDebug=1&flameScale=1",
+          "status": 200,
+          "type": "Document",
+          "mimeType": "text/html",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/index-BggOZ058.css",
+          "status": 200,
+          "type": "Stylesheet",
+          "mimeType": "text/css",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/index-CAMl46vz.js",
+          "status": 200,
+          "type": "Script",
+          "mimeType": "text/javascript",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_flame_spritesheet_12x256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_gold_glow_256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/px.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/nx.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/py.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/ny.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/pz.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/nz.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/flower.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/lotus.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/water.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/fruit.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/incense.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/lamp.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/gold.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png",
+          "fromDiskCache": false,
+          "fromServiceWorker": false
+        }
+      ],
+      "consoleLogs": [
+        {
+          "level": "info",
+          "text": "[cubemap] loaded Object"
+        },
+        {
+          "level": "info",
+          "text": "[environment] cubemap loaded"
+        }
+      ],
+      "screenshots": {
+        "lampLit": "D:\\Documents\\GitHub\\budda\\guji_buddha_hall_3d\\test-artifacts\\qa-2026-05-16T07-25-42\\lamp_lit.png",
+        "lampInfo": "D:\\Documents\\GitHub\\budda\\guji_buddha_hall_3d\\test-artifacts\\qa-2026-05-16T07-25-42\\lamp_info_after_second_click.png"
+      },
+      "observations": {
+        "modalAfterLampClick": {
+          "className": "modal open",
+          "aria": "false",
+          "text": "點燈 - 大佛左燈一\n×\n請輸入名字，確認後才會點亮佛燈。\n輸入名字\n\n確認點燈\n清除所有點燈"
+        },
+        "lampState": {
+          "storage": "[{\"id\":\"main-left-1\",\"name\":\"??\",\"litAt\":\"2026-05-16T07:26:23.242Z\"}]",
+          "modal": "modal open",
+          "modalText": "大佛左燈一\n×\n此燈已點亮\n點燈者：??\n時間：2026/05/16 下午03:26\n\n清除所有點燈"
+        }
+      },
+      "imageRequests": [
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_flame_spritesheet_12x256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/buddha_candle_gold_glow_256.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/px.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/nx.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/py.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/ny.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/pz.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/cubemap/4k/nz.jpg",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/jpeg"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/flower.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/lotus.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/water.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/fruit.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/incense.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/lamp.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        },
+        {
+          "url": "http://localhost:4173/budda/guji_buddha_hall_3d/assets/offerings/gold.png",
+          "status": 200,
+          "type": "Image",
+          "mimeType": "image/png"
+        }
+      ],
+      "consoleErrors": []
+    }
+  ],
+  "generated": {}
+}
