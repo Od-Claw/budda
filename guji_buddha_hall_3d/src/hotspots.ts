@@ -8,7 +8,7 @@ export interface HotspotConfig {
   type: HotspotType;
   lon: number;
   lat: number;
-  size?: "wall" | "main";
+  size?: "wall" | "main" | "altar";
   visualLonOffset?: number;
   visualLatOffset?: number;
 }
@@ -22,28 +22,23 @@ export const OFFERING_HOTSPOT: HotspotConfig = {
 };
 
 export const LAMP_HOTSPOTS: HotspotConfig[] = [
-  { id: "front-small-left", label: "大佛左側小佛燈", type: "lamp", lon: -22, lat: 13, size: "wall" },
-  { id: "front-small-right", label: "大佛右側小佛燈", type: "lamp", lon: 20, lat: 13, size: "wall" },
-  { id: "main-left-1", label: "大佛左燈一", type: "lamp", lon: -18, lat: -18, size: "main" },
-  { id: "main-left-2", label: "大佛左燈二", type: "lamp", lon: -26, lat: -22, size: "main" },
-  { id: "main-right-1", label: "大佛右燈一", type: "lamp", lon: 18, lat: -18, size: "main" },
-  { id: "main-right-2", label: "大佛右燈二", type: "lamp", lon: 26, lat: -22, size: "main" },
-  { id: "front-left-shrine", label: "左前佛龕燈", type: "lamp", lon: -58, lat: -5, size: "wall" },
-  { id: "front-right-shrine", label: "右前佛龕燈", type: "lamp", lon: 55, lat: -5, size: "wall" },
-  { id: "left-outer-top", label: "左外牆上層佛燈", type: "lamp", lon: -154, lat: 32, size: "wall" },
-  { id: "left-outer-mid", label: "左外牆中層佛燈", type: "lamp", lon: -152, lat: 16, size: "wall" },
-  { id: "left-outer-low", label: "左外牆下層佛燈", type: "lamp", lon: -152, lat: -5, size: "wall" },
-  { id: "left-inner-top", label: "左牆上層佛燈", type: "lamp", lon: -110, lat: 33, size: "wall" },
-  { id: "left-inner-mid", label: "左牆中層佛燈", type: "lamp", lon: -110, lat: 14, size: "wall" },
-  { id: "left-inner-low", label: "左牆下層佛燈", type: "lamp", lon: -110, lat: -6, size: "wall" },
-  { id: "right-inner-top", label: "右牆上層佛燈", type: "lamp", lon: 107, lat: 33, size: "wall" },
-  { id: "right-inner-mid", label: "右牆中層佛燈", type: "lamp", lon: 107, lat: 14, size: "wall" },
-  { id: "right-inner-low", label: "右牆下層佛燈", type: "lamp", lon: 107, lat: -5, size: "wall" },
-  { id: "right-outer-top", label: "右外牆上層佛燈", type: "lamp", lon: 149, lat: 33, size: "wall" },
-  { id: "right-outer-mid", label: "右外牆中層佛燈", type: "lamp", lon: 149, lat: 14, size: "wall" },
-  { id: "right-outer-low", label: "右外牆下層佛燈", type: "lamp", lon: 149, lat: -5, size: "wall" },
-  { id: "back-left-niche", label: "後壁左側佛燈", type: "lamp", lon: -177, lat: -4, size: "wall" },
-  { id: "back-right-niche", label: "後壁右側佛燈", type: "lamp", lon: 177, lat: -4, size: "wall" }
+  { id: "front-left-buddha", label: "左側小佛燈", type: "lamp", lon: -22, lat: 2, size: "wall" },
+  { id: "front-right-buddha", label: "右側小佛燈", type: "lamp", lon: 22, lat: 2, size: "wall" },
+  { id: "front-left-niche", label: "左前佛龕燈", type: "lamp", lon: -45, lat: -8, size: "wall" },
+  { id: "front-right-niche", label: "右前佛龕燈", type: "lamp", lon: 45, lat: -8, size: "wall" },
+  { id: "altar-left-front", label: "供桌左前燈", type: "lamp", lon: -12, lat: -24, size: "altar" },
+  { id: "altar-center", label: "供桌中央燈", type: "lamp", lon: 0, lat: -25, size: "altar" },
+  { id: "altar-right-front", label: "供桌右前燈", type: "lamp", lon: 12, lat: -24, size: "altar" },
+  { id: "left-wall-upper", label: "左牆上層佛燈", type: "lamp", lon: -90, lat: 12, size: "wall" },
+  { id: "left-wall-middle", label: "左牆中層佛燈", type: "lamp", lon: -92, lat: -2, size: "wall" },
+  { id: "left-wall-lower", label: "左牆下層佛燈", type: "lamp", lon: -94, lat: -16, size: "wall" },
+  { id: "left-wall-far", label: "左牆遠端佛燈", type: "lamp", lon: -125, lat: -6, size: "wall" },
+  { id: "right-wall-upper", label: "右牆上層佛燈", type: "lamp", lon: 90, lat: 12, size: "wall" },
+  { id: "right-wall-middle", label: "右牆中層佛燈", type: "lamp", lon: 92, lat: -2, size: "wall" },
+  { id: "right-wall-lower", label: "右牆下層佛燈", type: "lamp", lon: 94, lat: -16, size: "wall" },
+  { id: "right-wall-far", label: "右牆遠端佛燈", type: "lamp", lon: 125, lat: -6, size: "wall" },
+  { id: "back-left-niche", label: "後壁左佛燈", type: "lamp", lon: 160, lat: -5, size: "wall" },
+  { id: "back-right-niche", label: "後壁右佛燈", type: "lamp", lon: -160, lat: -5, size: "wall" }
 ];
 
 export const ALL_HOTSPOTS: HotspotConfig[] = [OFFERING_HOTSPOT, ...LAMP_HOTSPOTS];

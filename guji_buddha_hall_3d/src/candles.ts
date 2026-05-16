@@ -38,7 +38,7 @@ interface CandleVisual {
   baseLightDistance: number;
   targetFlamePixels: number;
   targetGlowPixels: number;
-  size: "wall" | "main";
+  size: "wall" | "main" | "altar";
 }
 
 const FLAME_SHEET_URL = `${import.meta.env.BASE_URL}assets/buddha_candle_flame_spritesheet_12x256.png`;
@@ -69,8 +69,11 @@ function worldHeightForScreenPixels(
   return 2 * distance * Math.tan(fovRad / 2) * (targetPixels / viewportHeight);
 }
 
-function isMainLamp(config: HotspotConfig): boolean {
-  return config.size === "main" || config.id.startsWith("main-");
+function getLampSize(config: HotspotConfig): "wall" | "main" | "altar" {
+  if (config.size === "main" || config.size === "altar" || config.size === "wall") return config.size;
+  if (config.id.startsWith("main-")) return "main";
+  if (config.id.startsWith("altar-")) return "altar";
+  return "wall";
 }
 
 function createFlameFrameTexture(baseTexture: THREE.Texture): THREE.Texture {
@@ -146,7 +149,8 @@ function lampPosition(config: HotspotConfig, radius: number, yawOffsetDeg: numbe
 
 function candlePosition(config: HotspotConfig, radius: number, yawOffsetDeg: number): THREE.Vector3 {
   const base = lampPosition(config, radius, yawOffsetDeg);
-  const inwardAmount = isMainLamp(config) ? -22 : -16;
+  const size = getLampSize(config);
+  const inwardAmount = size === "main" ? -20 : size === "altar" ? -12 : -16;
   const inward = base.clone().normalize().multiplyScalar(inwardAmount);
   return base.add(inward);
 }
@@ -206,8 +210,11 @@ export class CandleManager {
     const recordMap = new Map(records.map((record) => [record.id, record]));
 
     hotspots.forEach((config) => {
-      const main = isMainLamp(config);
-      const size = main ? "main" : "wall";
+      const size = getLampSize(config);
+      const main = size === "main";
+      const altar = size === "altar";
+      const markerBase = main ? 15 : altar ? 12 : 11;
+      const clickBase = main ? 30 : altar ? 27 : 24;
       const markerMaterial = new THREE.SpriteMaterial({
         map: recordMap.has(config.id) ? this.litTexture : this.unlitTexture,
         transparent: true,
@@ -220,7 +227,7 @@ export class CandleManager {
       const marker = new THREE.Sprite(markerMaterial);
       marker.name = `lampMarker-${config.id}`;
       marker.position.copy(candlePosition(config, this.radius, this.yawOffsetDeg));
-      marker.scale.set(main ? 15 : 11, main ? 15 : 11, 1);
+      marker.scale.set(markerBase, markerBase, 1);
       marker.renderOrder = 90;
       marker.frustumCulled = false;
       marker.userData = { type: "lamp", id: config.id, label: config.label };
@@ -236,7 +243,7 @@ export class CandleManager {
       const clickTarget = new THREE.Sprite(clickMaterial);
       clickTarget.name = `lampClickTarget-${config.id}`;
       clickTarget.position.copy(marker.position);
-      clickTarget.scale.set(main ? 30 : 24, main ? 30 : 24, 1);
+      clickTarget.scale.set(clickBase, clickBase, 1);
       clickTarget.renderOrder = 120;
       clickTarget.frustumCulled = false;
       clickTarget.userData = { type: "lamp", id: config.id, label: config.label };
@@ -250,10 +257,10 @@ export class CandleManager {
         clickTarget,
         record: recordMap.get(config.id),
         seed: Math.random() * Math.PI * 2,
-        baseLightIntensity: main ? 2.8 : 1.8,
-        baseLightDistance: main ? 95 : 65,
-        targetFlamePixels: (main ? 92 : 58) * getFlameScaleMultiplier(),
-        targetGlowPixels: (main ? 170 : 110) * getFlameScaleMultiplier(),
+        baseLightIntensity: main ? 2.8 : altar ? 1.0 : 1.8,
+        baseLightDistance: main ? 95 : altar ? 42 : 65,
+        targetFlamePixels: (main ? 64 : altar ? 32 : 46) * getFlameScaleMultiplier(),
+        targetGlowPixels: (main ? 125 : altar ? 62 : 88) * getFlameScaleMultiplier(),
         sparks: [],
         size
       };
@@ -308,7 +315,7 @@ export class CandleManager {
 
       if (!visual.record) {
         const pulse = 1 + Math.sin(time * 2.2 + visual.seed) * 0.09;
-        const base = visual.size === "main" ? 15 : 11;
+        const base = visual.size === "main" ? 15 : visual.size === "altar" ? 12 : 11;
         visual.marker.scale.setScalar(base * pulse);
         const markerMaterial = visual.marker.material as THREE.SpriteMaterial;
         markerMaterial.opacity = 0.64 + Math.sin(time * 2.2 + visual.seed) * 0.12;
@@ -317,7 +324,7 @@ export class CandleManager {
 
       const markerMaterial = visual.marker.material as THREE.SpriteMaterial;
       markerMaterial.opacity = 0.055 + Math.sin(time * 3 + visual.seed) * 0.025;
-      visual.marker.scale.setScalar(visual.size === "main" ? 8 : 6);
+      visual.marker.scale.setScalar(visual.size === "main" ? 8 : visual.size === "altar" ? 5 : 6);
 
       if (!visual.group || !visual.flame || !visual.flameTexture || !visual.glow || !visual.light) return;
 
@@ -338,12 +345,16 @@ export class CandleManager {
         worldPos,
         visual.targetFlamePixels
       );
-      const flameWidth = flameHeight * 0.34;
+      const flameWidthRatio = visual.size === "main" ? 0.36 : 0.34;
+      const flameWidth = flameHeight * flameWidthRatio;
       const glowHeight = worldHeightForScreenPixels(this.camera, this.renderer, worldPos, visual.targetGlowPixels);
+      const maxFlameHeightPixels = visual.size === "main" ? 82 : visual.size === "altar" ? 42 : 58;
+      const maxFlameHeight = worldHeightForScreenPixels(this.camera, this.renderer, worldPos, maxFlameHeightPixels);
+      const finalFlameHeight = Math.min(flameHeight * (0.92 + flicker * 0.16), maxFlameHeight);
 
       visual.flame.scale.set(
         flameWidth * flicker,
-        flameHeight * (0.92 + flicker * 0.16),
+        finalFlameHeight,
         1
       );
 
@@ -355,15 +366,17 @@ export class CandleManager {
 
       visual.flame.position.x = Math.sin(time * 5.0 + visual.seed) * flameWidth * 0.018;
       visual.flame.position.y =
-        Math.sin(time * 6.2 + visual.seed) * flameHeight * 0.018 -
-        (visual.size === "wall" ? flameHeight * 0.1 : 0);
+        Math.sin(time * 6.2 + visual.seed) * finalFlameHeight * 0.018 -
+        (visual.size === "wall" ? finalFlameHeight * 0.1 : visual.size === "altar" ? finalFlameHeight * 0.08 : 0);
       visual.flame.lookAt(this.camera.position);
 
       const glowMat = visual.glow.material as THREE.SpriteMaterial;
+      const glowOpacityBase = visual.size === "main" ? 0.26 : visual.size === "altar" ? 0.16 : 0.22;
+      const glowOpacityPulse = visual.size === "main" ? 0.08 : visual.size === "altar" ? 0.05 : 0.07;
       glowMat.opacity =
-        0.22 +
-        Math.sin(time * 4.5 + visual.seed) * 0.07 +
-        Math.sin(time * 9.0 + visual.seed) * 0.035;
+        glowOpacityBase +
+        Math.sin(time * 4.5 + visual.seed) * glowOpacityPulse +
+        Math.sin(time * 9.0 + visual.seed) * glowOpacityPulse * 0.5;
 
       const glowScale = glowHeight * (0.92 + Math.sin(time * 5.5 + visual.seed) * 0.08);
       visual.glow.scale.set(glowScale, glowScale, 1);
@@ -433,7 +446,7 @@ export class CandleManager {
     glow.raycast = () => undefined;
     group.add(glow);
 
-    const sparkCount = visual.size === "main" ? 7 : 5;
+    const sparkCount = visual.size === "main" ? 7 : visual.size === "altar" ? 4 : 5;
     const sparks: SparkVisual[] = [];
     for (let index = 0; index < sparkCount; index += 1) {
       const material = new THREE.SpriteMaterial({
@@ -455,8 +468,8 @@ export class CandleManager {
       sparks.push({
         sprite,
         seed: Math.random() * 99,
-        height: visual.size === "main" ? 8.5 : 6.2,
-        drift: visual.size === "main" ? 1.25 : 0.85,
+        height: visual.size === "main" ? 8.5 : visual.size === "altar" ? 4.6 : 6.2,
+        drift: visual.size === "main" ? 1.25 : visual.size === "altar" ? 0.62 : 0.85,
         speed: 0.28 + Math.random() * 0.18,
         baseScale: 1.2 + Math.random() * 1.2
       });
