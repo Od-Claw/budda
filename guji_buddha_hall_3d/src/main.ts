@@ -10,7 +10,7 @@ import { AppUI } from "./ui";
 import { createFireflies, FireflySystem, updateFireflies } from "./fireflies";
 import { createHdPatches } from "./hdPatches";
 import { createCubemapSkybox } from "./cubemapSkybox";
-import { createDappledSunlight, createSunbeamSprites } from "./dappledSunlight";
+import { createDappledSunlight, createGroundDapplePlane, createSunbeamSprites } from "./dappledSunlight";
 
 const canvas = document.getElementById("sceneCanvas") as HTMLCanvasElement;
 const scene = new THREE.Scene();
@@ -27,6 +27,8 @@ const HD_PATCH_DEBUG = params.get("hdPatchDebug") === "1";
 const ENV_MODE = params.get("env") ?? "cubemap";
 const SUN_DAPPLE_ENABLED = params.get("sunDapple") !== "0";
 const SUN_DAPPLE_DEBUG = params.get("sunDappleDebug") === "1";
+const GROUND_DAPPLE_STRENGTH = Number(params.get("groundDapple") ?? "1");
+const SUN_MOTION = Number(params.get("sunMotion") ?? "1");
 
 const camera = new THREE.PerspectiveCamera(INITIAL_FOV, window.innerWidth / window.innerHeight, 0.1, 2000);
 camera.position.set(0, 0, 0.1);
@@ -90,11 +92,21 @@ const dappledSunlight = SUN_DAPPLE_ENABLED
       strength: Number(params.get("sunDappleStrength") ?? "1"),
       shadowStrength: Number(params.get("sunShadow") ?? "1"),
       glowStrength: Number(params.get("sunGlow") ?? "1"),
+      groundStrength: GROUND_DAPPLE_STRENGTH,
+      motion: SUN_MOTION,
       enabled: true,
       debug: SUN_DAPPLE_DEBUG
     })
   : null;
 const sunbeams = SUN_DAPPLE_ENABLED ? createSunbeamSprites(scene) : null;
+const groundDapplePlane =
+  SUN_DAPPLE_ENABLED && GROUND_DAPPLE_STRENGTH !== 0
+    ? createGroundDapplePlane(scene, camera, renderer, {
+        strength: GROUND_DAPPLE_STRENGTH,
+        enabled: true,
+        debug: SUN_DAPPLE_DEBUG
+      })
+    : null;
 
 let pointerDown = { x: 0, y: 0 };
 let hovered: THREE.Object3D | null = null;
@@ -288,6 +300,7 @@ function animate(): void {
   offeringManager.update(time);
   if (fireflies) updateFireflies(fireflies, delta, time);
   dappledSunlight?.update(time);
+  groundDapplePlane?.update(time);
   sunbeams?.update(time);
   animateOfferingHotspot(time);
   renderer.render(scene, camera);
@@ -297,6 +310,7 @@ function cleanup(): void {
   if (cleanedUp) return;
   cleanedUp = true;
   dappledSunlight?.destroy();
+  groundDapplePlane?.destroy();
   sunbeams?.destroy();
 }
 

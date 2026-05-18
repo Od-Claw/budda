@@ -53,7 +53,16 @@ body,
   z-index: 3;
   pointer-events: none;
   mix-blend-mode: screen;
-  opacity: 0.18;
+  opacity: 0.16;
+}
+
+.ground-dapple-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.28;
 }
 
 .ui-layer,
